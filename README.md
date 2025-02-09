@@ -1,2 +1,3 @@
+![Power Nixx Logo](Assets/BlackRedNLelloHello.png)
 # PowerNixx
-PowerNixx: Windows Made, Linux Approved
+Windows Made, Linux Approved
