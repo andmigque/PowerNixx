@@ -1,3 +1,3 @@
-![Power Nixx Logo](Assets/BlackRedNLelloHello.png)
+![Power Nixx Logo](Assets/BlackRedFresh.png)
 # PowerNixx
 Windows Made, Linux Approved
