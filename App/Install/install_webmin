@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+# Install Webmin using the official install script.
+# This will install the `webmin` package and its dependencies.
+install_webmin(){
+	curl -o webmin-setup-repos.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repos.sh
+	sh webmin-setup-repos.sh
+	apt-get install --install-recommends webmin
+}
+
+install_webmin
