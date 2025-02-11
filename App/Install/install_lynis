@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+
+
+# Install Lynis, a security auditing tool, using apt-get.
+install_lynis(){
+	sudo apt-get -y install lynis
+}
+
+install_lynis

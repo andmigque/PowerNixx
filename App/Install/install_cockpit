@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+# Installs Cockpit, a server management interface, using apt-get.
+install_cockpit(){
+	sudo apt-get -y install cockpit
+}
+
+install_cockpit
