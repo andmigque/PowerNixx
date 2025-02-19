@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-body {
-    background-color: #1b1d1e;
-    color: #ffffff;
-}
-</style>
-</head>
-<body>
+
+<body style="background-color: #1b1d1e; color: #ffffff">
 
 ![Power Nixx Logo](Assets/BlackRedFresh.png)
 # <span style="color:#b00007;">PowerNixx</span>
@@ -103,4 +94,3 @@ Invoke-Pester
 <span style="color:#ffffff;">This project is licensed under the MIT License.</span>
 
 </body>
-</html>
