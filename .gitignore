@@ -1,2 +1,7 @@
 .vscode
 PowerNixx.code-workspace
+.fake
+OpenWebUI/*
+llama-web/*
+App/Convert/*
+Training/*
