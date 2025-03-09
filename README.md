@@ -4,10 +4,43 @@
 # <span style="color:#b00007;">PowerNixx</span>
 <span style="color:#ffffff;">Intelligent Compliance for Universal Hardening</span>
 
-## <span style="color:#b00007;">Overview</span>
-<span style="color:#ffffff;">PowerNixx is a collection of PowerShell scripts designed to enhance your productivity on both Windows and Linux systems. It includes various utilities for system management, networking, and automation.</span>
+## Architecture
 
-## <span style="color:#b00007;">Directory Structure</span>
+### <span style="color:#b00007;">Lifecycle</span>
+Simple project root delegation scripts that orchestrate application behavior:
+- `Main.ps1` - Command router
+- `Import.ps1` - Module loader
+- `Install.ps1` - Dependency manager
+- `Test.ps1` - Test runner
+- `New.ps1` - Template generator
+
+### <span style="color:#b00007;"> Inversion of Control</span>
+The application decides how to implement each delegated responsibility:
+
+```powershell
+./New.ps1 -Type Function -Name "Get-Something"  # App decides structure
+./New.ps1 -Type Test -Name "Verify-Something"   # App decides framework
+```
+
+### <span style="color:#b00007;"> Future </span>
+- **Integrity Verification**: Directory hashing foundation exists
+- **Compliance Checks**: CIS benchmarks structure planned
+- **Storage Strategy**: Will evolve based on usage patterns
+
+### <span style="color:#b00007;">PsNx</span>
+CLI interface for unified operations:
+```powershell
+psnx -cycle import,test     # Run lifecycle commands
+psnx -new integrity        # Generate integrity templates
+psnx -verify checksums     # Future integrity checking
+```
+
+### <span style="color:#b00007;"> Development Philosophy</span>
+1. **Delegate Don't Decide**: Root scripts delegate, App implements
+2. **Evolve Don't Assume**: Let real usage guide the design
+3. **Structure Through Need**: Add complexity only when required
+
+## <span style="color:#b00007;">Structure</span>
 <span style="color:#ffffff;">The project is organized into the following directories:</span>
 
 - **App**: Contains the main application scripts.
