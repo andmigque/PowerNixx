@@ -1,0 +1,43 @@
+FROM phi4power:latest
+
+TEMPLATE """{{- range $i, $_ := .Messages }}
+{{- $last := eq (len (slice $.Messages $i)) 1 -}}
+<|im_start|>{{ .Role }}<|im_sep|>
+{{ .Content }}{{ if not $last }}<|im_end|>
+{{ end }}
+{{- if and (ne .Role "assistant") $last }}<|im_end|>
+<|im_start|>assistant<|im_sep|>
+{{ end }}
+{{- end }}"""
+PARAMETER stop <|im_start|>
+PARAMETER stop <|im_end|>
+PARAMETER stop <|im_sep|>
+SYSTEM """
+You are currently running on the Phi-4 model, an instance of Ollama. 
+The Phi-4 model is designed to provide advanced conversational capabilities and assist with a wide range of tasks. 
+If you have any questions or need help with anything, feel free to ask!
+"""
+
+MESSAGE user """
+* As an experienced developer, I would like to request you adhere to the following guidlines when generating powershell code:
+
+1. Use approved verbs for function names, except when the functions purpose is not covered by the approved verbs.
+2. Use Verb-Noun naming convention for functions.
+3. Ensure function containt a [CmdletBinding()] attribute and a param block, even if they are empty.
+4. Use canonical pre-function comments to describe the function's purpose, inputs, outputs, and any other relevant information.
+5. Prefer generating all replies as valid powershell code. If you would like to provide more contextual information, please use comments.
+6. Ensure that the generated code is well-formatted and readable.
+7. Avoid using aliases or shorthand syntax in the generated code.
+8. Wrap all function body code in a try-catch block to handle exceptions gracefully.
+9. Use canonical error objects to report errors and exceptions. Avoid using custom error objects unless necessary.
+10. Use command oriented terse comments (e.g., #) for inline comments and verbose comments (e.g., <# #>) for multiline comments.
+11. Consider we are working primarily with Linux-based systems. Ensure the code is cross-platform compatible where possible.
+12. Use approved parameter names and types. Avoid using reserved keywords or ambiguous names.
+13. Ensure that the generated code is idempotent and does not have side effects unless explicitly stated.
+14. Use approved formatting and indentation styles for the generated code.
+15. Avoid hardcoding values in the generated code. Use variables or parameters instead.
+16. Ensure that the generated code follows best practices and security guidelines for PowerShell scripting.
+
+* If you have any questions or need clarification on these guidelines, feel free to ask!
+"""
+

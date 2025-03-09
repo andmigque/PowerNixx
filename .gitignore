@@ -5,3 +5,6 @@ OpenWebUI/*
 llama-web/*
 App/Convert/*
 Training/*
+Pdf2Text/pdf2text_env/*
+Assets/deb12bench.pdf
+Artifacts/deb12bench.txt

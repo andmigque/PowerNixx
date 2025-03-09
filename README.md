@@ -1,9 +1,8 @@
-
 <body style="background-color: #1b1d1e; color: #ffffff">
 
 ![Power Nixx Logo](Assets/BlackRedFresh.png)
 # <span style="color:#b00007;">PowerNixx</span>
-<span style="color:#ffffff;">Windows Made, Linux Approved</span>
+<span style="color:#ffffff;">Intelligent Compliance for Universal Hardening</span>
 
 ## <span style="color:#b00007;">Overview</span>
 <span style="color:#ffffff;">PowerNixx is a collection of PowerShell scripts designed to enhance your productivity on both Windows and Linux systems. It includes various utilities for system management, networking, and automation.</span>
@@ -26,6 +25,13 @@
 
 - **Assets**: Contains images and other assets used in the project.
   - <span style="color:#ffe400;">`BlackRedFresh.png`</span>: PowerNixx logo.
+
+- **CISHardening**: Intelligent Compliance implementation
+  - **Check**: Compliance testing scripts
+  - **Set**: Remediation scripts
+  - **Get**: Status reporting scripts
+  - **Common**: Shared compliance utilities
+  - **Tests**: Pester tests for compliance functions
 
 ## <span style="color:#b00007;">Scripts</span>
 
@@ -52,6 +58,30 @@ PS> Send-PsNxCommand -Hostname 'localhost' -Port 12080 -Command 'systemctl statu
 **Usage:**
 ```bash
 ./install_homebrew
+```
+
+### <span style="color:#ffe400;">Test-PsNxCompliance</span>
+<span style="color:#ffffff;">Tests system compliance against CIS benchmarks.</span>
+
+**Usage:**
+```powershell
+PS> Test-PsNxCompliance -BenchmarkPath './deb12bench.txt' -Profile 'Server'
+```
+
+### <span style="color:#ffe400;">Set-PsNxCompliance</span>
+<span style="color:#ffffff;">Applies CIS benchmark remediation steps.</span>
+
+**Usage:**
+```powershell
+PS> Set-PsNxCompliance -BenchmarkPath './deb12bench.txt' -WhatIf
+```
+
+### <span style="color:#ffe400;">Get-PsNxComplianceStatus</span>
+<span style="color:#ffffff;">Reports current system compliance status.</span>
+
+**Usage:**
+```powershell
+PS> Get-PsNxComplianceStatus -BenchmarkPath './deb12bench.txt'
 ```
 
 ## <span style="color:#b00007;">Configuration</span>
@@ -92,5 +122,64 @@ Invoke-Pester
 
 ## <span style="color:#b00007;">License</span>
 <span style="color:#ffffff;">This project is licensed under the MIT License.</span>
+
+## <span style="color:#b00007;">Intelligent Compliance</span>
+<span style="color:#ffffff;">Transform security standards into cross-platform system hardening</span>
+
+### <span style="color:#ffe400;">1. Document Conversion</span>
+Convert CIS benchmark PDF to machine-readable format:
+```bash
+# Requires pdfplumber: pip install pdfplumber
+pdfplumber < deb12bench.pdf --format text > deb12bench.txt
+```
+
+### <span style="color:#ffe400;">2. Implementation Strategy</span>
+Project structure following PowerShell conventions:
+```bash
+mkdir -p CISHardening/{Check,Set,Get,Common,Tests}
+
+# Core implementation components following PsNx naming pattern
+touch CISHardening/Check/Test-PsNxCompliance.ps1    # Initial compliance testing
+touch CISHardening/Set/Set-PsNxCompliance.ps1       # Apply remediation
+touch CISHardening/Get/Get-PsNxComplianceStatus.ps1 # Report current status
+touch CISHardening/Common/Import-PsNxBenchmark.ps1  # Parse benchmark data
+```
+
+### <span style="color:#ffe400;">3. Processing Approach</span>
+Compliance workflow following PowerShell standards:
+```powershell
+function Test-PsNxCompliance {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$BenchmarkPath,
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('Workstation', 'Server')]
+        [string]$Profile
+    )
+    # Initial compliance check
+    # Returns compliance test results
+}
+
+function Set-PsNxCompliance {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$BenchmarkPath
+    )
+    # Apply remediation steps
+    # Records changes made
+}
+
+function Get-PsNxComplianceStatus {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$BenchmarkPath
+    )
+    # Report current compliance status
+    # Generate detailed reports
+}
+```
 
 </body>
