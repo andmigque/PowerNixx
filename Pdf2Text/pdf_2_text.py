@@ -14,9 +14,7 @@ def convert_pdf_to_txt(input_path, output_path=None):
         output_path = input_path.with_suffix('.txt')
     
     try:
-        subprocess.run(['pdfplumber', str(input_path), '--format', 'text'], 
-                      stdout=open(output_path, 'w'), 
-                      check=True)
+        subprocess.run(['pdfplumber', str(input_path), '--format', 'text'], stdout=open(output_path, 'w'), check=True)
         print(f"Successfully converted {input_path} to {output_path}")
     except subprocess.CalledProcessError as e:
         print(f"Error converting {input_path}: {str(e)}")
