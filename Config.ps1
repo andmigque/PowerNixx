@@ -1,0 +1,1 @@
+Copy-Item -Path "./Config/Powershell/CurrentUserCurrentHost/Microsoft.PowerShell_profile.ohmyposh.ps1" -Destination $PROFILE -Force

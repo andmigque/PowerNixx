@@ -19,7 +19,7 @@ If you have any questions or need help with anything, feel free to ask!
 """
 
 MESSAGE user """
-* As an experienced developer, I would like to request you adhere to the following guidlines when generating powershell code:
+*As an experienced developer, I would like to request you adhere to the following guidlines when generating powershell code*
 
 1. Use approved verbs for function names, except when the functions purpose is not covered by the approved verbs.
 2. Use Verb-Noun naming convention for functions.
@@ -38,6 +38,127 @@ MESSAGE user """
 15. Avoid hardcoding values in the generated code. Use variables or parameters instead.
 16. Ensure that the generated code follows best practices and security guidelines for PowerShell scripting.
 
-* If you have any questions or need clarification on these guidelines, feel free to ask!
+*Here is an example of the high quality code you should generate*
+
+```
+# Opens a tcp stream capable of sending arbitrary data to a listening socket.
+# This is bare minimum code required for a tcp stream writer. 
+# Can serve as base for rpc, http, or other server.
+function Send-PsNxCommand {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Hostname,
+        [Parameter(Mandatory=$true)]
+        [int]$Port,
+        [Parameter(Mandatory=$true)]
+        [string]$Command
+    )
+
+    <#
+    .SYNOPSIS
+    Connects to a TCP server and sends a command.
+
+    .DESCRIPTION
+    This function creates a TCP client, connects to a specified hostname and port, and sends a command.
+    It ensures that the connection is properly closed after the command is sent.
+
+    .PARAMETER Hostname
+    The hostname or IP address of the TCP server.
+
+    .PARAMETER Port
+    The port number of the TCP server.
+
+    .PARAMETER Command
+    The command to send to the TCP server.
+
+    .EXAMPLE
+    PS> Send-PsNxCommand -Hostname 'localhost' -Port 12080 -Command 'systemctl status'
+
+    .NOTES
+    Author: Human Person
+    Date: February 18, 2025
+    #>
+
+    try {
+        # Create a TCP client
+        $client = New-Object System.Net.Sockets.TcpClient
+        $client.Connect($Hostname, $Port)
+
+        # Get the network stream for writing
+        $stream = $client.GetStream()
+
+        # Create a writer to send data
+        $writer = New-Object System.IO.StreamWriter($stream)
+
+        # Write your text
+        $writer.WriteLine($Command)
+
+        # Flush the writer to ensure data is sent immediately
+        $writer.Flush()
+    }
+    catch {
+        Write-Error "Failed to connect to $Hostname on port $Port. Error: $_"
+    }
+    finally {
+        # Ensure resources are cleaned up
+        if ($writer) { $writer.Close() }
+        if ($stream) { $stream.Close() }
+        if ($client) { $client.Close() }
+    }
+}
+```
+
+*You should explain your code less, and verify with tests more*
+*Here is an example of a corresponding unit tests file you could generate for Send-PsNxCommand* 
+
+```
+Describe 'Send-PsNxCommand' {
+    BeforeAll {
+        # Import the function under test
+        . $PSCommandPath.Replace('.Tests.ps1', '.ps1')
+    }
+
+    Context 'When connecting to an arbitrary available port' {
+        It 'Should fail to connect since the reader side is not opened' {
+            # Find an arbitrary available port above 55,000
+            $port = Get-Random -Minimum 55000 -Maximum 60000
+
+            # Call the function and capture the error
+            $error.Clear()
+            Send-PsNxCommand -Hostname 'localhost' -Port $port -Command 'test command' -ErrorAction SilentlyContinue
+
+            # Assert that an error was thrown
+            $error[0].Exception.Message | Should -Match "Failed to connect to localhost on port $port. Error:"
+        }
+    }
+
+    Context 'When connecting to an invalid hostname' {
+        It 'Should fail to connect due to invalid hostname' {
+            # Call the function and capture the error
+            $error.Clear()
+            Send-PsNxCommand -Hostname 'invalidhostname' -Port 12080 -Command 'test command' -ErrorAction SilentlyContinue
+
+            # Assert that an error was thrown
+            $error[0].Exception.Message | Should -Match "Failed to connect to invalidhostname on port 12080. Error:"
+        }
+    }
+
+    Context 'When connecting to an invalid port number' {
+        It 'Should fail to connect due to invalid port number' {
+            # Call the function and capture the error
+            $error.Clear()
+            Send-PsNxCommand -Hostname 'localhost' -Port -1 -Command 'test command' -ErrorAction SilentlyContinue
+
+            # Assert that an error was thrown
+            $error[0].Exception.Message | Should -Match "Failed to connect to localhost on port -1. Error:"
+        }
+    }
+}
+```
+
+*If you have any questions or need clarification on these guidelines, feel free to ask!*
+*I look forward to working with you!*
+
 """
 
