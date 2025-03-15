@@ -21,18 +21,13 @@ function Start-OllamaModel {
 
     [CmdletBinding()]
     param(
-        [string]$ModelName,
-        [string]$Prompt,
-        [string]$Format,
-        [bool]$Insecure,
-        [string]$KeepAlive,
-        [bool]$Nowordwrap
+        [string]$ModelName
     )
 
     try {
         # Execute the Ollama run command with the specified flags
-        (ollama run $ModelName $Prompt --format $Format --insecure $Insecure --keepalive $KeepAlive --nowordwrap $Nowordwrap)
+        (zsh -c "ollama run $ModelName" --keepalive "120m")
     } catch {
-        Write-Error $_.Exception.Message
+        Write-Error $_
     }
 }

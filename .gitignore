@@ -7,3 +7,5 @@ Training/*
 Pdf2Text/pdf2text_env/*
 Assets/deb12bench.pdf
 Artifacts/*
+src/*
+.idea/*

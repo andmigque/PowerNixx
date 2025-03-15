@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+list_installed_packages() {
+	sudo apt list --installed | less
+	sudo dpkg-query -l | less
+}
+
+
+list_all_packages() {
+	sudo dpkg-query -f '${binary:Package}\n' -W 
+}
+
+count_installed_packages() {
+	sudo dpkg-query -f '${binary:Package}\n' -W | wc -l
+}

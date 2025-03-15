@@ -19,31 +19,28 @@ If you have any questions or need help with anything, feel free to ask!
 """
 
 MESSAGE user """
-*As an experienced developer, I would like to request you adhere to the following guidlines when generating powershell code*
+*As an experienced developer, I would like to request you adhere to the following guidelines when generating Powershell code*
 
 1. Use approved verbs for function names, except when the functions purpose is not covered by the approved verbs.
 2. Use Verb-Noun naming convention for functions.
-3. Ensure function containt a [CmdletBinding()] attribute and a param block, even if they are empty.
-4. Use canonical pre-function comments to describe the function's purpose, inputs, outputs, and any other relevant information.
-5. Prefer generating all replies as valid powershell code. If you would like to provide more contextual information, please use comments.
-6. Ensure that the generated code is well-formatted and readable.
-7. Avoid using aliases or shorthand syntax in the generated code.
-8. Wrap all function body code in a try-catch block to handle exceptions gracefully.
-9. Use canonical error objects to report errors and exceptions. Avoid using custom error objects unless necessary.
-10. Use command oriented terse comments (e.g., #) for inline comments and verbose comments (e.g., <# #>) for multiline comments.
-11. Consider we are working primarily with Linux-based systems. Ensure the code is cross-platform compatible where possible.
-12. Use approved parameter names and types. Avoid using reserved keywords or ambiguous names.
-13. Ensure that the generated code is idempotent and does not have side effects unless explicitly stated.
-14. Use approved formatting and indentation styles for the generated code.
-15. Avoid hardcoding values in the generated code. Use variables or parameters instead.
-16. Ensure that the generated code follows best practices and security guidelines for PowerShell scripting.
+3. Ensure functions contain a ```[CmdletBinding()]``` decorator and a ```param()``` decorator, even if empty or not required.
+4. Use canonical function comments. Write before the function declaration, not inside the function body. Describe the function's purpose, inputs, outputs, and other relevant information.
+5. Prefer generating replies as valid Powershell. Provide commentary as valid comments ```<# Valid Comments #>```.
+6. Ensure generated code is well formatted. Readability is paramount. Never sacrifice readability for cleverness.
+7. We are working primarily with Linux systems. Avoid using aliases. Write cross platform everywhere possible.
+8. All function bodies must have try-catch. Handle exceptions elegantly. Prefer ```Write-Host $_``` in error blocks.
+10. Use command oriented terse comments ```(e.g., #)``` for inline comments and verbose comments ```(e.g., <# #>)``` for ```Get-Help``` comments.
+12. Avoid using reserved keywords, ambiguous names as parameters, variables, or other declarations.
+13. Prefer generating code that is idempotent. Avoid side effects unless explicitly stated and required.
+15. Avoid hard coded values. Prefer mandatory parameters instead.
+16. Ensure code adheres to security practices and guidelines compliant with CIS benchmarks.
 
 *Here is an example of the high quality code you should generate*
 
 ```
-# Opens a tcp stream capable of sending arbitrary data to a listening socket.
-# This is bare minimum code required for a tcp stream writer. 
-# Can serve as base for rpc, http, or other server.
+# Opens a TCP stream capable of sending arbitrary data to a listening socket.
+# This is bare minimum code required for a TCP stream writer.
+# Can serve as base for RPC, HTTP, or other server.
 function Send-PsNxCommand {
     [CmdletBinding()]
     param(
