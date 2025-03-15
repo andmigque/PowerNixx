@@ -1,0 +1,15 @@
+{
+  "author": "Andres M. Quesada",
+  "version": "1.0.0",
+  "description": "Intelligent Compliance for Universal Hardening",
+  "license": "MIT",
+  "scripts": {
+    "build": "psake",
+    "test": "invoke-pester ./tests/*.ps1",
+    "start": "pwsh -Command ./Server.ps1",
+    "install": "pwsh -Command ./Install.ps1",
+    "config": "pwsh -Command ./Config.ps1"
+  },
+  "main": "pwsh -Command ./Server.ps1",
+  "name": "PowerNixx"
+}

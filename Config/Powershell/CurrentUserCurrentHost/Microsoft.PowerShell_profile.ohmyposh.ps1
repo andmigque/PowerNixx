@@ -4,13 +4,27 @@ Set-StrictMode -Version 3.0
 Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'	
 Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
 Set-Variable -Name 'ShowFastFetch' -Value 'false'
-Import-Module PSReadLine
-Import-Module PSScriptAnalyzer
-Import-Module Pester
 
-Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+if(Get-Module -Name PSReadLine -ListAvailable) {
+    Import-Module PSReadLine
+
+    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
+    Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+}
+
+#Import-Module PSScriptAnalyzer
+if(Get-Module -Name Pester -ListAvailable) {
+    Import-Module Pester
+}
+
+if(Get-Module -Name Pode -ListAvailable) {
+    Import-Module Pode
+}
+
+if(Get-Module -Name Pode.Web -ListAvailable) {
+    Import-Module Pode.Web
+}
 
 # Check if running on Linux
 if ($IsLinux) {
