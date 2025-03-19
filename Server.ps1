@@ -3,6 +3,13 @@ Set-StrictMode -Version 3.0
 Import-Module Pode
 Import-Module Pode.Web
 
+Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
+    if(($_.Extension -eq ".ps1") -and -not ($_.FullName.Contains(".Tests.ps1"))) {
+            Import-Module $_.FullName -Global -Force
+    }
+}
+
+
 @{
     Web = @{
         Static = @{
@@ -16,7 +23,7 @@ Import-Module Pode.Web
 Start-PodeServer {
     Add-PodeEndpoint -Address localhost -Port 8080 -Protocol Http
 
-    Use-PodeWebTemplates -Title 'Service' -Theme Light
+    Use-PodeWebTemplates -Title 'Service' -Theme Terminal
 
     $PodeLogger = New-PodeLoggingMethod -Terminal 
     $PodeLogger | Enable-PodeErrorLogging -Levels Error, Informational, Verbose, Warning
@@ -29,9 +36,13 @@ Start-PodeServer {
         return $UnixLines.Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
     }
 
+    $InxiOutput = (inxi)
+    $Hostname = (hostname)
+    $Whoami = (whoami)
+
     Set-PodeWebHomePage -Layouts @(
-        New-PodeWebHero -Title 'Welcome to Your System' -Message 'Home' -Content @(
-            New-PodeWebText -Value 'Here is some text!' -InParagraph -Alignment Center
+        New-PodeWebHero -Title "Welcome to PowerNixx" -Message "$($Whoami)@$($Hostname)" -Content @(
+            New-PodeWebText -Value "$($InxiOutput)" -InParagraph -Alignment Left
         )
     )
 
@@ -94,6 +105,20 @@ Start-PodeServer {
         )
     }
 
+    Add-PodeWebPage -Name 'Failed Units' -Icon 'Settings' -Group 'System' -ScriptBlock {
+        New-PodeWebCard -Content @(
+            New-PodeWebTable -Name 'Failed Units' -ScriptBlock {
+                $FailedUnitPaths = (systemctl status --failed)
+
+                foreach($fail in $FailedUnitPaths) {
+                    [ordered]@{
+                        Failed = $fail
+                    }
+                }
+            }
+        )
+    } 
+
     Add-PodeWebPage -Name 'Apt Manual Installs' -Icon 'Settings' -Group 'Package' -ScriptBlock {
         New-PodeWebCard -Content @(
             New-PodeWebTable -Name 'Apt Manual Installs' -ScriptBlock {
@@ -146,11 +171,32 @@ Start-PodeServer {
 
     Add-PodeWebPage -Name 'Chat with CodeLama' -Icon 'Settings' -Group 'AI' -ScriptBlock {
         New-PodeWebCard -Content @(
-            New-PodeWebForm -Name 'AI' -Method 'Get'  -ScriptBlock {
-                $message = $WebEvent.Data['Message']
+            New-PodeWebTextbox -Name 'Message' -Multiline -NoForm -Size 10 -Width 70
+            New-PodeWebLine
+            New-PodeWebButton -Name 'Send' | 
+            Register-PodeWebEvent -Type Click -ArgumentList $Textbox -ScriptBlock {
+            }
+        )
+    }
+
+    Add-PodeWebPage -Name 'Form Test' -Icon 'Settings' -Group 'Testing' -ScriptBlock {
+        New-PodeWebCard -Content @(
+            New-PodeWebForm -Name 'Example' -ScriptBlock {
+                    $WebEvent.Data | Out-Default
             } -Content @(
-                New-PodeWebTextbox -Name 'Message' -Multiline
-            )  
+                New-PodeWebTextbox -Name 'Name' -AutoComplete {
+                    return @('billy', 'bobby', 'alice', 'john', 'sarah', 'matt', 'zack', 'henry')
+                }
+                New-PodeWebTextbox -Name 'Password' -Type Password -PrependIcon Lock
+                New-PodeWebTextbox -Name 'Date' -Type Date
+                New-PodeWebTextbox -Name 'Time' -Type Time
+                New-PodeWebDateTime -Name 'DateTime' -NoLabels
+                New-PodeWebCredential -Name 'Credentials' -NoLabels
+                New-PodeWebCheckbox -Name 'Checkboxes' -Options @('Terms', 'Privacy') -AsSwitch
+                New-PodeWebRadio -Name 'Radios' -Options @('S', 'M', 'L')
+                New-PodeWebSelect -Name 'Role' -Options @('User', 'Admin', 'Operations') -Multiple
+                New-PodeWebRange -Name 'Cores' -Value 30 -ShowValue
+            )
         )
     }
 }
