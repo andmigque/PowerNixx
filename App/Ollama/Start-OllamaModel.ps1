@@ -1,33 +1,38 @@
 <#
-Run an Ollama model
+.SYNOPSIS
+  Starts an Ollama model shell using a specified model name.
 
-Usage:
+.DESCRIPTION
+  This function starts an Ollama model shell by executing the 'ollama run $ModelName' command.
+  It includes error handling to manage exceptions that may occur during execution. 
 
-Start-OllamaModel -ModelName "llama3.2" -Prompt "Write a story about a cat"
+.PARAMETER ModelName
+  The name of the Ollama model to start. Must be provided as input.
 
-Flags:
--Format: Response format (e.g. json)
--Insecure: Use an insecure registry
--KeepAlive: Duration to keep a model loaded (e.g. 5m)
--Nowordwrap: Don't wrap words to the next line automatically
--Verbose: Show timings for response
+.EXAMPLE
+  Start-OllamaModelShell -ModelName 'phi4power'
 
-Environment Variables:
-OLLAMA_HOST: IP Address for the ollama server (default 127.0.0.1:11434)
-OLLAMA_NOHISTORY: Do not preserve readline history
+.NOTES
+  This script requires PowerShell Core or higher due to potential cross-platform requirements.
 #>
 
 function Start-OllamaModel {
-
     [CmdletBinding()]
     param(
-        [string]$ModelName
+        [Parameter(Mandatory=$true)]
+        [string]$ModelName 
     )
 
     try {
-        # Execute the Ollama run command with the specified flags
-        (zsh -c "ollama run $ModelName" --keepalive "120m")
-    } catch {
-        Write-Error $_
+        # Construct the command string using the model name provided in $ModelName
+        $command = "ollama run $ModelName"
+        <# Invoke-Expression is used with the constructed command string to execute shell commands from within PowerShell. #>
+        Invoke-Expression -Command $command
+        
+        Write-Verbose "Successfully started: ollama run $ModelName"
+    }
+    catch {
+        <# Catch exceptions and provide meaningful error messages using Write-Error. #>
+        Write-Error "Failed to start Ollama model. Error: $_.Exception.Message"
     }
 }
