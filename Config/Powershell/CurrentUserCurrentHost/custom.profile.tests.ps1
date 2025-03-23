@@ -15,7 +15,7 @@ Describe 'Microsoft.PowerShell_profile' {
             . $PSCommandPath.Replace('.Tests.ps1', '.ps1')
 
             # Assert the PATH environment variable is initialized correctly
-            $env:PATH.Split(':') | Should -Contain '/opt/microsoft/powershell/7-lts'
+            $env:PATH.Split(':') | Should -Contain '/opt/microsoft/powershell/7'
         }
 
         It 'Should add Homebrew paths if brew is installed' {

@@ -169,8 +169,8 @@ Start-PodeServer {
         )
     }
 
-    Add-PodeWebPage -Name 'Chat' -Icon 'Settings' -Group 'AI' -ScriptBlock {    
-        New-PodeWebIFrame -CssStyle @{ Color = 'Yellow' }  -Url 'http://localhost:8080'
+    Add-PodeWebPage -NoTitle -Name 'Chat' -Icon 'Settings' -Group 'AI' -ScriptBlock {    
+        New-PodeWebIFrame -CssStyle @{ Height = '70rem' }  -Url 'http://localhost:8080'
     }
 
     Add-PodeWebPage -Name 'Form Test' -Icon 'Settings' -Group 'Testing' -ScriptBlock {
@@ -194,7 +194,6 @@ Start-PodeServer {
         )
     }
 
-    
     Add-PodeWebPage -Name 'Log Files' -Icon 'Settings' -Group 'Logs' -ScriptBlock {
         $logfile = $WebEvent.Query['logfile']
 

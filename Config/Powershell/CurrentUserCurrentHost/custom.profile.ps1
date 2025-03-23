@@ -8,7 +8,7 @@ Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'
 if ($IsLinux) {
     # Initialize PATH environment variable
     $env:PATH = ""
-    $env:PATH = "/opt/microsoft/powershell/7-lts"
+    $env:PATH = "/opt/microsoft/powershell/7"
     
     # Add Homebrew paths if brew is installed
     if(Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {

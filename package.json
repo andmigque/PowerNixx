@@ -4,8 +4,8 @@
   "description": "Intelligent Compliance for Universal Hardening",
   "license": "MIT",
   "scripts": {
-    "build": "psake",
-    "test": "invoke-pester ./tests/*.ps1",
+    "build": "pwsh -Command ./Config.ps1; pwsh -Command Invoke-Psake",
+    "test": "pwsh -Command ./Test.ps1",
     "start": "pwsh -Command ./Server.ps1",
     "install": "pwsh -Command ./Install.ps1",
     "config": "pwsh -Command ./Config.ps1"

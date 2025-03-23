@@ -1,5 +1,7 @@
 # Enable strict mode for better error handling
 Set-StrictMode -Version 3.0
+# Set Style to Ansi
+$PSStyle.OutputRendering = 'Ansi'
 # Disable PowerShell telemetry
 Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'	
 Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
@@ -13,28 +15,20 @@ if(Get-Module -Name PSReadLine -ListAvailable) {
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
 
-#Import-Module PSScriptAnalyzer
-if(Get-Module -Name Pester -ListAvailable) {
-    Import-Module Pester
-}
-
-if(Get-Module -Name Pode -ListAvailable) {
-    Import-Module Pode
-}
-
-if(Get-Module -Name Pode.Web -ListAvailable) {
-    Import-Module Pode.Web
-}
-
 # Check if running on Linux
 if ($IsLinux) {
     # Initialize PATH environment variable
     $env:PATH = ""
-    $env:PATH = "/opt/microsoft/powershell/7-lts"
+    $env:PATH = "/opt/microsoft/powershell/7"
     
     # Add Homebrew paths if brew is installed
     if(Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {
         $env:PATH = "$($env:PATH):/home/linuxbrew/.linuxbrew/sbin:/home/linuxbrew/.linuxbrew/bin"
+    }
+
+    # If Llama Cpp
+    if(Test-Path "$env:HOME/Develop/llama.cpp/build/bin") {
+	$env:PATH = "$($env:PATH):$env:HOME/Develop/llama.cpp/build/bin"
     }
 
     # Add common binary paths
@@ -46,12 +40,14 @@ if ($IsLinux) {
     }
 }
 
+#Invoke-Expression (&starship init powershell)
+
 if(Test-Path "$($env:HOME)/.local/bin/oh-my-posh"){
     $env:PATH = "$($env:PATH):/$($env:HOME)/.local/bin"
+    #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/velvet.omp.json" | Invoke-Expression
     oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
 }
 
-# Import PowerNixx Functions
 Get-ChildItem -Path "$env:HOME/Develop/PowerNixx/App" -File -Recurse | 
-    Where-Object { $_.Extension -eq ".ps1" -and -not ($_.Name -like "*.Tests.ps1") } | 
-    ForEach-Object { . $_.FullName }
+Where-Object { $_.Extension -eq ".ps1" -and -not ($_.Name -like "*.Tests.ps1") } | 
+ForEach-Object { . $_.FullName }
