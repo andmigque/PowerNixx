@@ -21,9 +21,9 @@ Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
 }
 
 Start-PodeServer {
-    Add-PodeEndpoint -Address localhost -Port 8080 -Protocol Http
+    Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Http
 
-    Use-PodeWebTemplates -Title 'Service' -Theme Terminal
+    Use-PodeWebTemplates -Title 'Service' -Theme Dark
 
     $PodeLogger = New-PodeLoggingMethod -Terminal 
     $PodeLogger | Enable-PodeErrorLogging -Levels Error, Informational, Verbose, Warning
@@ -36,7 +36,7 @@ Start-PodeServer {
         return $UnixLines.Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
     }
 
-    $InxiOutput = (inxi)
+    $InxiOutput = (inxi) | ConvertTo-Json
     $Hostname = (hostname)
     $Whoami = (whoami)
 
@@ -169,14 +169,8 @@ Start-PodeServer {
         )
     }
 
-    Add-PodeWebPage -Name 'Chat with CodeLama' -Icon 'Settings' -Group 'AI' -ScriptBlock {
-        New-PodeWebCard -Content @(
-            New-PodeWebTextbox -Name 'Message' -Multiline -NoForm -Size 10 -Width 70
-            New-PodeWebLine
-            New-PodeWebButton -Name 'Send' | 
-            Register-PodeWebEvent -Type Click -ArgumentList $Textbox -ScriptBlock {
-            }
-        )
+    Add-PodeWebPage -Name 'Chat' -Icon 'Settings' -Group 'AI' -ScriptBlock {    
+        New-PodeWebIFrame -CssStyle @{ Color = 'Yellow' }  -Url 'http://localhost:8080'
     }
 
     Add-PodeWebPage -Name 'Form Test' -Icon 'Settings' -Group 'Testing' -ScriptBlock {
@@ -198,5 +192,34 @@ Start-PodeServer {
                 New-PodeWebRange -Name 'Cores' -Value 30 -ShowValue
             )
         )
+    }
+
+    
+    Add-PodeWebPage -Name 'Log Files' -Icon 'Settings' -Group 'Logs' -ScriptBlock {
+        $logfile = $WebEvent.Query['logfile']
+
+        if([string]::IsNullOrWhiteSpace($logfile)){
+            New-PodeWebCard -Content @(
+                New-PodeWebTable -Name 'Log Files' -ScriptBlock {
+                    [LogFileManager]::AddAll()
+                    $VarLogs = [LogFileManager]::GetAll()
+                    foreach($Log in $VarLogs) {
+                        [ordered]@{
+                            Log = New-PodeWebLink -Source "/groups/Logs/pages/Log_Files?logfile=$($Log)" -Value $Log
+                        }
+                    }
+                }
+            )
+        } else {
+            $log = (Get-Content -Path "$($logfile)" -Encoding utf8) | ConvertTo-Json
+            
+            New-PodeWebCard -Name "Log File View" -Content @(
+                $log | ConvertFrom-Json | ForEach-Object {
+                    New-PodeWebText -Value $_
+                    New-PodeWebLine
+                }
+            )
+        }
+        
     }
 }
