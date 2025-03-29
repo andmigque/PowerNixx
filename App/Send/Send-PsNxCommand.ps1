@@ -51,6 +51,7 @@ function Send-PsNxCommand {
         # Write your text
         $writer.WriteLine($Command)
 
+        Invoke-Expression  -Command $Command
         # Flush the writer to ensure data is sent immediately
         $writer.Flush()
     }
