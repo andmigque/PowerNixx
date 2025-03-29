@@ -9,7 +9,6 @@ Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
     }
 }
 
-
 @{
     Web = @{
         Static = @{
@@ -20,10 +19,15 @@ Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
     }
 }
 
-Start-PodeServer {
+Start-PodeServer -Threads 2 -EnablePool WebSockets {
     Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Http
 
-    Use-PodeWebTemplates -Title 'Service' -Theme Dark
+    Add-PodeStaticRoute -Path /assets -Source ./Assets
+    Add-PodeStaticRoute -Path /themes -Source ./Templates/Public/styles/themes
+    
+    Use-PodeWebTemplates -Title 'SeraBryx' -Theme Terminal -NoPageFilter
+    Import-PodeWebStylesheet -Url 'http://localhost:9090/themes/midnight.css'
+    Use-PodeWebPages -Path ./pages
 
     $PodeLogger = New-PodeLoggingMethod -Terminal 
     $PodeLogger | Enable-PodeErrorLogging -Levels Error, Informational, Verbose, Warning
@@ -36,16 +40,43 @@ Start-PodeServer {
         return $UnixLines.Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
     }
 
-    $InxiOutput = (inxi) | ConvertTo-Json
-    $Hostname = (hostname)
-    $Whoami = (whoami)
+    $OsVersion = [System.Environment]::OSVersion
+    $UserName = [System.Environment]::UserName
+    $UserDomainName = [System.Environment]::UserDomainName
 
-    Set-PodeWebHomePage -Layouts @(
-        New-PodeWebHero -Title "Welcome to PowerNixx" -Message "$($Whoami)@$($Hostname)" -Content @(
-            New-PodeWebText -Value "$($InxiOutput)" -InParagraph -Alignment Left
+    Set-PodeWebHomePage -DisplayName "$($UserName)@$($UserDomainName), $($OsVersion)" -Layouts @(
+        New-PodeWebGrid -CssClass @{'Font-Family' = 'Anta'} -Cells @(
+            New-PodeWebCell -Content @(
+                New-PodeWebImage -Id 'SeraBryxImage' -Source ./Assets/SeraBryxLite.svg
+            )
+            New-PodeWebCell -Content @(
+                
+                New-PodeWebChart -Name 'CPU' -Type bar -Height '10em' -AutoRefresh -RefreshInterval 1 -AsCard -ScriptBlock {
+                    $cpuFromProc = Get-CpuFromProc
+
+                    return @{
+                        TotalUsage  = $cpuFromProc.TotalUsage
+
+                    } | ConvertTo-PodeWebChartData -DatasetProperty TotalUsage -LabelProperty TotalUsage
+                }
+                # New-PodeWebChart -Name 'RAM' -Type 'bar' -Height '10em' -AutoRefresh -RefreshInterval 1 -AsCard -ScriptBlock {
+                #     return @{
+                #         RAM = Get-RamPercentage
+                #     } | ConvertTo-PodeWebChartData -DatasetProperty RAM -LabelProperty RAM
+                # }
+                # New-PodeWebText -Value "Os: $OsVersion" -InParagraph -Alignment Left
+                # New-PodeWebText -Value "Status: $(Get-CpuStatus)" -InParagraph -Alignment Left
+            )
+            New-PodeWebCell -Content @(
+                New-PodeWebCodeEditor -Language Html -Name 'Code Editor' -AsCard -Value '<p style="color:white;">well</p>' -Upload {
+                    $WebEvent.Data | Out-Default
+                }
+            )
         )
     )
 
+    
+    
     Add-PodeWebPage -Name 'Processes' -Icon 'Settings' -Group 'System' -ScriptBlock {
         New-PodeWebCard -Content @(
             New-PodeWebTable -Name 'Processes' -ScriptBlock {
@@ -53,8 +84,8 @@ Start-PodeServer {
                 $Processes = (Get-Process -IncludeUserName ) | `
                 Select-Object -Unique -Property Id, `
                 WorkingSet, ProcessName, UserName, `
-                @{Name="CommandLine";Expression={("$($_.CommandLine)".Length -le 100) `
-                ? "$($_.CommandLine)" : ("$($_.CommandLine)".Substring(0,99)) + "..." }}| `
+                @{Name="CommandLine";Expression={("$($_.CommandLine)".Length -le 50) `
+                ? "$($_.CommandLine)" : ("$($_.CommandLine)".Substring(0,50)) + "..." }}| `
                 Sort-Object -Descending WorkingSet -Top 30
                 
                 foreach ($Ps in ($Processes)) {
@@ -70,55 +101,6 @@ Start-PodeServer {
         )
     }
     
-    Add-PodeWebPage -Name 'Posture' -Icon 'Settings' -Group 'System' -ScriptBlock {
-        New-PodeWebCard -Content @(
-            New-PodeWebTable -Name 'Posture' -ScriptBlock {
-                
-                $SystemdAnalyzeSecurity = (systemd-analyze --json=short security)
-                $Services = $SystemdAnalyzeSecurity | ConvertFrom-Json
-
-                foreach($Srv in $Services) {
-                    [ordered]@{
-                        Service = $Srv.unit
-                        Exposure = $Srv.exposure
-                        Predicate = $Srv.predicate
-                        Happy = $Srv.happy
-                    }
-                }
-            }
-        )
-    }
-
-    Add-PodeWebPage -Name 'Service Paths' -Icon 'Settings' -Group 'System' -ScriptBlock {
-        New-PodeWebCard -Content  @(
-            New-PodeWebTable -Name 'Service Paths' -ScriptBlock {
-                $SystemdUnitPaths = (systemd-analyze unit-paths)
-
-                $ServicePaths = $SystemdUnitPaths.Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
-
-                foreach($UnixPath in $ServicePaths) {
-                    [ordered]@{
-                        Path = $UnixPath
-                    }
-                }
-            }
-        )
-    }
-
-    Add-PodeWebPage -Name 'Failed Units' -Icon 'Settings' -Group 'System' -ScriptBlock {
-        New-PodeWebCard -Content @(
-            New-PodeWebTable -Name 'Failed Units' -ScriptBlock {
-                $FailedUnitPaths = (systemctl status --failed)
-
-                foreach($fail in $FailedUnitPaths) {
-                    [ordered]@{
-                        Failed = $fail
-                    }
-                }
-            }
-        )
-    } 
-
     Add-PodeWebPage -Name 'Apt Manual Installs' -Icon 'Settings' -Group 'Package' -ScriptBlock {
         New-PodeWebCard -Content @(
             New-PodeWebTable -Name 'Apt Manual Installs' -ScriptBlock {
@@ -169,56 +151,25 @@ Start-PodeServer {
         )
     }
 
-    Add-PodeWebPage -NoTitle -Name 'Chat' -Icon 'Settings' -Group 'AI' -ScriptBlock {    
-        New-PodeWebIFrame -CssStyle @{ Height = '70rem' }  -Url 'http://localhost:8080'
-    }
 
-    Add-PodeWebPage -Name 'Form Test' -Icon 'Settings' -Group 'Testing' -ScriptBlock {
-        New-PodeWebCard -Content @(
-            New-PodeWebForm -Name 'Example' -ScriptBlock {
-                    $WebEvent.Data | Out-Default
-            } -Content @(
-                New-PodeWebTextbox -Name 'Name' -AutoComplete {
-                    return @('billy', 'bobby', 'alice', 'john', 'sarah', 'matt', 'zack', 'henry')
-                }
-                New-PodeWebTextbox -Name 'Password' -Type Password -PrependIcon Lock
-                New-PodeWebTextbox -Name 'Date' -Type Date
-                New-PodeWebTextbox -Name 'Time' -Type Time
-                New-PodeWebDateTime -Name 'DateTime' -NoLabels
-                New-PodeWebCredential -Name 'Credentials' -NoLabels
-                New-PodeWebCheckbox -Name 'Checkboxes' -Options @('Terms', 'Privacy') -AsSwitch
-                New-PodeWebRadio -Name 'Radios' -Options @('S', 'M', 'L')
-                New-PodeWebSelect -Name 'Role' -Options @('User', 'Admin', 'Operations') -Multiple
-                New-PodeWebRange -Name 'Cores' -Value 30 -ShowValue
-            )
-        )
-    }
-
-    Add-PodeWebPage -Name 'Log Files' -Icon 'Settings' -Group 'Logs' -ScriptBlock {
-        $logfile = $WebEvent.Query['logfile']
-
-        if([string]::IsNullOrWhiteSpace($logfile)){
-            New-PodeWebCard -Content @(
-                New-PodeWebTable -Name 'Log Files' -ScriptBlock {
-                    [LogFileManager]::AddAll()
-                    $VarLogs = [LogFileManager]::GetAll()
-                    foreach($Log in $VarLogs) {
-                        [ordered]@{
-                            Log = New-PodeWebLink -Source "/groups/Logs/pages/Log_Files?logfile=$($Log)" -Value $Log
-                        }
-                    }
-                }
-            )
-        } else {
-            $log = (Get-Content -Path "$($logfile)" -Encoding utf8) | ConvertTo-Json
-            
-            New-PodeWebCard -Name "Log File View" -Content @(
-                $log | ConvertFrom-Json | ForEach-Object {
-                    New-PodeWebText -Value $_
-                    New-PodeWebLine
-                }
-            )
-        }
-        
-    }
+        # Add-PodeWebPage -Name 'Form Test' -Icon 'Settings' -Group 'Testing' -ScriptBlock {
+    #     New-PodeWebCard -Content @(
+    #         New-PodeWebForm -Name 'Example' -ScriptBlock {
+    #                 $WebEvent.Data | Out-Default
+    #         } -Content @(
+    #             New-PodeWebTextbox -Name 'Name' -AutoComplete {
+    #                 return @('billy', 'bobby', 'alice', 'john', 'sarah', 'matt', 'zack', 'henry')
+    #             }
+    #             New-PodeWebTextbox -Name 'Password' -Type Password -PrependIcon Lock
+    #             New-PodeWebTextbox -Name 'Date' -Type Date
+    #             New-PodeWebTextbox -Name 'Time' -Type Time
+    #             New-PodeWebDateTime -Name 'DateTime' -NoLabels
+    #             New-PodeWebCredential -Name 'Credentials' -NoLabels
+    #             New-PodeWebCheckbox -Name 'Checkboxes' -Options @('Terms', 'Privacy') -AsSwitch
+    #             New-PodeWebRadio -Name 'Radios' -Options @('S', 'M', 'L')
+    #             New-PodeWebSelect -Name 'Role' -Options @('User', 'Admin', 'Operations') -Multiple
+    #             New-PodeWebRange -Name 'Cores' -Value 30 -ShowValue
+    #         )
+    #     )
+    # }
 }

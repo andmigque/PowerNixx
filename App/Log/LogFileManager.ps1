@@ -36,7 +36,12 @@ class LogFileManager {
             # Get all directories excluding 'timeshift' directories
             Get-ChildItem -Path '/var/log' -File -Recurse -Force |
             ForEach-Object {
-                [LogFileManager]::Add("$($_.FullName)")
+                try {
+                    [LogFileManager]::Add("$($_.FullName)")
+                } catch {
+                    Write-Error $_
+                }
+                
             }
         }
     }
