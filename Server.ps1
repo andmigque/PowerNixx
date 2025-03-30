@@ -4,8 +4,8 @@ Import-Module Pode
 Import-Module Pode.Web
 
 Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
-    if(($_.Extension -eq ".ps1") -and -not ($_.FullName.Contains(".Tests.ps1"))) {
-            Import-Module $_.FullName -Global -Force
+    if (($_.Extension -eq ".ps1") -and -not ($_.FullName.Contains(".Tests.ps1"))) {
+        Import-Module $_.FullName -Global -Force
     }
 }
 
@@ -21,7 +21,7 @@ Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
 
 
 
-Start-PodeServer -Threads 2 -EnablePool WebSockets {
+Start-PodeServer -Threads 4 -EnablePool WebSockets {
     Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Http
 
     Add-PodeStaticRoute -Path /assets -Source ./Assets
@@ -35,11 +35,11 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
     $PodeLogger | Enable-PodeErrorLogging -Levels Error, Informational, Verbose, Warning
     $PodeLogger | Enable-PodeRequestLogging
 
-    Function Split-LinesBySpace{
+    Function Split-LinesBySpace {
         Param(
             [String]$UnixLines
         )
-        return $UnixLines.Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
+        return $UnixLines.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
     }
 
     $OsVersion = [System.Environment]::OSVersion
@@ -47,13 +47,13 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
     $UserDomainName = [System.Environment]::UserDomainName
 
     Set-PodeWebHomePage -NoTitle -DisplayName "$($UserName)@$($UserDomainName), $($OsVersion)" -Layouts @(
-        New-PodeWebGrid -CssClass @{'Font-Family' = 'Anta'} -Cells @(
+        New-PodeWebGrid -CssStyle @{'Font-Family' = 'Anta' } -Cells @(
             New-PodeWebCell -Content @(                
-            New-PodeWebChart -Name 'CPU' -Type bar -Height '10em' -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
-                $cpuFromProc = Get-CpuFromProc
+                New-PodeWebChart -Name 'CPU' -Type bar -Height '10em' -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
+                    $cpuFromProc = Get-CpuFromProc
 
                     return @{
-                        CPU  = $cpuFromProc.TotalUsage
+                        CPU = $cpuFromProc.TotalUsage
 
                     } | ConvertTo-PodeWebChartData -DatasetProperty CPU -LabelProperty CPU
                 }
@@ -68,30 +68,40 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                     } | ConvertTo-PodeWebChartData -DatasetProperty Memory -LabelProperty Memory
                 }
             )
+        )
+        New-PodeWebGrid -CssStyle @{'Font-Family' = 'Anta' } -Cells @(
             New-PodeWebCell -Content @(
-                New-PodeWebCodeEditor -Language Powershell -Name 'Code Editor' -Theme vs -Upload {
-                    $WebEvent.Data | Out-Default
+                New-PodeWebTable -Name 'NetworkStats' -AsCard -AutoRefresh -RefreshInterval 3 -ScriptBlock {
+                    $stats = Get-Network
+                    @(
+                        [ordered]@{
+                            Interface = $stats.Interface
+                            Received  = $stats.RxBytes
+                            Sent      = $stats.TxBytes
+                            RXPackets = $stats.RxPackets
+                            TXPackets = $stats.TxPackets
+                            RXDrops   = $stats.RxDrops
+                            TXDrops   = $stats.TxDrops
+                        }
+                    )
                 }
+                # New-PodeWebCodeEditor -Language Powershell -Name 'Code Editor' -Theme hc-black -Upload {
+                #     $WebEvent.Data | Out-Default
+                # }
             )
         )
     )
     
-    
-
-    
-
-
-
     Add-PodeWebPage -Name 'PowerShellGet' -Icon 'Settings' -Group 'Package' -ScriptBlock {
         New-PodeWebCard -Content @(
-            New-PodeWebTable -Name 'PowerShellGet' -ScriptBlock{
+            New-PodeWebTable -Name 'PowerShellGet' -ScriptBlock {
                 $Packages = Get-Package -AllVersions
 
-                foreach($Package in $Packages) {
+                foreach ($Package in $Packages) {
                     [ordered]@{
-                        Name = $Package.Name
-                        Version = $Package.Version
-                        Source = $Package.Source
+                        Name     = $Package.Name
+                        Version  = $Package.Version
+                        Source   = $Package.Source
                         Provider = $Package.Provider
 
                     }
@@ -99,26 +109,4 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
             }
         )
     }
-
-
-        # Add-PodeWebPage -Name 'Form Test' -Icon 'Settings' -Group 'Testing' -ScriptBlock {
-    #     New-PodeWebCard -Content @(
-    #         New-PodeWebForm -Name 'Example' -ScriptBlock {
-    #                 $WebEvent.Data | Out-Default
-    #         } -Content @(
-    #             New-PodeWebTextbox -Name 'Name' -AutoComplete {
-    #                 return @('billy', 'bobby', 'alice', 'john', 'sarah', 'matt', 'zack', 'henry')
-    #             }
-    #             New-PodeWebTextbox -Name 'Password' -Type Password -PrependIcon Lock
-    #             New-PodeWebTextbox -Name 'Date' -Type Date
-    #             New-PodeWebTextbox -Name 'Time' -Type Time
-    #             New-PodeWebDateTime -Name 'DateTime' -NoLabels
-    #             New-PodeWebCredential -Name 'Credentials' -NoLabels
-    #             New-PodeWebCheckbox -Name 'Checkboxes' -Options @('Terms', 'Privacy') -AsSwitch
-    #             New-PodeWebRadio -Name 'Radios' -Options @('S', 'M', 'L')
-    #             New-PodeWebSelect -Name 'Role' -Options @('User', 'Admin', 'Operations') -Multiple
-    #             New-PodeWebRange -Name 'Cores' -Value 30 -ShowValue
-    #         )
-    #     )
-    # }
 }
