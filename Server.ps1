@@ -21,7 +21,7 @@ Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
 
 
 
-Start-PodeServer -Threads 4 -EnablePool WebSockets {
+Start-PodeServer -Threads 1 -EnablePool WebSockets {
     Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Http
 
     Add-PodeStaticRoute -Path /assets -Source ./Assets
