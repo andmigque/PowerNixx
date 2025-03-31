@@ -1,5 +1,7 @@
 BeforeAll {
-    . $PSScriptRoot/Get-Memory.ps1
+    $ModuleRoot = Split-Path $PSScriptRoot -Parent
+    Import-Module $ModuleRoot/PowerNixx.psd1 -Force
+
     
     # Mock jc command result
     Mock Invoke-Expression {

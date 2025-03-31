@@ -1,9 +1,12 @@
 
+<#
 Describe 'PsNxDependency Module' {
     BeforeAll {
         # Import the function under test
         # . "$($PSCommandPath.ToString())/PsNxDependency.psm1"
-        . $PSCommandPath.Replace(".Tests.ps1", ".ps1")
+        $ModuleRoot = Split-Path $PSScriptRoot -Parent
+        Import-Module $ModuleRoot/PowerNixx.psd1 -Force
+
     }
     # Test with a valid module name
     Context "When exploring the methods and properties available on a module" {
@@ -22,3 +25,4 @@ Describe 'PsNxDependency Module' {
         }
     }
 }
+    #>

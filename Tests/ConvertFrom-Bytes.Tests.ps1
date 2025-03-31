@@ -1,5 +1,6 @@
 BeforeAll {
-    . $PSScriptRoot/ConvertFrom-Bytes.ps1
+    $ModuleRoot = Split-Path $PSScriptRoot -Parent
+    Import-Module $ModuleRoot/PowerNixx.psd1 -Force
 }
 
 Describe 'ConvertFrom-Bytes' {

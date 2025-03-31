@@ -90,13 +90,9 @@
     FunctionsToExport    = @(
         # Convert functions
         'ConvertFrom-Bytes',
+        'ConvertTo-Percent',
         'ConvertTo-StringArray',
         'ConvertTo-Tar',
-        
-        # Fetch functions
-        'Fetch-Homebrew',
-        'Fetch-PoshThemes',
-        
         # Get functions
         'Get-Bios',
         'Get-Branch',

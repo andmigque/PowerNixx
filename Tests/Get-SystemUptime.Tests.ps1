@@ -1,6 +1,7 @@
 # Import the function script
 BeforeAll {
-    . $PSScriptRoot/Get-SystemUptime.ps1
+    $ModuleRoot = Split-Path $PSScriptRoot -Parent
+    Import-Module $ModuleRoot/PowerNixx.psd1 -Force
 }
 
 

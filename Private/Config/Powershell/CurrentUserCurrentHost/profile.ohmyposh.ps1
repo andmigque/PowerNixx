@@ -7,7 +7,9 @@ Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'
 Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
 Set-Variable -Name 'ShowFastFetch' -Value 'false'
 
-if(Get-Module -Name PSReadLine -ListAvailable) {
+Import-Module $PowerNixx/PowerNixx.psm1 -Force
+
+if (Get-Module -Name PSReadLine -ListAvailable) {
     Import-Module PSReadLine
 
     Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
@@ -22,13 +24,13 @@ if ($IsLinux) {
     $env:PATH = "/opt/microsoft/powershell/7"
     
     # Add Homebrew paths if brew is installed
-    if(Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {
+    if (Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {
         $env:PATH = "$($env:PATH):/home/linuxbrew/.linuxbrew/sbin:/home/linuxbrew/.linuxbrew/bin"
     }
 
     # If Llama Cpp
-    if(Test-Path "$env:HOME/Develop/llama.cpp/build/bin") {
-	$env:PATH = "$($env:PATH):$env:HOME/Develop/llama.cpp/build/bin"
+    if (Test-Path "$env:HOME/Develop/llama.cpp/build/bin") {
+        $env:PATH = "$($env:PATH):$env:HOME/Develop/llama.cpp/build/bin"
     }
 
     # Add common binary paths
@@ -42,12 +44,8 @@ if ($IsLinux) {
 
 #Invoke-Expression (&starship init powershell)
 
-if(Test-Path "$($env:HOME)/.local/bin/oh-my-posh"){
+if (Test-Path "$($env:HOME)/.local/bin/oh-my-posh") {
     $env:PATH = "$($env:PATH):/$($env:HOME)/.local/bin"
     #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/velvet.omp.json" | Invoke-Expression
     oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
 }
-
-Get-ChildItem -Path "$env:HOME/Develop/PowerNixx/App" -File -Recurse | 
-Where-Object { $_.Extension -eq ".ps1" -and -not ($_.Name -like "*.Tests.ps1") } | 
-ForEach-Object { . $_.FullName }

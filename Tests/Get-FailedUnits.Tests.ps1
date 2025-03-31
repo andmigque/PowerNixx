@@ -1,7 +1,9 @@
 Describe 'Get-FailedUnits' {
     BeforeAll {
         # Import the function under test
-        . $PSCommandPath.Replace('.Tests.ps1', '.ps1')
+        $ModuleRoot = Split-Path $PSScriptRoot -Parent
+        Import-Module $ModuleRoot/PowerNixx.psd1 -Force
+
     }
 
     Context 'When there are failed systemd units' {
@@ -10,17 +12,17 @@ Describe 'Get-FailedUnits' {
             # Mock systemctl to return JSON with a non-active unit
             Mock -CommandName Get-FailedUnits -MockWith {
                 $Unit1 = @{
-                    Unit = 'proc-sys-fs-binfmt_misc.automount'
-                    Load = 'loaded'
-                    Active = 'failed'
-                    Sub = 'running'
+                    Unit        = 'proc-sys-fs-binfmt_misc.automount'
+                    Load        = 'loaded'
+                    Active      = 'failed'
+                    Sub         = 'running'
                     Description = 'Arbitrary Executable File Formats File System Automount Point'
                 }
                 $Unit2 = @{
-                    Unit = 'failed.service'
-                    Load = 'loaded'
-                    Active = 'inactive'
-                    Sub = 'running'
+                    Unit        = 'failed.service'
+                    Load        = 'loaded'
+                    Active      = 'inactive'
+                    Sub         = 'running'
                     Description = 'An inactive service'
                 }
 
@@ -45,17 +47,17 @@ Describe 'Get-FailedUnits' {
             # Mock systemctl to return JSON with a non-active unit
             Mock -CommandName Get-FailedUnits -MockWith {
                 $Unit1 = @{
-                    Unit = 'proc-sys-fs-binfmt_misc.automount'
-                    Load = 'loaded'
-                    Active = 'active'
-                    Sub = 'running'
+                    Unit        = 'proc-sys-fs-binfmt_misc.automount'
+                    Load        = 'loaded'
+                    Active      = 'active'
+                    Sub         = 'running'
                     Description = 'Arbitrary Executable File Formats File System Automount Point'
                 }
                 $Unit2 = @{
-                    Unit = 'failed.service'
-                    Load = 'loaded'
-                    Active = 'active'
-                    Sub = 'running'
+                    Unit        = 'failed.service'
+                    Load        = 'loaded'
+                    Active      = 'active'
+                    Sub         = 'running'
                     Description = 'An inactive service'
                 }
 
