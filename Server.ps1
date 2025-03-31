@@ -1,37 +1,29 @@
 Set-StrictMode -Version 3.0
 
+# Import modules in correct order
+Import-Module ./PowerNixx.psd1 -Force
 Import-Module Pode
 Import-Module Pode.Web
 
-Get-ChildItem -Path ./App -File -Recurse | ForEach-Object {
-    if (($_.Extension -eq '.ps1') -and -not ($_.FullName.Contains('.Tests.ps1'))) {
-        Import-Module $_.FullName -Global -Force
-    }
-}
-
-@{
-    Web = @{
-        Static = @{
-            Cache = @{
-                Enable = $true
-            }
+# Global config
+$Web = @{
+    Static = @{
+        Cache = @{
+            Enable = $true
         }
     }
 }
 
-
-
-Start-PodeServer -Threads 1 -EnablePool WebSockets {
+Start-PodeServer -Threads 2 -EnablePool WebSockets {
+    # Remove Import-Module here since we've already loaded it
     Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Http
-
-    Add-PodeStaticRoute -Path /assets -Source ./Assets
+    Add-PodeStaticRoute -Path /assets -Source ./Public/Assets
     
-    Use-PodeWebTemplates -Title 'SeraBryx' -Theme Dark -NoPageFilter -HideSidebar
-    Import-PodeWebStylesheet -Url '/midnight.css'
-    
+    Use-PodeWebTemplates -Title 'PowerNixx' -Theme Dark -NoPageFilter -HideSidebar
+    Import-PodeWebStylesheet -Url '/assets/midnight.css'
     Use-PodeWebPages -Path ./pages
 
-    Enable-PodeOpenApi -Title 'SeraBryx API' -Version 0.0.1
+    Enable-PodeOpenApi -Title 'PowerNixx API' -Version 0.0.1
 
     $PodeLogger = New-PodeLoggingMethod -Terminal 
     $PodeLogger | Enable-PodeErrorLogging -Levels Error, Informational, Verbose, Warning
@@ -107,7 +99,7 @@ Start-PodeServer -Threads 1 -EnablePool WebSockets {
         # )
     
         # New-PodeWebGrid -CssStyle @{'Font-Family' = 'Anta' } -Cells @(
-        #     New-PodeWebCell -Content @(                
+        #     New-PodeWebCell -Content @(
         #         New-PodeWebChart -Name 'CPU' -Type bar -Height '10em' -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
         #             $cpuFromProc = Get-CpuFromProc
 

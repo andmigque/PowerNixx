@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-
-# Installs Homebrew using the official install script.
-# Homebrew is a package manager for macOS (and Linux).
-install_homebrew(){
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-}
-
-install_homebrew

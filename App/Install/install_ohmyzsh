@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-
-# This function installs Oh My Zsh by downloading and executing the official installation script
-# from the Oh My Zsh GitHub repository. It uses 'curl' to fetch the script and 'sh' to execute it.
-install_ohmyzsh(){
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-}
-
-install_ohmyzsh
