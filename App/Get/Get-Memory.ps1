@@ -1,26 +1,52 @@
 function Get-Memory {
-	# Specify the file path
-	$filePath = "/proc/meminfo"
+	[CmdletBinding()]
+	param()
 
-	# Read each line in the file
-	$meminfoLines = Get-Content -Path $filePath
+	try {
+		# Get memory info using jc parser
+		$meminfo = Invoke-Expression 'jc /proc/meminfo' | ConvertFrom-Json
 
-	# Initialize variables for memory statistics
-	$totalMemoryGB = 0
-	$freeMemoryGB = 0
+		# Convert raw values to bytes
+		$total = ConvertFrom-Bytes -bytes $meminfo.MemTotal
+		$available = ConvertFrom-Bytes -bytes $meminfo.MemAvailable
+		$buffers = ConvertFrom-Bytes -bytes $meminfo.Buffers
+		$cached = ConvertFrom-Bytes -bytes $meminfo.Cached
 
-	# Parse each line in the file to extract memory information
-	foreach ($line in $meminfoLines) {
-    	if ($line -match '^MemTotal:\s*(\d+)\skB') {
-        	$totalMemoryKB = [int]$matches[1]
-        	$totalMemoryGB = $totalMemoryKB / 1024 / 1024
-    }
-    elseif ($line -match '^MemFree:\s*(\d+)\skB') {
-        $freeMemoryKB = [int]$matches[1]
-        $freeMemoryGB = $freeMemoryKB / 1024 / 1024
-    }
+		# Calculate used memory
+		$used = ConvertFrom-Bytes -bytes ($meminfo.MemTotal - $meminfo.MemFree - $meminfo.Buffers - $meminfo.Cached)
+
+		# Calculate percentages
+		$usedPercent = ConvertTo-Percent -numerator $used.OriginalBytes -denominator $total.OriginalBytes
+		$availablePercent = ConvertTo-Percent -numerator $available.OriginalBytes -denominator $total.OriginalBytes
+		$buffersPercent = ConvertTo-Percent -numerator $buffers.OriginalBytes -denominator $total.OriginalBytes
+		$cachedPercent = ConvertTo-Percent -numerator $cached.OriginalBytes -denominator $total.OriginalBytes
+
+		# Return memory statistics object
+		[PSCustomObject]@{
+			# Byte values with units
+			Total            = $total
+			Used             = $used
+			Available        = $available
+			Buffers          = $buffers
+			Cached           = $cached
+
+			# Percentage calculations
+			UsedPercent      = $usedPercent.Percent
+			AvailablePercent = $availablePercent.Percent
+			BuffersPercent   = $buffersPercent.Percent
+			CachedPercent    = $cachedPercent.Percent
+		}
+	}
+	catch {
+		Write-Error $_
+		return [PSCustomObject]@{
+			Error = $_.Exception.Message
+		}
+	}
 }
-	$percentMemory = ($freeMemoryGB / $totalMemoryGB)
-	# Display the results
-	return [math]::round($percentMemory * 100, 2)
+
+function Format-Memory {
+	param()
+
+	Get-Memory | Format-Table -AutoSize -RepeatHeader 
 }
