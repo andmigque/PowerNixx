@@ -4,11 +4,10 @@
   "description": "Intelligent Compliance for Universal Hardening",
   "license": "MIT",
   "scripts": {
-    "build": "pwsh -Command ./Config.ps1; pwsh -Command Invoke-Psake",
-    "test": "pwsh -Command ./Test.ps1",
-    "start": "pwsh -Command ./Server.ps1",
-    "install": "pwsh -Command ./Install.ps1",
-    "config": "pwsh -Command ./Config.ps1"
+    "build": "Import-Module ../PowerNixx/PowerNixx.psm1; Invoke-psake",
+    "test": "Import-Module ../PowerNixx/PowerNixx.psm1;Invoke-Pester ./Tests -CI",
+    "start": "Import-Module ../PowerNixx/PowerNixx.psm1;pwsh -c ./Server.ps1",
+    "install": "Import-Module ../PowerNixx/PowerNixx.psm1;& ./Config.ps1"
   },
   "main": "pwsh -Command ./Server.ps1",
   "name": "PowerNixx"

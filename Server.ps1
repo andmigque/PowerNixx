@@ -14,6 +14,8 @@ $Web = @{
     }
 }
 
+$CONTENT_JSON = 'application/json'
+
 Start-PodeServer -Threads 2 -EnablePool WebSockets {
     # Remove Import-Module here since we've already loaded it
     Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Http
@@ -47,100 +49,52 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
     }
 
     Add-PodeRoute -Method Get -Path '/llm/cpuinfo' -ScriptBlock {
-        $unixCommand = (Invoke-Expression 'jc /proc/cpuinfo') | ConvertFrom-Json | ConvertTo-Json
-        Write-PodeTextResponse -ContentType 'text/plain' -Value $unixCommand
+        $unixCommand = Get-CpuStats | Select-Object -Property UserPercent, SystemPercent, UsagePercent
+        Write-PodeTextResponse -ContentType $CONTENT_JSON -Value $unixCommand
         
     }
     
     Add-PodeRoute -Method Get -Path '/llm/diskstats' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/diskstats') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }
 
     Add-PodeRoute -Method Get -Path '/llm/meminfo' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/meminfo') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }   
 
     Add-PodeRoute -Method Get -Path '/llm/crypto' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/crypto') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }
 
     Add-PodeRoute -Method Get -Path '/llm/stats' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/stat') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }
 
     Add-PodeRoute -Method Get -Path '/llm/uptime' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/uptime') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }
 
     Add-PodeRoute -Method Get -Path '/llm/ioports' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/ioports') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }
 
     Add-PodeRoute -Method Get -Path '/llm/version' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/version') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }
 
     Add-PodeRoute -Method Get -Path '/llm/devices' -ScriptBlock {
         $unixCommand = (Invoke-Expression 'jc /proc/devices') | Out-String
-        Write-PodeJsonResponse -ContentType 'applicatoin/json' -Value $unixCommand
+        Write-PodeJsonResponse -ContentType $CONTENT_JSON -Value $unixCommand
     }
 
     Set-PodeWebHomePage -NoTitle -DisplayName "$($UserName)@$($UserDomainName), $($OsVersion)" -Layouts @(
-        # New-PodeWebGrid -Content @(
-        #     New-PodeWebCell -Content @(       
-        #     )
-        # )
-    
-        # New-PodeWebGrid -CssStyle @{'Font-Family' = 'Anta' } -Cells @(
-        #     New-PodeWebCell -Content @(
-        #         New-PodeWebChart -Name 'CPU' -Type bar -Height '10em' -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
-        #             $cpuFromProc = Get-CpuFromProc
-
-        #             return @{
-        #                 CPU = $cpuFromProc.TotalUsage
-
-        #             } | ConvertTo-PodeWebChartData -DatasetProperty CPU -LabelProperty CPU
-        #         }
-
-        #     )
-        #     New-PodeWebCell -Content @(
-        #         New-PodeWebChart -Name 'RAM' -Type 'bar' -Height '10em' -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
-        #             $memoryFromProc = Get-Memory
-
-        #             return @{
-        #                 Memory = $memoryFromProc
-        #             } | ConvertTo-PodeWebChartData -DatasetProperty Memory -LabelProperty Memory
-        #         }
-        #     )
-        # )
-        # New-PodeWebGrid -CssStyle @{'Font-Family' = 'Anta' } -Cells @(
-        #     New-PodeWebCell -Content @(
-        #         New-PodeWebTable -Name 'NetworkStats' -AsCard -AutoRefresh -RefreshInterval 3 -ScriptBlock {
-        #             $stats = Get-Network
-        #             @(
-        #                 [ordered]@{
-        #                     Interface = $stats.Interface
-        #                     Received  = $stats.RxBytes
-        #                     Sent      = $stats.TxBytes
-        #                     RXPackets = $stats.RxPackets
-        #                     TXPackets = $stats.TxPackets
-        #                     RXDrops   = $stats.RxDrops
-        #                     TXDrops   = $stats.TxDrops
-        #                 }
-        #             )
-        #         }
-        #         # New-PodeWebCodeEditor -Language Powershell -Name 'Code Editor' -Theme hc-black -Upload {
-        #         #     $WebEvent.Data | Out-Default
-        #         # }
-        #     )
-        # )
         New-PodeWebContainer -Content @(
             New-PodeWebChart -Name 'CPU Usage' -Height '30em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
                 $stats = Get-CpuStats
@@ -156,7 +110,7 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                     }
                 } | ConvertTo-PodeWebChartData -LabelProperty Core -DatasetProperty @('Usage', 'System', 'User', 'IO')
             }
-            New-PodeWebChart -Name 'Memory Usage' -Height '30em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
+            New-PodeWebChart -Name 'Memory Usage' -Colours '#3192d3' -Height '30em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
                 $memStats = Get-Memory
                 @(
                     @{
@@ -178,22 +132,6 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                 ) | ConvertTo-PodeWebChartData -LabelProperty Name -DatasetProperty Value
             }
         )
-        # New-PodeWebContainer -Content @(
-        #     New-PodeWebChart -Name 'Top Processes' -Height '15em' -Type Bar -AutoRefresh -RefreshInterval 3 -ScriptBlock {
-        #         (Get-Process) | 
-        #         Sort-Object  |
-        #         Select-Object -First 30 -Property @(
-        #             'CPU'
-        #             @{Name = 'ProcessName'; Expression = { ($_.ProcessName.Length -le 15) ?
-        #                     $_.ProcessName : ($_.ProcessName.Substring(0, 15)) + '...' }
-        #             }
-        #         ) | 
-        #         ConvertTo-PodeWebChartData -LabelProperty ProcessName -DatasetProperty @('CPU')
-        #     }
-        # )
-
-
-
     
         Add-PodeWebPage -Name 'PowerShellGet' -Icon 'Settings' -Group 'Package' -ScriptBlock {
             New-PodeWebCard -Content @(

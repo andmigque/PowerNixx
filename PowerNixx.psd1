@@ -64,10 +64,6 @@
         @{
             ModuleName    = 'Pester'
             ModuleVersion = '5.5.0'
-        },
-        @{
-            ModuleName    = 'PSScriptAnalyzer'
-            ModuleVersion = '1.21.0'
         }
     )
 
@@ -75,7 +71,7 @@
     # RequiredAssemblies = @()
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    # ScriptsToProcess = @()
+    ScriptsToProcess     = @('Public/LinuxWraps')
 
     # Type files (.ps1xml) to be loaded when importing this module
     # TypesToProcess = @()
