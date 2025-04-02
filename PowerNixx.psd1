@@ -89,6 +89,8 @@
         'ConvertTo-Percent',
         'ConvertTo-StringArray',
         'ConvertTo-Tar',
+
+        'Format-Memory',
         # Get functions
         'Get-Bios',
         'Get-Branch',

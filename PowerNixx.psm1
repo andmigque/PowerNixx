@@ -2,7 +2,7 @@
 $Private = @(Get-ChildItem -Path "$PSScriptRoot/Private/*.ps1" -ErrorAction SilentlyContinue)
 $Public = @(Get-ChildItem -Path "$PSScriptRoot/Public/*.ps1" -Recurse -ErrorAction SilentlyContinue)
 
-Write-Verbose "PowerNixx Module Loading..."
+Write-Verbose 'PowerNixx Module Loading...'
 Write-Verbose "Found $($Private.Count) private files"
 Write-Verbose "Found $($Public.Count) public files"
 
@@ -33,4 +33,5 @@ $manifestPath = Join-Path $PSScriptRoot 'PowerNixx.psd1'
 $manifest = Import-PowerShellDataFile -Path $manifestPath
 Write-Verbose "Exporting $($manifest.FunctionsToExport.Count) functions"
 Export-ModuleMember -Function $manifest.FunctionsToExport
-Write-Verbose "PowerNixx Module Loaded Successfully"
+Write-Verbose 'PowerNixx Module Loaded Successfully'
+$PSStyle.OutputRendering = 'Ansi'
