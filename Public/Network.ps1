@@ -38,3 +38,13 @@ function Get-Network {
         TxDrops   = [long]$values[11]      # Raw transmit drops
     }
 }
+
+function Get-Hostnamectl {
+    return Invoke-Expression '(hostnamectl --json=pretty)' | 
+        ConvertFrom-Json | 
+        ConvertTo-Json
+}
+
+function Get-NetStat {
+    return Invoke-Expression 'netstat -a -n -o -4 -6 -l -e'
+}

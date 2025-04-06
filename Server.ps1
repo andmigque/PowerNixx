@@ -1,7 +1,7 @@
 Set-StrictMode -Version 3.0
 
 # Import modules in correct order
-Import-Module ./PowerNixx.psd1 -Force
+Import-Module -Scope Global ./PowerNixx.psd1 -Force
 Import-Module Pode
 Import-Module Pode.Web
 

@@ -1,31 +1,4 @@
-<#
-.SYNOPSIS
-    Recursively hashes each file in a specified directory using a given hash algorithm.
-
-.DESCRIPTION
-    The Get-Hash function iterates over all files within a specified directory and its subdirectories.
-    It computes the hash of each file using the specified hashing algorithm (default is SHA256) and outputs
-    the results to both the console and a specified output file in a table format.
-
-.PARAMETER Path
-    The root directory from which to start hashing. This parameter is mandatory.
-
-.PARAMETER Algorithm
-    The hashing algorithm to use. Options include MD5, SHA1, SHA256, SHA384, and SHA512.
-    Default is 'SHA256'.
-
-.PARAMETER DirectoryHashesFile
-    The file path where the hash results will be saved in a table format.
-
-.EXAMPLE
-    Get-Hash -Path "C:\Your\Directory\Path" -Algorithm SHA256 -DirectoryHashesFile "C:\Output\hashes.csv"
-
-.NOTES
-    This function requires .NET's System.Security.Cryptography for hashing and uses PowerShell cmdlets to handle 
-files.
-#>
-
-function Get-DirectoryHashes {
+function Write-DirectoryHashes {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
@@ -96,5 +69,21 @@ function Get-DirectoryHashes {
 
     } catch {
         Write-Error "An error occurred while processing files in directory: $Path. Error: $_"
+    }
+}
+
+function Get-Hash {
+    param (
+        [Parameter(Mandatory)]
+        [string]$Path,
+        [ValidateSet('MD5', 'SHA1', 'SHA256', 'SHA384', 'SHA512')]
+        [string]$Algorithm = 'MD5'
+    )
+
+    try {
+        $fileHash = Get-FileHash -Path $Path -Algorithm $Algorithm
+        return $fileHash.HashString
+    } catch {
+        Write-Error $_
     }
 }

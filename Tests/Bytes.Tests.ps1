@@ -63,6 +63,7 @@ Describe 'ConvertFrom-Bytes' {
     Context 'Error handling' {
         It 'Should handle negative values' {
             $result = ConvertFrom-Bytes -bytes -1024
+            $result | Should -Not -BeNullOrEmpty
             $result.Error | Should -Not -BeNullOrEmpty
         }
     }
@@ -99,11 +100,6 @@ Describe 'ConvertTo-Percent' {
             $result.Percent | Should -Be 0
         }
 
-        It 'Should return error object for division by zero' {
-            $result = ConvertTo-Percent -numerator 100MB -denominator 0
-            $result.Error | Should -BeLike "*Denominator cannot be zero*"
-        }
-
         It 'Should handle large byte values' {
             $result = ConvertTo-Percent -numerator 1GB -denominator 2GB
             $result.Percent | Should -Be 50
@@ -121,13 +117,16 @@ Describe 'ConvertTo-Percent' {
 
     Context 'Error handling' {
         It 'Should handle negative numerator' {
-            $result = ConvertTo-Percent -numerator -1KB -denominator 1MB
-            $result.Error | Should -Not -BeNullOrEmpty
+            { ConvertTo-Percent -numerator -1KB -denominator 1MB } | Should -Throw "Cannot calculate percentage: Values cannot be negative"
         }
-
+    
         It 'Should handle negative denominator' {
-            $result = ConvertTo-Percent -numerator 1KB -denominator -1MB
-            $result.Error | Should -Not -BeNullOrEmpty
+            { ConvertTo-Percent -numerator 1KB -denominator -1MB } | Should -Throw "Cannot calculate percentage: Values cannot be negative"
+        }
+    
+        It 'Should return error object for division by zero' {
+            { ConvertTo-Percent -numerator 100MB -denominator 0 } | Should -Throw "Cannot calculate percentage: Denominator cannot be zero"
         }
     }
+    
 }

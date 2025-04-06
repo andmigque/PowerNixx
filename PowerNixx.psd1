@@ -64,6 +64,10 @@
         @{
             ModuleName    = 'Pester'
             ModuleVersion = '5.5.0'
+        },
+        @{
+            ModuleName    = 'Psake'
+            ModuleVersion = '4.9.1'
         }
     )
 
@@ -71,7 +75,7 @@
     # RequiredAssemblies = @()
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    ScriptsToProcess     = @('Public/LinuxWraps')
+    #ScriptsToProcess     = @('')
 
     # Type files (.ps1xml) to be loaded when importing this module
     # TypesToProcess = @()
@@ -83,55 +87,7 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport    = @(
-        # Convert functions
-        'ConvertFrom-Bytes',
-        'ConvertTo-Percent',
-        'ConvertTo-StringArray',
-        'ConvertTo-Tar',
-
-        'Format-Memory',
-        # Get functions
-        'Get-Bios',
-        'Get-Branch',
-        'Get-CpuArchitecture',
-        'Get-CpuTemperature',
-        'Get-CpuStatus',
-        'Get-CpuPercentage',
-        'Get-CpuFromProc',
-        'Get-CpuStats',
-        'Get-DirectoryHashes',
-        'Get-DiskUsage',
-        'Get-FailedUnits',
-        'Get-Hash',
-        'Get-Memory',
-        'Get-Network',
-        'Get-PsHistory',
-        'Get-RamPercentage',
-        'Get-SystemInfo',
-        'Get-SystemUptime',
-        'Get-UnixCommands',
-        
-        # Invoke functions
-        'Invoke-Df',
-        'Invoke-JcUsb',
-        'Invoke-Sysctl',
-        
-        # Ollama functions
-        'Copy-OllamaModel',
-        'Get-OllamaHelp',
-        'Get-OllamaModels',
-        'Get-RunningModels',
-        'Install-OllamaModel',
-        'New-OllamaModel',
-        'Publish-OllamaModel',
-        'Show-OllamaModel',
-        'Show-Ollama',
-        'Start-OllamaModel',
-        'Start-Ollama',
-        'Stop-OllamaModel',
-        'Stop-Ollama'
-    )
+    FunctionsToExport    = @('*')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
