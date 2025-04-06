@@ -8,3 +8,6 @@ Artifacts/*
 .idea/*
 Scratch/*
 InvokeJcUsb/*
+training/*
+Config/*server*
+Config/*localhost*

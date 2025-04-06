@@ -1,3 +1,18 @@
 body {
     font-family: Anta, Zekton;
 }
+
+.pode-container:not([pode-transparent='True']) {
+    background: #1b2742;
+    border-color: #3093d3;
+}
+
+.pode-container:not([pode-transparent='True']) {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0.5rem;
+}
+
+/* nav.navbar-dark {
+    background-color: #590d86 !important;
+} */
