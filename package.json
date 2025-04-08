@@ -6,7 +6,7 @@
   "scripts": {
     "build": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force; Invoke-psake -buildFile ./powernixx.build.ps1",
     "test": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force;Invoke-Pester ./Tests -CI",
-    "start": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force;& ./Server.ps1",
+    "start": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force;& ./Server.ps1 &;node ./webssh2/app/index.js &",
     "install": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force;& ./Config.ps1"
   },
   "main": "pode start",

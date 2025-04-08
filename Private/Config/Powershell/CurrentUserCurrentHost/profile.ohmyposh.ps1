@@ -7,7 +7,7 @@ Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'
 Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
 Set-Variable -Name 'ShowFastFetch' -Value 'false'
 
-Import-Module $PowerNixx/PowerNixx.psm1 -Force
+Import-Module $PowerNixx/PowerNixx.psd1 -Global -Force -DisableNameChecking
 
 if (Get-Module -Name PSReadLine -ListAvailable) {
     Import-Module PSReadLine
@@ -40,6 +40,10 @@ if ($IsLinux) {
     if ((Test-Path "/usr/bin/fastfetch") -and ($ShowFastFetch -eq 'true')) {
         fastfetch
     }
+
+    if((Test-Path "$env:HOME/.lmstudio/bin")){
+        $env:PATH = "$($env:PATH):$($env:HOME)/.lmstudio/bin"
+    }
 }
 
 #Invoke-Expression (&starship init powershell)
@@ -48,4 +52,5 @@ if (Test-Path "$($env:HOME)/.local/bin/oh-my-posh") {
     $env:PATH = "$($env:PATH):/$($env:HOME)/.local/bin"
     #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/velvet.omp.json" | Invoke-Expression
     oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
+    #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/free-ukraine.omp.json" | Invoke-Expression
 }
