@@ -79,3 +79,37 @@ function ConvertTo-Gzip {
     }
 
 }
+
+function ConvertTo-GzipParallel {
+    param([string]$SrcDir, [string]$DestDir)
+
+    $source = (Resolve-Path -Path $SrcDir).Path
+    $destination = (Resolve-Path -Path $DestDir).Path
+
+    Get-ChildItem -Path $source -Recurse -File | ForEach-Object -Parallel {
+        $filePath = $_.FullName
+        $baseName = "$($_.BaseName)$($_.Extension)"
+        $gzipFilePath = "$($Using:destination)$($baseName).gz"
+        # Create a FileStream for reading the original file
+        $fileStream = [System.IO.File]::OpenRead($filePath)
+
+        # Create a FileStream for writing the compressed file
+        $gzipStream = [System.IO.File]::Create($gzipFilePath)
+
+        # Create a GZipStream for compression, writing to the gzip file
+        $gzipWriter = [System.IO.Compression.GZipStream]::new($gzipStream, [System.IO.Compression.CompressionLevel]::SmallestSize, $false)
+
+        # Ensure the stream is closed properly
+        try {
+            # Copy data from the file stream to the gzip stream
+            $fileStream.CopyTo($gzipWriter)
+        }
+        finally {
+            # Close both streams to release resources
+            $gzipWriter.Close()
+            $fileStream.Close()
+            
+        }
+    }
+
+}
