@@ -1,6 +1,5 @@
 
-<#
-Describe 'PsNxDependency Module' {
+Describe 'Depencies Module' {
     BeforeAll {
         # Import the function under test
         # . "$($PSCommandPath.ToString())/PsNxDependency.psm1"
@@ -25,4 +24,3 @@ Describe 'PsNxDependency Module' {
         }
     }
 }
-    #>

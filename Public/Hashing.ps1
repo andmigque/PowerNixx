@@ -46,7 +46,7 @@ function Write-DirectoryHashes {
 
                 # Create a custom object for the result
                 $hashResult = [PSCustomObject]@{
-                    FilePath  = $file.FullName
+                    FilePath  = $file.BaseName
                     HashValue = $hashString
                 }
 
@@ -71,7 +71,6 @@ function Write-DirectoryHashes {
         Write-Error "An error occurred while processing files in directory: $Path. Error: $_"
     }
 }
-
 function Get-Hash {
     param (
         [Parameter(Mandatory)]

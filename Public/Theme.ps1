@@ -16,3 +16,27 @@ function Invoke-PoshThemes {
 
     Write-Output "Download completed: $destinationPath"
 }
+
+function Edit-KittyTheme {
+    param()
+    
+    try {
+        kitty +kitten themes
+
+    } catch {
+        Write-Error $_
+    }
+    
+}
+
+function Edit-KittyConfig {
+    param()
+    
+    try {
+        nano $env:HOME/.config/kitty/kitty.conf
+
+    } catch {
+        Write-Error $_
+    }
+    
+}

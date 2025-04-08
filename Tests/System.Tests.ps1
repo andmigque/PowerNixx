@@ -1,9 +1,23 @@
-Describe 'Get-FailedUnits' {
-    BeforeAll {
-        # Import the function under test
-        $ModuleRoot = Split-Path $PSScriptRoot -Parent
-        Import-Module $ModuleRoot/PowerNixx.psd1 -Force
+# Import the function script
+BeforeAll {
+    $ModuleRoot = Split-Path $PSScriptRoot -Parent
+    Import-Module $ModuleRoot/PowerNixx.psd1 -Force
+}
 
+
+Describe "Get-SystemUptime Tests" {
+
+    Context "When system uptime is queried" {
+        It "Returns a string in the format 'Uptime: 0d, Xh, Xm, Xs'" {
+            # Execute the function and capture the output
+            $result = Get-SystemUptime | Out-String
+            Write-Host "$result"
+
+            $pattern = '^Uptime: \d+d, \d+h, \d+m, \d+s$'
+
+            # Assert that the result matches expected format and content
+            $result -match $pattern  | Should -Be $true
+        }
     }
 
     Context 'When there are failed systemd units' {
@@ -75,4 +89,5 @@ Describe 'Get-FailedUnits' {
     
         }
     }
+
 }
