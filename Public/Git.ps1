@@ -5,10 +5,9 @@ function Get-Branch {
     if (Test-Path -Path "./.git") {
         # Get current git branch
         $branch = Get-Content -Path '.git/HEAD' -Raw
-        $branch -replace '^.*[/](.+)$','$1'
+        $branch -replace '^ref: refs/heads/',''
     } else {
         # Return an emoji of a branch if not in a git repository
         "🌿"
     }
 }
-

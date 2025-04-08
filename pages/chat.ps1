@@ -1,16 +1,12 @@
-# Add-PodeWebPage -NewTab -NoTitle -Name 'Chat' -Icon 'Chip' -Group 'AI' -ScriptBlock {    
-#     New-PodeWebIFrame -Name 'Chat' -CssClass 'header' -CssStyle @{Height = '80em' }  -Url 'http://localhost:7860'
-# }
+using namespace System.Collections
 
-# Add-PodeWebPage -NoTitle -Name 'WebSSH' -Icon 'Chip' -Group 'System' -ScriptBlock {
-#     New-PodeWebIFrame -Name 'WebSSH'  -Url 'http://localhost:2222/ssh/host/127.0.0.1'
-# }
 Add-PodeWebPage -Name 'Chat' -Icon 'Chat' -Group 'AI' -ScriptBlock {
+    
     New-PodeWebCodeEditor -Name 'CodeEditor' -Language 'Markdown'  -CssStyle @{Height = '35rem'} -Theme vs-dark
     New-PodeWebLine
     New-PodeWebForm -Name 'ChatForm' -ShowReset -ScriptBlock {
         
-        Reset-PodeWebForm -Name 'ChatForm'
+        #Reset-PodeWebForm -Name 'ChatForm'
         $llmEndpoint = 'http://localhost:1234/v1/chat/completions'
         
         # Get the message from the form data
@@ -30,26 +26,19 @@ Add-PodeWebPage -Name 'Chat' -Icon 'Chat' -Group 'AI' -ScriptBlock {
             $choices = ${response}?.choices
             $content = ${choices}[0]?.message?.content
 
-# To ensure proper string formatting in the rendered html
-if (-not [string]::IsNullOrEmpty(($content))) {
+            # To ensure proper string formatting in the rendered html
+            if (-not [string]::IsNullOrEmpty(($content))) {
 
-$outMessageFormatted = "`
-User:`
-$($messageContent)`
-`
-Assistant:`
-$($content)`
-"
-
-Update-PodeWebCodeEditor -Name 'CodeEditor' -Value "$($outMessageFormatted)"
-
-}
+                $outMessageFormatted = "User:`n$($messageContent)`nAssistant:`n$($content)"
+                Update-PodeWebCodeEditor -Name 'CodeEditor' -Value "$($outMessageFormatted)"
+            }
         }
         catch {
             Show-PodeWebToast -Message "Error sending message: $($_.Exception.Message)"
         }
     } -Content @(
         New-PodeWebTextbox -Id 'ChatMessage' -Name 'ChatMessage' -DisplayName 'Chat with Gemma' -CssStyle @{Height = '15em' } -Multiline -Placeholder 'Enter your message...' -AutoFocus -Required
-    
+        
     )
+    New-PodeWebIFrame -Name 'WebSSH'  -Url 'http://localhost:2222/ssh/host/127.0.0.1'
 }

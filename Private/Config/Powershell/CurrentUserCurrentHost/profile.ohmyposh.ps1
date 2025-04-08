@@ -9,6 +9,7 @@ Set-Variable -Name 'ShowFastFetch' -Value 'false'
 
 Import-Module $PowerNixx/PowerNixx.psd1 -Global -Force -DisableNameChecking
 
+<#
 if (Get-Module -Name PSReadLine -ListAvailable) {
     Import-Module PSReadLine
 
@@ -16,6 +17,16 @@ if (Get-Module -Name PSReadLine -ListAvailable) {
     Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
+#>
+
+if (Get-Module -Name Microsoft.Powershell.PSReadLine2 -ListAvailable) {
+    Import-Module Microsoft.Powershell.PSReadLine2
+
+    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+    Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
+    Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchBackward
+}
+
 
 # Check if running on Linux
 if ($IsLinux) {
@@ -50,7 +61,7 @@ if ($IsLinux) {
 
 if (Test-Path "$($env:HOME)/.local/bin/oh-my-posh") {
     $env:PATH = "$($env:PATH):/$($env:HOME)/.local/bin"
-    #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/velvet.omp.json" | Invoke-Expression
-    oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
+    oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/atomic.omp.json" | Invoke-Expression
+    #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
     #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/free-ukraine.omp.json" | Invoke-Expression
 }
