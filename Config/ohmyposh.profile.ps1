@@ -7,9 +7,8 @@ Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'
 Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
 Set-Variable -Name 'ShowFastFetch' -Value 'false'
 
-Import-Module $PowerNixx/PowerNixx.psd1 -Global -Force -DisableNameChecking
+Import-Module $PowerNixx/PowerNixx.psd1 -Global -Force
 
-<#
 if (Get-Module -Name PSReadLine -ListAvailable) {
     Import-Module PSReadLine
 
@@ -17,51 +16,37 @@ if (Get-Module -Name PSReadLine -ListAvailable) {
     Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
-#>
-
-if (Get-Module -Name Microsoft.Powershell.PSReadLine2 -ListAvailable) {
-    Import-Module Microsoft.Powershell.PSReadLine2
-
-    Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-    Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-    Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchBackward
-}
-
-
 # Check if running on Linux
 if ($IsLinux) {
     # Initialize PATH environment variable
-    $env:PATH = ""
-    $env:PATH = "/opt/microsoft/powershell/7"
+    $env:PATH = ''
+    $env:PATH = '/opt/microsoft/powershell/7'
     
+    # Add common binary paths
+    $env:PATH = "$($env:PATH):/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"
     # Add Homebrew paths if brew is installed
-    if (Test-Path "/home/linuxbrew/.linuxbrew/bin/brew") {
+    if (Test-Path '/home/linuxbrew/.linuxbrew/bin/brew') {
         $env:PATH = "$($env:PATH):/home/linuxbrew/.linuxbrew/sbin:/home/linuxbrew/.linuxbrew/bin"
     }
 
     # If Llama Cpp
-    if (Test-Path "$env:HOME/Develop/llama.cpp/build/bin") {
+    if (Test-Path "$($env:HOME)/Develop/llama.cpp/build/bin") {
         $env:PATH = "$($env:PATH):$env:HOME/Develop/llama.cpp/build/bin"
     }
 
-    # Add common binary paths
-    $env:PATH = "$($env:PATH):/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"
-    
-    # Run fastfetch if available
-    if ((Test-Path "/usr/bin/fastfetch") -and ($ShowFastFetch -eq 'true')) {
-        fastfetch
+    if ((Test-Path "$($env:HOME)/.lmstudio/bin")) {
+        $env:PATH = "$($env:PATH):$($env:HOME)/.lmstudio/bin"
     }
 
-    if((Test-Path "$env:HOME/.lmstudio/bin")){
-        $env:PATH = "$($env:PATH):$($env:HOME)/.lmstudio/bin"
+    # Run fastfetch if available
+    if ((Test-Path '/usr/bin/fastfetch') -and ($ShowFastFetch -eq 'true')) {
+        fastfetch
     }
 }
 
-#Invoke-Expression (&starship init powershell)
-
 if (Test-Path "$($env:HOME)/.local/bin/oh-my-posh") {
-    $env:PATH = "$($env:PATH):/$($env:HOME)/.local/bin"
-    oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/atomic.omp.json" | Invoke-Expression
+    $env:PATH = "$($env:PATH):$($env:HOME)/.local/bin"
+    oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/clean-detailed.omp.json" | Invoke-Expression
     #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
     #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/free-ukraine.omp.json" | Invoke-Expression
 }

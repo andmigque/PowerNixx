@@ -12,7 +12,8 @@ Task Test -Depends Compile, Clean {
     #Invoke-Pester ./Tests/Bytes.Tests.ps1 -Output Detailed 
     #Invoke-Pester ./Tests/Git.Tests.ps1 -Output Detailed
     #Move-Item -Path "./testResults.xml" -Destination "./Out/testResults.xml" -Force
-    Invoke-Pester ./Tests/*.ps1 -Output Detailed
+    Invoke-Pester ./Tests/*.ps1 -Output Detailed -CI
+    Move-Item testResults.xml -Destination "./Out/testResults.xml"
 
 }
 Task Compile -Depends Clean {

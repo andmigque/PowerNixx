@@ -9,6 +9,6 @@ Artifacts/*
 Scratch/*
 InvokeJcUsb/*
 training/*
-Config/*server*
-Config/*localhost*
 webssh2/*
+Out/*
+Prompts/*

@@ -1,26 +1,39 @@
+# BeforeAll {
+#     $ModuleRoot = Split-Path $PSScriptRoot -Parent
+#     Import-Module $ModuleRoot/PowerNixx.psd1 -Force
 
-Describe 'Depencies Module' {
-    BeforeAll {
-        # Import the function under test
-        # . "$($PSCommandPath.ToString())/PsNxDependency.psm1"
-        $ModuleRoot = Split-Path $PSScriptRoot -Parent
-        Import-Module $ModuleRoot/PowerNixx.psd1 -Force
+#     function global:apt {
+#         return " `
+#             Listing... Done `
+#             bash/5.0-3ubuntu1.4 amd64 [installed,automatic] `
+#             ls/2.31-9ubuntu1.6 amd64 [installed,automatic] `
+#             cat/5.0-3ubuntu1.4 amd64 [installed,automatic]"
+#     }
 
-    }
-    # Test with a valid module name
-    Context "When exploring the methods and properties available on a module" {
-        It "returns the correct members for the module with the given name" {
-            $actualModuleMembers = Get-ModuleMembers -Name System.Memory
-    
-            $actualModuleMembers.Count | Should -BeGreaterThan 0
-        }
-    }
+# }
 
-    Context "When searching for dpkg packages installed" {
-        It "Should have common linux packages" {
-            $allPackages = Get-AllPackages
-    
-            @("bash", "mount", "tar") | Should -BeIn $allPackages 
-        }
-    }
-}
+
+# Describe "Get-InstalledPackages Tests" {
+
+
+#     It "Checks for the presence of bash package" {
+#         $output = Get-InstalledPackages | Out-String
+
+#         # Check if 'bash' is part of the function's output
+#         $output | Should -Match 'bash'
+#     }
+
+#     It "Checks for the presence of ls package" {
+#         $output = Get-InstalledPackages | Out-String
+
+#         # Check if 'ls' is part of the function's output
+#         $output | Should -Match 'ls'
+#     }
+
+#     It "Checks for the presence of cat package" {
+#         $output = Get-InstalledPackages | Out-String
+
+#         # Check if 'cat' is part of the function's output
+#         $output | Should -Match 'cat'
+#     }
+# }

@@ -78,7 +78,7 @@
     #ScriptsToProcess     = @('')
 
     # Type files (.ps1xml) to be loaded when importing this module
-    # TypesToProcess = @()
+    #TypesToProcess = @()
 
     # Format files (.ps1xml) to be loaded when importing this module
     # FormatsToProcess = @()
@@ -90,6 +90,49 @@
     FunctionsToExport    = @(
         'ConvertTo-Zip'
         'ConvertTo-Gzip'
+        'ConvertFrom-Bytes'
+        'ConvertTo-Percent'
+        'Get-CpuStats'
+        'Get-CpuPercentage'
+        'Get-CpuArchitecture'
+        'Get-CpuTemperature'
+        'Get-CpuStatus'
+        'Get-CpuFromProc'
+        'Get-InstalledPackages'
+        'Get-AllPackages'
+        'Get-PackageCount'
+        'Get-ModuleMembers'
+        'Get-PsModulePaths'
+        'Repair-AllAptitudePackages'
+        'Protect-Repository'
+        'Get-DiskUsage'
+        'Format-DiskUsage'
+        'Invoke-JcUsb'
+        'Format-JcUsb'
+        'Invoke-Df'
+        'Format-Df'
+        'Get-Bios'
+        'Get-Branch'
+        'Write-DirectoryHashes'
+        'Get-Hash'
+        'Invoke-Sysctl'
+        'Format-SysctlTable'
+        'Get-Memory'
+        'Format-Memory'
+        'Get-Network'
+        'Get-HostnameCtl'
+        'Get-NetStat'
+        'ConvertTo-StringArray'
+        'Remove-Spaces'
+        'Get-SystemInfo'
+        'Get-SystemUptime'
+        'Get-PowershellHistory'
+        'Get-FailedUnits'
+        'Edit-KittyTheme'
+        'Edit-KittyConfig'
+        'Invoke-PoshThemes'
+        'Split-LinesBySpace'
+        '*'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

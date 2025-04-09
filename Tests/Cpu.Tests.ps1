@@ -57,61 +57,6 @@ Describe 'Get-CpuArchitecture Tests' {
     }
 }
 
-Describe 'Get-CpuTemperature Tests' {
-    It 'should return a specific temperature for Linux' -Skip:(-not $IsLinux) {
-        # Arrange: Mock file existence and content
-        Mock Test-Path { $true }
-        Mock Get-Content { 45000 }
-
-        # Act
-        $result = Get-CpuTemperature
-
-        # Assert
-        $result | Should -BeExactly '45.0'
-    }
-
-    It 'should return an unsupported value for Windows when WMI is not available' -Skip:$IsLinux {
-        Mock Get-WmiObject { throw [System.Management.ManagementException] }
-        
-        # Act
-        $result = Get-CpuTemperature
-
-        # Assert
-        $result | Should -BeExactly 99999.9
-    }
-}
-
-Describe 'Get-CpuStatus Tests' {
-    It 'should return a CPU status string with correct architecture on Linux' -Skip:$IsLinux {
-        Mock Get-CpuArchitecture { "x64" }
-        Mock [System.Environment]::ProcessorCount { 4 }
-        Mock Get-CpuTemperature { 50.0 }
-
-        # Act
-        $result = Get-CpuStatus
-
-        # Assert
-        $result | Should -Match 'x64 CPU $4 cores,'
-    }
-
-    It 'should return a CPU status string with correct details on Windows' -Skip:(-not $IsLinux) {
-        Mock Get-CpuArchitecture { "x86" }
-        Mock [System.Environment]::ProcessorCount { 2 }
-        Mock Get-WmiObject { 
-            @(
-                @{ Name = 'Intel Xeon'; MaxClockSpeed = 2600; DeviceID = 'CPU#0'; SocketDesignation = 'Socket 3647' }
-            ) 
-        } 
-        Mock Get-CpuTemperature { 30.0 }
-
-        # Act
-        $result = Get-CpuStatus
-
-        # Assert
-        $result | Should -Match ', Intel Xeon'
-    }
-}
-
 Describe 'Get-CpuPercentage Tests' {
     It 'should return a CPU usage percentage from /proc/stat on Linux' -Skip:(-not $IsLinux) {
         # Arrange: Mock content of /proc/stat

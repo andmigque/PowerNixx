@@ -1,6 +1,7 @@
+using namespace System.Collections.Generic
 class LogFileManager {
     # Static property to hold the list of log files
-    static [System.Collections.Generic.List[string]] $LogFiles
+    static [List[string]] $LogFiles
 
     # Static method to initialize the list of log files
     static [void] Initialize() {[LogFileManager]::Initialize($false)}
@@ -10,7 +11,7 @@ class LogFileManager {
             return $false
         }
 
-        [LogFileManager]::LogFiles = [System.Collections.Generic.List[string]]::new()
+        [LogFileManager]::LogFiles = [List[string]]::new()
         
         return $true
     }
@@ -18,6 +19,7 @@ class LogFileManager {
     # Static method to add a log file path
     static [void] Add([string] $logFilePath) {
         [LogFileManager]::Initialize()
+        
         if (-not [string]::IsNullOrWhiteSpace($logFilePath)) {
             if (-not [LogFileManager]::LogFiles.Contains($logFilePath)) {
                 [LogFileManager]::LogFiles.Add($logFilePath)
