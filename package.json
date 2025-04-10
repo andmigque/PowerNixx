@@ -4,10 +4,10 @@
   "description": "Intelligent Compliance for Universal Hardening",
   "license": "MIT",
   "scripts": {
-    "build": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force; Invoke-psake -buildFile ./powernixx.build.ps1",
-    "test": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force;Invoke-Pester ./Tests -CI",
-    "start": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force;& ./Server.ps1 &;node ./webssh2/app/index.js &",
-    "install": "Import-Module ../PowerNixx/PowerNixx.psd1 -Force;& ./Config.ps1"
+    "build": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;Invoke-psake -buildFile ./powernixx.build.ps1",
+    "test": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;Invoke-Pester ./Tests -CI",
+    "start": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;& ./Server.ps1",
+    "install": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;& ./Config.ps1"
   },
   "main": "pode start",
   "name": "powernixx"

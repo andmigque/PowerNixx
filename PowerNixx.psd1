@@ -68,6 +68,10 @@
         @{
             ModuleName    = 'Psake'
             ModuleVersion = '4.9.1'
+        },
+        @{
+            ModuleName    = 'PSScriptAnalyzer'
+            ModuleVersion = '1.23.0'
         }
     )
 
@@ -122,6 +126,7 @@
         'Get-Network'
         'Get-HostnameCtl'
         'Get-NetStat'
+        'Get-NetworkStats'
         'ConvertTo-StringArray'
         'Remove-Spaces'
         'Get-SystemInfo'
@@ -132,6 +137,8 @@
         'Edit-KittyConfig'
         'Invoke-PoshThemes'
         'Split-LinesBySpace'
+        'Get-NetworkSentReceived'
+        'Get-BytesPerSecond'
         '*'
     )
 

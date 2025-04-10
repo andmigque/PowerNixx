@@ -1,13 +1,14 @@
 # Enable strict mode for better error handling
 Set-StrictMode -Version 3.0
-# Set Style to Ansi
-$PSStyle.OutputRendering = 'Ansi'
+
 # Disable PowerShell telemetry
 Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'	
-Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
 Set-Variable -Name 'ShowFastFetch' -Value 'false'
+Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
 
-Import-Module $PowerNixx/PowerNixx.psd1 -Global -Force
+Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force
+Import-Module Pode
+Import-Module Pode.Web
 
 if (Get-Module -Name PSReadLine -ListAvailable) {
     Import-Module PSReadLine
@@ -16,6 +17,7 @@ if (Get-Module -Name PSReadLine -ListAvailable) {
     Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
+
 # Check if running on Linux
 if ($IsLinux) {
     # Initialize PATH environment variable
@@ -46,7 +48,10 @@ if ($IsLinux) {
 
 if (Test-Path "$($env:HOME)/.local/bin/oh-my-posh") {
     $env:PATH = "$($env:PATH):$($env:HOME)/.local/bin"
-    oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/clean-detailed.omp.json" | Invoke-Expression
-    #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
+    #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/clean-detailed.omp.json" | Invoke-Expression
+    oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/1_shell.omp.json" | Invoke-Expression
     #oh-my-posh init pwsh --config "$($env:HOME)/.poshthemes/free-ukraine.omp.json" | Invoke-Expression
 }
+
+# Set Style to Ansi
+$PSStyle.OutputRendering = 'Ansi'

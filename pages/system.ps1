@@ -1,5 +1,3 @@
-Import-Module PowerNixx
-
 Add-PodeWebPage -Name 'System' -Icon 'Bomb' -Group 'System' -ScriptBlock {
     New-PodeWebCard -Content @(
         New-PodeWebTable -Name 'Failed Units' -ScriptBlock {

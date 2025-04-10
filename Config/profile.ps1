@@ -251,4 +251,3 @@ function Set-PathBrew {
     # Add the system binaries.
     $env:PATH = "$($env:PATH):/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"
 }
-

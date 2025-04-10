@@ -1,32 +1,18 @@
 function Get-DiskUsage {
     [CmdletBinding()]
     param()
-
-
+    
     try {
-        # Get disk usage info using df command
-        $dfOutput = Invoke-Expression 'df -k --output=source,fstype,size,used,avail,pcent'
-
-
-        # Split the output into lines
+        $dfOutput = Invoke-Expression 'df -k --output=target,fstype,size,used,avail,pcent'
         $lines = $dfOutput -split '\n'
-
-
-        # Skip the header line
+        
         $lines = $lines[1..($lines.Length - 1)]
-
-
-        # Create an array to store the disk usage objects
+        
         $diskUsage = @()
-
-
-        # Iterate over the lines and create disk usage objects
+        
         foreach ($line in $lines) {
-            # Split the line into columns
             $columns = $line -split '\s+'
-
-
-            # Create a disk usage object
+            
             $diskUsageObject = [PSCustomObject]@{
                 Source = $columns[0]
                 FileSystemType = $columns[1]
@@ -35,15 +21,11 @@ function Get-DiskUsage {
                 Available = ConvertFrom-Bytes -bytes ([long]$columns[4] * 1024)
                 Percent = $columns[5]
             }
-
-
-            # Add the disk usage object to the array
+            
             $diskUsage += $diskUsageObject
         }
 
-
-        # Return the disk usage array
-        $diskUsage
+        return $diskUsage
     }
     catch {
         Write-Error $_

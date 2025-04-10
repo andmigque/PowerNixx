@@ -1,7 +1,6 @@
 Set-StrictMode -Version 3.0
 
-# Import modules in correct order
-Import-Module -Scope Global ./PowerNixx.psd1 -Force
+Import-Module -Global -Force $PSScriptRoot/PowerNixx.psd1
 Import-Module Pode
 Import-Module Pode.Web
 
@@ -49,7 +48,7 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
 
         # Set-PodeWebNavDefault -Items $navAbout, $navDiv, $navYT
         New-PodeWebContainer -Content @(
-            New-PodeWebChart -Name 'CPU Usage' -Height '30em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
+            New-PodeWebChart -Name 'CPU (%)' -Height '20em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
                 $stats = Get-CpuStats
                 $coreStats = $stats | Where-Object { $_.Core -ne 'cpu' } # Exclude total CPU line
         
@@ -63,7 +62,14 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                     }
                 } | ConvertTo-PodeWebChartData -LabelProperty Core -DatasetProperty @('Usage', 'System', 'User', 'IO')
             }
-            New-PodeWebChart -Name 'Memory Usage' -Colours '#a416f8' -Height '30em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
+
+            New-PodeWebChart -Name 'Net (MB/S) ' -Type Line -AutoRefresh -Append -TimeLabels -MaxItems 30 -RefreshInterval 3 -Height '20em' -MaxY 100 -AsCard -ScriptBlock {
+                # https://badgerati.github.io/Pode.Web/0.8.3/Tutorials/Elements/Charts/#colours
+                # Return the full history array for chart rendering
+                Get-BytesPerSecond | ConvertTo-PodeWebChartData -LabelProperty 'Interface' -DatasetProperty @('BytesReceivedPerSecond', 'BytesSentPerSecond')
+            }
+
+            New-PodeWebChart -Name 'Memory (%)' -Colours '#a416f8' -Height '10em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
                 $memStats = Get-Memory
                 @(
                     @{
@@ -84,6 +90,20 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                     }
                 ) | ConvertTo-PodeWebChartData -LabelProperty Name -DatasetProperty Value
             }
+
+            New-PodeWebChart -Name 'Disk (GB) ' -Height '10em' -Type Bar -AutoRefresh -RefreshInterval 10 -AsCard -ScriptBlock {
+                $diskStats = Get-DiskUsage
+
+                $diskStats | ForEach-Object {
+                    @{
+                        'Disk'      = $_.Source
+                        'Used'      = [math]::Round($_.Used.HumanBytes, 2)
+                        'Available' = [math]::Round($_.Available.HumanBytes, 2)
+                    }
+                } | ConvertTo-PodeWebChartData -LabelProperty Disk -DatasetProperty @('Used', 'Available')
+
+            }
+
         )
     )
 }
