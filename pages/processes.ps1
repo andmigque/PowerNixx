@@ -1,6 +1,6 @@
-Add-PodeWebPage -Name 'Processes' -Icon 'Settings' -Group 'System' -ScriptBlock {
+Add-PodeWebPage -Name 'Processes' -Icon 'Bomb' -Group 'System' -ScriptBlock {
     New-PodeWebCard -Content @(
-        New-PodeWebTable -Name 'Processes' -ScriptBlock {
+        New-PodeWebTable -Name 'Processes' -AutoRefresh -RefreshInterval 5 -ScriptBlock {
             
             $Processes = (Get-Process -IncludeUserName ) | `
             Select-Object -Unique -Property Id, `

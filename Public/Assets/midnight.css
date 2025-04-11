@@ -2,7 +2,7 @@ body {
     font-family: Atkinson Hyperlegible, Ubuntu;
 }
 
-.pode-container:not([pode-transparent='True']) {
+/* .pode-container:not([pode-transparent='True']) {
     background: #1b2742;
     border-color: #3093d3;
 }
@@ -11,7 +11,7 @@ body {
     border-width: 1px;
     border-style: solid;
     border-radius: 0.5rem;
-}
+} */
 
 /* nav.navbar-dark {
     background-color: #590d86 !important;

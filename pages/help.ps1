@@ -9,3 +9,20 @@ Add-PodeWebPage -NoTitle -Name 'LLM Tools' -Icon 'Alien' -Group 'Help' -ScriptBl
     New-PodeWebRaw -Value '<a href="https://github.com/mamei16/LLM_Web_search">Hugging Face</a>'
     New-PodeWebRaw -Value '<a href="https://github.com/oobabooga/text-generation-webui-extensions?tab=readme-ov-file">Text Generation WebUI</a>'
 }
+
+Add-PodeWebPage -Name 'Approved Verbs' -Icon 'Alien' -Group 'Help' -ScriptBlock {
+    New-PodeWebCard -Content @(
+        New-PodeWebTable -Name 'Approved Verbs' -ScriptBlock{
+            $Verbs = Get-Verb
+
+            foreach($Verb in $Verbs) {
+                [ordered]@{
+                    Verb = $Verb.Verb
+                    Alias = $Verb.AliasPrefix
+                    Group = $Verb.Group
+                    Description = $Verb.Description
+                }
+            }
+        }
+    )
+}
