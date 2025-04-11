@@ -12,3 +12,5 @@ training/*
 webssh2/*
 Out/*
 Prompts/*
+cert.pem
+key.pem
