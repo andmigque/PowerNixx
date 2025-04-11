@@ -117,15 +117,24 @@ Describe 'ConvertTo-Percent' {
 
     Context 'Error handling' {
         It 'Should handle negative numerator' {
-            { ConvertTo-Percent -numerator -1KB -denominator 1MB } | Should -Throw "Cannot calculate percentage: Values cannot be negative"
+            $message = "Cannot calculate percentage: Values cannot be negative"
+            $errorObject = ConvertTo-Percent -numerator -1KB -denominator 1MB
+
+            $errorObject.Error | Should -Match $message
         }
     
         It 'Should handle negative denominator' {
-            { ConvertTo-Percent -numerator 1KB -denominator -1MB } | Should -Throw "Cannot calculate percentage: Values cannot be negative"
+            $message = "Cannot calculate percentage: Values cannot be negative"
+            $errorObject = ConvertTo-Percent -numerator 1KB -denominator -1MB
+
+            $errorObject.Error | Should -Match $message
         }
     
         It 'Should return error object for division by zero' {
-            { ConvertTo-Percent -numerator 100MB -denominator 0 } | Should -Throw "Cannot calculate percentage: Denominator cannot be zero"
+            $message = "Cannot calculate percentage: Denominator cannot be zero"
+            $errorObject = ConvertTo-Percent -numerator 100MB -denominator 0
+
+            $errorObject.Error | Should -Match $message
         }
     }
     
