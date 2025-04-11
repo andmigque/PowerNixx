@@ -68,3 +68,29 @@ function Get-FailedUnits {
         Write-Error $_
     }
 }
+
+function Set-Suspend {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('Enable', 'Disable')]
+        [string]$Mode
+    )
+
+    try {
+        switch ($Mode) {
+            'Enable' {
+                sudo systemctl unmask sleep.target suspend.target hibernate.target hybrid-sleep.target
+                Write-Host "Suspend is now enabled."
+            }
+            'Disable' {
+                sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+                Write-Host "Suspend is now disabled."
+            }
+        }
+    }
+    catch {
+        Write-Error "Failed to set suspend mode to $Mode. Error: $_"
+    }
+}
+

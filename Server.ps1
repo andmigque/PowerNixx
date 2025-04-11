@@ -4,8 +4,6 @@ Import-Module -Global -Force $PSScriptRoot/PowerNixx.psd1
 Import-Module Pode
 Import-Module Pode.Web
 
-
-
 Start-PodeServer -Threads 2 -EnablePool WebSockets {
     # Remove Import-Module here since we've already loaded it
     Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Https -Certificate './cert.pem' -CertificateKey './key.pem'
@@ -24,7 +22,6 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
     $OsVersion = [System.Environment]::OSVersion
     $UserName = [System.Environment]::UserName
     $UserDomainName = [System.Environment]::UserDomainName
-
 
     Set-PodeWebHomePage -NoTitle -DisplayName "$($UserName)@$($UserDomainName), $($OsVersion)" -Layouts @(
         # $navAbout = New-PodeWebNavLink -Name 'About' -Url '/pages/About' -Icon 'help-circle'
@@ -86,9 +83,7 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                         'Available' = [math]::Round($_.Available.HumanBytes, 2)
                     }
                 } | ConvertTo-PodeWebChartData -LabelProperty Disk -DatasetProperty @('Used', 'Available')
-
             }
-
         )
     )
 }
