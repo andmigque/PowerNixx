@@ -1,6 +1,3 @@
-$ScriptPath = (Split-Path -Parent -Path $MyInvocation.MyCommand.Path)
-$buildPath = $ScriptPath
-
 function New-ArtifactOut {
     if(-not (Test-Path "./Out")) {
         New-Item -Path "./Out" -ItemType Directory -Force
@@ -27,4 +24,9 @@ Task Clean {
     if(Test-Path "./Out") {
         Remove-Item "./Out" -Recurse -Force
     }
+}
+
+Task Secure {
+    . ./Public/Hashing.ps1
+    Write-DirectoryHashes -Path "./" -DirectoryHashesFile "./Out/DirectoryHashes.csv" -Algorithm "SHA256"
 }
