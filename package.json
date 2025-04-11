@@ -1,13 +1,13 @@
 {
   "author": "Andres M. Quesada",
   "version": "1.0.0",
-  "description": "Intelligent Compliance for Universal Hardening",
+  "description": "Monitor you Linux System with Powershell",
   "license": "MIT",
   "scripts": {
-    "build": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;Invoke-psake -buildFile ./powernixx.build.ps1",
-    "test": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;Invoke-Pester ./Tests -CI",
-    "start": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;& ./Server.ps1",
-    "install": "Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force;& ./Config.ps1"
+    "build": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1'",
+    "test": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -c 'Invoke-Pester $PowerNixx/Tests -CI'",
+    "start": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -c '& ./Server.ps1'",
+    "install": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -f $PowerNixx/Config.ps1"
   },
   "main": "pode start",
   "name": "powernixx"

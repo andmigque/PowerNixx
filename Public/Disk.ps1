@@ -26,8 +26,7 @@ function Get-DiskUsage {
         }
 
         return $diskUsage
-    }
-    catch {
+    }catch {
         Write-Error $_
         return [PSCustomObject]@{
             Error = $_.Exception.Message

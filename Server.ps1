@@ -4,19 +4,11 @@ Import-Module -Global -Force $PSScriptRoot/PowerNixx.psd1
 Import-Module Pode
 Import-Module Pode.Web
 
-# Global config
-$Web = @{
-    Static = @{
-        Cache = @{
-            Enable = $true
-        }
-    }
-}
 
 
 Start-PodeServer -Threads 2 -EnablePool WebSockets {
     # Remove Import-Module here since we've already loaded it
-    Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Http
+    Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Https -Certificate './cert.pem' -CertificateKey './key.pem'
     Add-PodeStaticRoute -Path /assets -Source ./Public/Assets
     
     Use-PodeWebTemplates -Title 'PowerNixx' -Theme Dark -NoPageFilter -HideSidebar
@@ -48,7 +40,7 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
 
         # Set-PodeWebNavDefault -Items $navAbout, $navDiv, $navYT
         New-PodeWebContainer -Content @(
-            New-PodeWebChart -Name 'CPU (%)' -Height '20em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
+            New-PodeWebChart -Name 'CPU (%)' -Height '10em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
                 $stats = Get-CpuStats
                 $coreStats = $stats | Where-Object { $_.Core -ne 'cpu' } # Exclude total CPU line
         
@@ -63,7 +55,7 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                 } | ConvertTo-PodeWebChartData -LabelProperty Core -DatasetProperty @('Usage', 'System', 'User', 'IO')
             }
 
-            New-PodeWebChart -Name 'Net (MB/S) ' -Type Line -AutoRefresh -Append -TimeLabels -MaxItems 30 -RefreshInterval 3 -Height '20em' -MaxY 100 -AsCard -ScriptBlock {
+            New-PodeWebChart -Name 'Net (MB/S) ' -Type Line -AutoRefresh -Append -TimeLabels -MaxItems 30 -RefreshInterval 3 -Height '10em' -MaxY 100 -AsCard -ScriptBlock {
                 # https://badgerati.github.io/Pode.Web/0.8.3/Tutorials/Elements/Charts/#colours
                 # Return the full history array for chart rendering
                 Get-BytesPerSecond | ConvertTo-PodeWebChartData -LabelProperty 'Interface' -DatasetProperty @('BytesReceivedPerSecond', 'BytesSentPerSecond')
