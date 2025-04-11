@@ -21,13 +21,6 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
     $PodeLogger | Enable-PodeErrorLogging -Levels Error, Informational, Verbose, Warning
     $PodeLogger | Enable-PodeRequestLogging
 
-    Function Split-LinesBySpace {
-        Param(
-            [String]$UnixLines
-        )
-        return $UnixLines.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
-    }
-
     $OsVersion = [System.Environment]::OSVersion
     $UserName = [System.Environment]::UserName
     $UserDomainName = [System.Environment]::UserDomainName
