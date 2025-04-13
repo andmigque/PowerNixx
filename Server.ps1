@@ -5,8 +5,7 @@ Import-Module Pode
 Import-Module Pode.Web
 
 Start-PodeServer -Threads 2 -EnablePool WebSockets {
-    # Remove Import-Module here since we've already loaded it
-    Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Https -Certificate './cert.pem' -CertificateKey './key.pem'
+    Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Https -Certificate './liquid-ai.pem' -CertificateKey './liquid-ai-key.pem'
     Add-PodeStaticRoute -Path /assets -Source ./Public/Assets
     
     Use-PodeWebTemplates -Title 'PowerNixx' -Theme Dark -NoPageFilter -HideSidebar
@@ -24,11 +23,6 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
     $UserDomainName = [System.Environment]::UserDomainName
 
     Set-PodeWebHomePage -NoTitle -DisplayName "$($UserName)@$($UserDomainName), $($OsVersion)" -Layouts @(
-        # $navAbout = New-PodeWebNavLink -Name 'About' -Url '/pages/About' -Icon 'help-circle'
-        # $navDiv = New-PodeWebNavDivider
-        # $navYT = New-PodeWebNavLink -Name 'YouTube' -Url 'https://youtube.com' -Icon 'youtube'
-
-        # Set-PodeWebNavDefault -Items $navAbout, $navDiv, $navYT
         New-PodeWebContainer -Content @(
             New-PodeWebChart -Name 'CPU (%)' -Height '10em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
                 $stats = Get-CpuStats
@@ -46,8 +40,6 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
             }
 
             New-PodeWebChart -Name 'Net (MB/S) ' -Type Line -AutoRefresh -Append -TimeLabels -MaxItems 30 -RefreshInterval 3 -Height '10em' -MaxY 100 -AsCard -ScriptBlock {
-                # https://badgerati.github.io/Pode.Web/0.8.3/Tutorials/Elements/Charts/#colours
-                # Return the full history array for chart rendering
                 Get-BytesPerSecond | ConvertTo-PodeWebChartData -LabelProperty 'Interface' -DatasetProperty @('BytesReceivedPerSecond', 'BytesSentPerSecond')
             }
 
