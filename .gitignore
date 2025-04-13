@@ -11,3 +11,5 @@ Prompts/*
 *.key
 *.csr
 *.crt
+testResults.xml
+*.srl
