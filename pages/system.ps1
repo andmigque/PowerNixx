@@ -1,62 +1,123 @@
-Add-PodeWebPage -Name 'System' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+$script:Bomb = 'Bomb'
+
+Add-PodeWebPage -Name 'Failed Units' -Icon "$script:Bomb" -Group 'System' -ScriptBlock {
     New-PodeWebCard -Content @(
         New-PodeWebTable -Name 'Failed Units' -ScriptBlock {
-            $FailedUnitPaths = Get-FailedUnits
+            try {
+                $FailedUnitPaths = Get-FailedUnits
 
-            foreach($fail in $FailedUnitPaths) {
-                [ordered]@{
-                    Failed = $fail
+                foreach ($fail in $FailedUnitPaths) {
+                    Write-Output [ordered]@ {
+                        Failed = $fail
+                    }
+                }
+            }
+            catch {
+                return [ordered]@{
+
                 }
             }
         }
     )
 } 
 
-Add-PodeWebPage -Name 'Posture' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+Add-PodeWebPage -Name 'Security Posture' -Icon "$script:Bomb" -Group 'System' -ScriptBlock {
     New-PodeWebCard -Content @(
         New-PodeWebTable -Name 'Posture' -ScriptBlock {
             
             $SystemdAnalyzeSecurity = (systemd-analyze --json=short security)
             $Services = $SystemdAnalyzeSecurity | ConvertFrom-Json
 
-            foreach($Srv in $Services) {
+            foreach ($Srv in $Services) {
                 [ordered]@{
-                    Service = $Srv.unit
-                    Exposure = $Srv.exposure
+                    Service   = $Srv.unit
+                    Exposure  = $Srv.exposure
                     Predicate = $Srv.predicate
-                    Happy = $Srv.happy
+                    Happy     = $Srv.happy
                 }
             }
         }
     )
 }
 
-Add-PodeWebPage -Name 'Service Load Times' -Icon 'Clock' -Group 'System' -ScriptBlock {
-    New-PodeWebCard -Content  @(
-        New-PodeWebTable -Name 'Service Load Times' -ScriptBlock {
-            $ServiceLoadTimes = (systemd-analyze blame)
+Add-PodeWebPage -Name 'Load Time' -Icon 'Clock' -Group 'System' -ScriptBlock {
+    New-PodeWebCard -Content @(
+        New-PodeWebTable -Name 'Service Load Time' -ScriptBlock {
+            [array]$serviceLoadTime = (systemd-analyze blame)
 
-            $LoadTimeEntries = $ServiceLoadTimes.Split("`n", [System.StringSplitOptions]::RemoveEmptyEntries)
-
-            foreach ($Entry in $LoadTimeEntries) {
+            foreach ($line in $serviceLoadTime) {
                 [ordered]@{
-                    Service = $Entry
+                    Service = $line
                 }
             }
         }
     )
 }
 
-Add-PodeWebPage -Name 'Service Paths' -Icon 'Wrench Clock' -Group 'System' -ScriptBlock {
-    New-PodeWebCard -Content  @(
+Add-PodeWebPage -Name 'File Paths' -Icon 'Wrench Clock' -Group 'System' -ScriptBlock {
+    New-PodeWebCard -Content @(
         New-PodeWebTable -Name 'Service Paths' -ScriptBlock {
-            $SystemdUnitPaths = (systemd-analyze unit-paths)
+            [array]$systemUnitPaths = (systemd-analyze unit-paths)
 
-            $ServicePaths = $SystemdUnitPaths.Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
-
-            foreach($UnixPath in $ServicePaths) {
+            foreach ($line in $systemUnitPaths) {
                 [ordered]@{
-                    Path = $UnixPath
+                    ServicePath = $line
+                }
+            }
+        }
+    )
+}
+
+Add-PodeWebPage -Name 'Capabilities' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+    New-PodeWebCard -Content @(
+        New-PodeWebTable -Name 'Capabilities' -ScriptBlock {
+            [array]$capabilities = (systemd-analyze capability)
+
+            foreach ($line in $capabilities) {
+                [ordered]@{
+                    Capability = $line
+                }
+            }
+        }
+    )
+}
+
+Add-PodeWebPage -Name 'Critical Chain' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+    New-PodeWebCard -Content @(
+        New-PodeWebTable -Name 'Critical Chain' -ScriptBlock {
+            [array]$criticalLinks = (systemd-analyze critical-chain)
+
+            foreach ($line in $criticalLinks) {
+                [ordered]@{
+                    ChainLink = $line
+                }
+            }
+        }
+    )
+}
+
+# Add-PodeWebPage -Name 'Status Dump' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+#     New-PodeWebCard -Content  @(
+#         New-PodeWebTable -Name 'Status Dump' -ScriptBlock {
+#             [array]$statusLines = (systemd-analyze dump)
+
+#             foreach ($line in $statusLines) {
+#                 [ordered]@{
+#                     Status = $line
+#                 }
+#             }
+#         }
+#     )
+# }
+
+Add-PodeWebPage -Name 'System Known Exits' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+    New-PodeWebCard -Content @(
+        New-PodeWebTable -Name 'Known Exits' -ScriptBlock {
+            [array]$knownExits = (systemd-analyze exit-status)
+
+            foreach ($line in $knownExits) {
+                [ordered]@{
+                    ExitStatus = $line
                 }
             }
         }
@@ -144,11 +205,16 @@ Add-PodeRoute -Method Get -Path '/system/diskstats' -ScriptBlock {
 }
 
 Add-PodeRoute -Method Get -Path '/system/meminfo' -ScriptBlock {
-    $unixCommand = Get-Memory | Select-Object -Property UsedPercent | ConvertTo-Json | Out-String
+    $unixCommand = Get-Memory | ConvertTo-Json | Out-String
     Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
 }  
 
 Add-PodeRoute -Method Get -Path '/system/tree' -ScriptBlock {
     $unixCommand = (Invoke-Expression 'tree -L 2') | Out-String
     Write-PodeJsonResponse -ContentType 'text/plain' -Value $unixCommand
+}
+
+Add-PodeRoute -Method Get -Path '/system/cpu' -ScriptBlock {
+    $cpuObject = Get-CpuFromProc | ConvertTo-Json | Out-String
+    Write-PodeJsonResponse -ContentType 'application/json' -Value $cpuObject
 }

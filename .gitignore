@@ -1,9 +1,4 @@
-.vscode
 PowerNixx.code-workspace
-.fake
-OpenWebUI/*
-Pdf2Text/pdf2text_env/*
-Assets/deb12bench.pdf
 Artifacts/*
 .idea/*
 Scratch/*
@@ -12,5 +7,7 @@ training/*
 webssh2/*
 Out/*
 Prompts/*
-cert.pem
-key.pem
+*.pem
+*.key
+*.csr
+*.crt

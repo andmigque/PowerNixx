@@ -38,13 +38,15 @@
 			"}"
 		]
 	},
-	"PsNx Pode Json Endpoint": {
+	"PsNx System Json Endpoint": {
 		"prefix": "PsNxPodeJson",
 		"body": [
-			"Add-PodeRoute -Method Get -Path '/llm/$1' -ScriptBlock {",
-			"    $2 = (Invoke-Expression '$3') | Out-String",
-			"    Write-PodeJsonResponse -ContentType 'application/json' -Value $2",
-			"}"
+			"Add-PodeRoute -Method Get -Path '/system/$1' -ScriptBlock {",
+			"\ttry{",
+			"\t\\$jasonAsString = $2 | Out-String",
+			"\tWrite-PodeJsonResponse -ContentType 'application/json' -Value $2",
+			"\t}",
+			"\tcatch {"
 		]
 	},
 	"PsNx Function": {
