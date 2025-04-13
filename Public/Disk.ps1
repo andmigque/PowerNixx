@@ -83,15 +83,24 @@ function Format-Df {
 function Get-DiskIO {
     try {
         return ((iostat -d --human -o JSON) | ConvertFrom-Json).sysstat.hosts.statistics.disk | ForEach-Object {
+            $device = $_.disk_device
+            $transactionsPerSecond = $_.tps
+            $bytesReadPerSec = ($_.'kB_read/s') * 1024
+            $bytesWrittenPerSec = ($_.'kB_wrtn/s') * 1024
+            $bytesDiscardedPerSec = ($_.'kB_dscd/s') * 1024
+            $bytesRead = ($_.'kB_read') * 1024
+            $bytesWritten = ($_.'kB_wrtn') * 1024
+            $bytesDiscarded = ($_.'kB_dscd') * 1024
+            
             return [PSCustomObject]@{
-                Device                = $_.disk_device
-                TransactionsPerSecond = $_.tps
-                BytesReadPerSec       = ($_.'kB_read/s') * 1024
-                BytesWrittenPerSec    = ($_.'kB_wrtn/s') * 1024
-                BytesDiscardedPerSec  = ($_.'kB_dscd/s') * 1024
-                BytesRead             = ($_.'kB_read') * 1024
-                BytesWritten          = ($_.'kB_wrtn') * 1024
-                BytesDiscarded        = ($_.'kB_dscd') * 1024
+                Device                = $device
+                TransactionsPerSecond = $transactionsPerSecond
+                BytesReadPerSec       = ConvertFrom-Bytes -Bytes $bytesReadPerSec
+                BytesWrittenPerSec    = ConvertFrom-Bytes -Bytes $bytesWrittenPerSec
+                BytesDiscardedPerSec  = ConvertFrom-Bytes -Bytes $bytesDiscardedPerSec
+                BytesRead             = ConvertFrom-Bytes -Bytes $bytesRead
+                BytesWritten          = ConvertFrom-Bytes -Bytes $bytesWritten
+                BytesDiscarded        = ConvertFrom-Bytes -Bytes $bytesDiscarded
             }
         }
     }
