@@ -1,17 +1,42 @@
-# Gets basic system information, such as operating system details.
 function Get-SystemInfo {
     [CmdletBinding()]
     param()
 
     try {
-        # Collect information in a hashtable
-        $systemInfo = @{
-            Version    = [System.Environment]::OSVersion.VersionString
-            Architecture = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
+        
+        $memoryJob = {
+            Import-Module ./PowerNixx.psd1
+            $memoryPercent = (Get-Memory).UsedPercent
+            Write-Output @{
+                MemoryPercent = $memoryPercent
+            } | Select-Object -Property MemoryPercent
         }
 
-        # Output the information as a custom object
-        New-Object PSObject -Property $systemInfo | Format-Table -AutoSize
+        $cpuJob = {
+            Import-Module ./PowerNixx.psd1
+            $cpuPercent = (Get-CpuFromProc).TotalUsage
+            Write-Output @{
+                CpuPercent = $cpuPercent
+            } | Select-Object -Property CpuPercent
+        }
+
+        $diskJob = {
+            Import-Module ./PowerNixx.psd1
+            return Get-DiskIO 
+        }
+
+        $netJob = {
+            Import-Module ./PowerNixx.psd1
+            return Get-NetworkStats
+        }
+
+        $scriptBlocks = @($memoryJob, $cpuJob, $diskJob, $netJob) | ForEach-Object {
+            Start-ThreadJob $_
+        }
+        
+        $jobs = $scriptBlocks | Receive-Job -Wait -AutoRemoveJob
+
+        return $jobs
     }
     catch {
         Write-Error "Failed to retrieve system information. Error: $_"
@@ -24,7 +49,7 @@ function Get-SystemUptime {
     try {
         # Check if running on a Linux-based system
         if (-not $IsLinux) { 
-            throw "This function is only supported on Linux-based systems."
+            throw 'This function is only supported on Linux-based systems.'
         }
 
         # Read the uptime from /proc/uptime
@@ -58,9 +83,9 @@ function Get-FailedUnits {
     try {
         # Run systemctl to get all unit statuses in JSON format
         $FailedUnits = Invoke-Expression 'systemctl list-units --output=json' | `
-        ConvertFrom-Json | Where-Object -FilterScript { `
-            $_.active -ne 'active' `
-        }
+                ConvertFrom-Json | Where-Object -FilterScript { `
+                    $_.active -ne 'active' `
+            }
 
         return $FailedUnits
     }
@@ -72,7 +97,7 @@ function Get-FailedUnits {
 function Set-Suspend {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet('Enable', 'Disable')]
         [string]$Mode
     )
@@ -81,11 +106,11 @@ function Set-Suspend {
         switch ($Mode) {
             'Enable' {
                 sudo systemctl unmask sleep.target suspend.target hibernate.target hybrid-sleep.target
-                Write-Host "Suspend is now enabled."
+                Write-Host 'Suspend is now enabled.'
             }
             'Disable' {
                 sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
-                Write-Host "Suspend is now disabled."
+                Write-Host 'Suspend is now disabled.'
             }
         }
     }
