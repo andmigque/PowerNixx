@@ -27,8 +27,8 @@
     "powershell.pester.codeLens": true,
     "powershell.buttons.showRunButtons": true,
     "powershell.codeFolding.showLastLine": true,
-    "powershell.analyzeOpenDocumentsOnly": true,
-    "powershell.startAsLoginShell.linux": true,
+    "powershell.analyzeOpenDocumentsOnly": false,
+    "powershell.startAsLoginShell.linux": false,
     "powershell.integratedConsole.startInBackground": true,
     "powershell.startAutomatically": true
 }
