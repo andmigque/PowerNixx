@@ -24,6 +24,8 @@ function Search-KeywordInFile {
     
     [ArrayList]$mutexFound = [ArrayList]::Synchronized(@())
     [ArrayList]$mutexNotFound = [ArrayList]::Synchronized(@())
+    [ArrayList]$mutexFilesFound = [ArrayList]::Synchronized(@())
+    [ArrayList]$mutexFilenameFound = [ArrayList]::Synchronized(@())
 
     $script:startTime = Get-Date
 
@@ -33,9 +35,16 @@ function Search-KeywordInFile {
             $differential = ($currentTime - $script:startTime)
             Write-Progress -Activity 'Searching' -Status "$differential ⛷"
 
+            if ($script:SearchString.ToLower().Trim() -eq $($_).FullName.ToLower().Trim()) {
+                $mutexFilenameFound += "$($_.FullName)"
+                $mutexFound += 1
+            }
+            
             if (Test-Path -Path $_.FullName -PathType Leaf -ErrorAction SilentlyContinue) {
                 if (Select-String -Path $_.FullName -Pattern $script:SearchString -Encoding utf8 -Quiet -ErrorAction SilentlyContinue) {
                     $message = "Found $script:SearchString in $($_.FullName)"
+                    Write-Verbose $message
+                    $mutexFilesFound += "$($_.FullName)"
                     $mutexFound += 1
                     return @{
                         Item  = $message
@@ -70,22 +79,11 @@ function Search-KeywordInFile {
         'Scanned' = $($mutexFound.Count + $mutexNotFound.Count)
         'Found'   = $mutexFound.Count
         'Time'    = $processingTime
+        'Files'   = $mutexFilesFound
     }
+
+    Write-Verbose ($summary | Format-Table -AutoSize -RepeatHeader | Out-String -Width 100) 
+
+    return $summary
     
-    $output = $summary | Format-Table -AutoSize -Property @{
-        Name = 'Scanned'; Expression = { $_.Scanned }; Alignment = 'Left'
-    }, @{
-        Name = 'Found'; Expression = { $_.Found }; Alignment = 'Left'
-    }, @{
-        Name = 'Time'; Expression = { $_.Time }; Alignment = 'Left'
-    } | Out-String
-    
-    $lines = $output.Split([Environment]::NewLine)
-    for ($i = 0; $i -lt $lines.Count; $i++) {
-        if ($lines[$i] -match '^---') {
-            $lines[$i] = '-------------------------'
-        }
-    }
-    
-    Write-Host ($lines -join [Environment]::NewLine)
 }

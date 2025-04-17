@@ -15,7 +15,7 @@ function Get-CpuArchitecture {
 function Get-CpuTemperature {
     $temp = 99999.9 # unsupported
     if ($IsLinux) {
-        if (Test-Path '/sys/class/thermal/thermal_zone0/temp' -pathType leaf) {
+        if (Test-Path '/sys/class/thermal/thermal_zone0/temp' -PathType leaf) {
             [int]$IntTemp = Get-Content '/sys/class/thermal/thermal_zone0/temp'
             $temp = [math]::round($IntTemp / 1000.0, 1)
         }

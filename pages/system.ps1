@@ -96,6 +96,145 @@ Add-PodeWebPage -Name 'Critical Chain' -Icon 'Bomb' -Group 'System' -ScriptBlock
     )
 }
 
+
+Add-PodeRoute -Method Get -Path '/system/cpu' -ScriptBlock {
+    try {
+        $jasonAsString = Get-CpuFromProc | ConvertTo-Json | Out-String
+        Write-PodeJsonResponse -ContentType 'application/json' -Value $jasonAsString
+    }
+    catch {
+        Write-Error $_
+    }
+
+}
+
+Add-PodeRoute -Method Get -Path '/system/net' -ScriptBlock {
+    try {
+        $jasonAsString = Get-NetworkStats | ConvertTo-Json | Out-String
+        Write-PodeJsonResponse -ContentType 'application/json' -Value $jasonAsString
+    }
+    catch {
+        Write-Error $_
+    }
+}
+
+Add-PodeRoute -Method Get -Path '/system/mem' -ScriptBlock {
+    try {
+        $jasonAsString = Get-Memory | ConvertTo-Json | Out-String
+        Write-PodeJsonResponse -ContentType 'application/json' -Value $jasonAsString
+    }
+    catch {
+        Write-Error $_
+    }
+
+}  
+
+Add-PodeRoute -Method Get -Path '/system/disk' -ScriptBlock {
+    try {
+        $jasonAsString = Get-DiskIO | ConvertTo-Json | Out-String
+        Write-PodeJsonResponse -ContentType 'application/json' -Value $jasonAsString
+    }
+    catch {
+        Write-Error $_
+    }
+
+}  
+
+Add-PodeRoute -Method Get -Path '/system/info' -ScriptBlock {
+    try {
+        $jasonAsString = Get-SystemInfo | ConvertTo-Json | Out-String
+        Write-PodeJsonResponse -ContentType 'application/json' -Value $jasonAsString
+    }
+    catch {
+        Write-Error $_
+    }
+
+}  
+
+
+Add-PodeRoute -Method Get -Path '/system/timedate' -ScriptBlock {
+    try {
+        $jasonAsString = (Invoke-Expression 'timedatectl | jc --timedatectl') | Out-String
+        Write-PodeJsonResponse -ContentType 'application/json' -Value $jasonAsString
+    }
+    catch {
+        Write-Error $_
+    }
+
+}
+
+Add-PodeWebPage -Name 'Unit Files' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+    New-PodeWebCard -Content @(
+        New-PodeWebTable -Name 'Unit Files' -ScriptBlock {
+            try {
+                $unitFileJason = (systemctl list-units -o json | ConvertFrom-Json)
+                return $unitFileJason      
+            }
+            catch {
+                Write-Error $_
+            }
+        }   
+    )
+}
+
+Add-PodeWebPage -Name 'User Unit Files' -Icon 'Bomb' -Group 'System' -ScriptBlock {
+    New-PodeWebCard -Content @(
+        New-PodeWebTable -Name 'User Unit Files' -ScriptBlock {
+            try {
+                $unitFileJason = (systemctl --user list-units -o json | ConvertFrom-Json)
+                return $unitFileJason      
+            }
+            catch {
+                Write-Error $_
+            }
+        }   
+    )
+}
+
+
+# Add-PodeRoute -Method Get -Path '/system/sardisk' -ScriptBlock {
+#     try {
+#         $ErrorActionPreference = 'Stop'
+#         $unixCommand = Invoke-Expression 'sar -d' | Out-String
+#         Write-PodeTextResponse -Content 'text/plain' $unixCommand
+#     }
+#     catch {
+#         Write-PodeLog -Level Error -Message "Error executing sar -d: $($_.Exception.Message)"
+#         Write-PodeJsonResponse -StatusCode 500 -Value @{ error = "Failed to retrieve disk statistics: $($_.Exception.Message)" }
+#     }
+# }
+
+# Add-PodeRoute -Method Get -Path '/system/sarmem' -ScriptBlock {
+#     try {
+#         $ErrorActionPreference = 'Stop'
+#         $unixCommand = Invoke-Expression 'sar -r' | Out-String
+#         Write-PodeTextResponse -Content 'text/plain' $unixCommand
+#     }
+#     catch {
+#         Write-PodeLog -Level Error -Message "Error executing sar -r: $($_.Exception.Message)"
+#         Write-PodeJsonResponse -StatusCode 500 -Value @{ error = "Failed to retrieve memory statistics: $($_.Exception.Message)" }
+#     }
+# }
+
+
+
+# Add-PodeRoute -Method Get -Path '/system/uptime' -ScriptBlock {
+#     $unixCommand = (Invoke-Expression 'jc /proc/uptime') | Out-String
+#     Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
+# }
+
+
+# Add-PodeRoute -Method Get -Path '/system/stats' -ScriptBlock {
+#     $unixCommand = (Invoke-Expression 'jc /proc/stat') | Out-String
+#     Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
+# }
+
+
+# Add-PodeRoute -Method Get -Path '/system/ioports' -ScriptBlock {
+#     $unixCommand = (Invoke-Expression 'jc /proc/ioports') | Out-String
+#     Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
+# }
+
 # Add-PodeWebPage -Name 'Status Dump' -Icon 'Bomb' -Group 'System' -ScriptBlock {
 #     New-PodeWebCard -Content  @(
 #         New-PodeWebTable -Name 'Status Dump' -ScriptBlock {
@@ -153,68 +292,15 @@ Add-PodeWebPage -Name 'System Known Exits' -Icon 'Bomb' -Group 'System' -ScriptB
 # }
 
 
-Add-PodeRoute -Method Get -Path '/system/sardisk' -ScriptBlock {
-    try {
-        $ErrorActionPreference = 'Stop'
-        $unixCommand = Invoke-Expression 'sar -d' | Out-String
-        Write-PodeTextResponse -Content 'text/plain' $unixCommand
-    }
-    catch {
-        Write-PodeLog -Level Error -Message "Error executing sar -d: $($_.Exception.Message)"
-        Write-PodeJsonResponse -StatusCode 500 -Value @{ error = "Failed to retrieve disk statistics: $($_.Exception.Message)" }
-    }
-}
-
-Add-PodeRoute -Method Get -Path '/system/sarmem' -ScriptBlock {
-    try {
-        $ErrorActionPreference = 'Stop'
-        $unixCommand = Invoke-Expression 'sar -r' | Out-String
-        Write-PodeTextResponse -Content 'text/plain' $unixCommand
-    }
-    catch {
-        Write-PodeLog -Level Error -Message "Error executing sar -r: $($_.Exception.Message)"
-        Write-PodeJsonResponse -StatusCode 500 -Value @{ error = "Failed to retrieve memory statistics: $($_.Exception.Message)" }
-    }
-}
 
 
+# Add-PodeRoute -Method Get -Path '/system/diskstats' -ScriptBlock {
+#     $unixCommand = (Invoke-Expression 'jc /proc/diskstats') | Out-String
+#     Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
+# }
 
-Add-PodeRoute -Method Get -Path '/system/uptime' -ScriptBlock {
-    $unixCommand = (Invoke-Expression 'jc /proc/uptime') | Out-String
-    Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
-}
 
-Add-PodeRoute -Method Get -Path '/system/stats' -ScriptBlock {
-    $unixCommand = (Invoke-Expression 'jc /proc/stat') | Out-String
-    Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
-}
-
-Add-PodeRoute -Method Get -Path '/system/timedate' -ScriptBlock {
-    $unixCommand = (Invoke-Expression 'timedatectl | jc --timedatectl') | Out-String
-    Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
-}
-
-Add-PodeRoute -Method Get -Path '/system/ioports' -ScriptBlock {
-    $unixCommand = (Invoke-Expression 'jc /proc/ioports') | Out-String
-    Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
-}
-
-Add-PodeRoute -Method Get -Path '/system/diskstats' -ScriptBlock {
-    $unixCommand = (Invoke-Expression 'jc /proc/diskstats') | Out-String
-    Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
-}
-
-Add-PodeRoute -Method Get -Path '/system/meminfo' -ScriptBlock {
-    $unixCommand = Get-Memory | ConvertTo-Json | Out-String
-    Write-PodeJsonResponse -ContentType 'application/json' -Value $unixCommand
-}  
-
-Add-PodeRoute -Method Get -Path '/system/tree' -ScriptBlock {
-    $unixCommand = (Invoke-Expression 'tree -L 2') | Out-String
-    Write-PodeJsonResponse -ContentType 'text/plain' -Value $unixCommand
-}
-
-Add-PodeRoute -Method Get -Path '/system/cpu' -ScriptBlock {
-    $cpuObject = Get-CpuFromProc | ConvertTo-Json | Out-String
-    Write-PodeJsonResponse -ContentType 'application/json' -Value $cpuObject
-}
+# Add-PodeRoute -Method Get -Path '/system/tree' -ScriptBlock {
+#     $unixCommand = (Invoke-Expression 'tree -L 2') | Out-String
+#     Write-PodeJsonResponse -ContentType 'text/plain' -Value $unixCommand
+# }

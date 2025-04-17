@@ -1,7 +1,42 @@
+<#
+.SYNOPSIS
+    Network.ps1 - A PowerShell module for gathering network statistics.
+
+.DESCRIPTION
+    This module provides a series of functions to retrieve and display detailed
+    network interface information and statistics on a system.
+
+.EXAMPLE
+    Get-Network -Interface 'eth0'
+    Retrieves raw network statistics for the 'eth0' interface.
+
+    Get-NetworkStats -Interface 'eth0' -SampleInterval 5
+    Calculates and displays network statistics for 'eth0', measuring byte and packet rates
+    every 5 seconds.
+#>
+
 using namespace System
 using namespace System.Diagnostics
 using namespace System.Net.NetworkInformation
 using namespace System.Collections.Generic
+
+<#
+.FUNCTION
+    Get-Network
+
+.SYNOPSIS
+    Retrieves raw network statistics for a specified interface.
+
+.DESCRIPTION
+    This function reads /proc/net/dev and parses the specified interface's statistics.
+    If the interface is not found, it returns a custom object with all values set to 0.
+
+.OUTPUTS
+    [PSCustomObject]
+
+.PARAMETER Interface
+    The network interface to retrieve statistics for. Default is 'eth0'.
+#>
 function Get-Network {
     [CmdletBinding()]
     param(
@@ -43,16 +78,50 @@ function Get-Network {
     }
 }
 
+<#
+.FUNCTION
+    Get-Hostnamectl
+
+.SYNOPSIS
+    Returns hostname and machine ID using the hostnamectl command, formatted as JSON.
+#>
 function Get-Hostnamectl {
     return Invoke-Expression '(hostnamectl --json=pretty)' | 
         ConvertFrom-Json | 
         ConvertTo-Json
 }
 
+<#
+.FUNCTION
+    Get-NetStat
+
+.SYNOPSIS
+    Executes the netstat -a -n -o -4 -6 -l -e command and returns the result.
+#>
 function Get-NetStat {
     return Invoke-Expression 'netstat -a -n -o -4 -6 -l -e'
 }
 
+<#
+.FUNCTION
+    Get-NetworkStats
+
+.SYNOPSIS
+    Calculates network statistics for a specified interface, measuring the rate of bytes and packets over a sample interval.
+
+.DESCRIPTION
+    This function takes two measurements of the specified interface's statistics, separated by a sample interval,
+    then calculates and returns the rates (bytes per second).
+
+.OUTPUTS
+    [PSCustomObject]
+
+.PARAMETER Interface
+    The network interface to retrieve statistics for. Default is 'eth0'.
+
+.PARAMETER SampleInterval
+    The time interval between measurements in seconds. Default is 1 second.
+#>
 function Get-NetworkStats {
     [CmdletBinding()]
     param(
@@ -88,29 +157,32 @@ function Get-NetworkStats {
 
     # Return stats object with both raw and human-readable values
     [PSCustomObject]@{
-        Interface       = $Interface
+        Interface        = $Interface
         # Current totals
-        TotalRxBytes    = $secondMeasurement.RxBytes
-        TotalTxBytes    = $secondMeasurement.TxBytes
+        #TotalRxBytes    = $secondMeasurement.RxBytes
+        #TotalTxBytes    = $secondMeasurement.TxBytes
         # Rate measurements
-        RxBytesPerSec   = $rxBytesPerSec
-        TxBytesPerSec   = $txBytesPerSec
-        RxKBps          = [math]::Round($rxKBps, 2)
-        TxKBps          = [math]::Round($txKBps, 2)
-        RxMBps          = [math]::Round($rxMBps, 4)
-        TxMBps          = [math]::Round($txMBps, 4)
+        RxBytesPerSecond = ConvertFrom-Bytes -Bytes $rxBytesPerSec
+        TxBytesPerSecond = ConvertFrom-Bytes -Bytes $txBytesPerSec
+
         # Packet statistics
-        RxPacketsPerSec = [math]::Round($rxPacketsPerSec, 2)
-        TxPacketsPerSec = [math]::Round($txPacketsPerSec, 2)
+        RxPacketsPerSec  = [math]::Round($rxPacketsPerSec, 2)
+        TxPacketsPerSec  = [math]::Round($txPacketsPerSec, 2)
         # Error statistics
-        RxErrors        = $secondMeasurement.RxErrors
-        TxErrors        = $secondMeasurement.TxErrors
-        RxDrops         = $secondMeasurement.RxDrops
-        TxDrops         = $secondMeasurement.TxDrops
+        #RxErrors         = $secondMeasurement.RxErrors
+        #TxErrors         = $secondMeasurement.TxErrors
+        #RxDrops         = $secondMeasurement.RxDrops
+        #TxDrops         = $secondMeasurement.TxDrops
     }
 }
 
-# Helper function to get a list of available network interfaces
+<#
+.FUNCTION
+    Get-NetworkInterfaces
+
+.SYNOPSIS
+    Retrieves a list of available network interfaces.
+#>
 function Get-NetworkInterfaces {
     $interfaces = Get-Content '/proc/net/dev' |
         Select-String ':' |
@@ -118,6 +190,13 @@ function Get-NetworkInterfaces {
     return $interfaces
 }
 
+<#
+.FUNCTION
+    Get-EthernetAdaptersSpeed
+
+.SYNOPSIS
+    Retrieves and displays the maximum speed of all Ethernet network adapters.
+#>
 function Get-EthernetAdaptersSpeed {
     param()
     $adapterMaxSpeed = [System.Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces() |
@@ -129,6 +208,13 @@ function Get-EthernetAdaptersSpeed {
     Write-Host $adapterMaxSpeed
 }
 
+<#
+.FUNCTION
+    Get-NetworkSentReceived
+
+.SYNOPSIS
+    Retrieves the bytes received and sent for each network interface.
+#>
 function Get-NetworkSentReceived {    
     [CmdletBinding()]
     param()
@@ -136,24 +222,31 @@ function Get-NetworkSentReceived {
     return [NetworkInterface]::GetAllNetworkInterfaces() | ForEach-Object {
 
         $bytesReceived = ($_.GetIPv4Statistics().BytesReceived.ToString())
-        $bytesSent =  ($_.GetIPv4Statistics().BytesSent.ToString())    
+        $bytesSent = ($_.GetIPv4Statistics().BytesSent.ToString())    
         $interfaceName = ($_.Name)
         
         [PSCustomObject]@{
             InterfaceName = $interfaceName
             BytesReceived = $bytesReceived 
-            BytesSent = $bytesSent
+            BytesSent     = $bytesSent
         }
     } 
 }
 
+<#
+.FUNCTION
+    Get-BytesPerSecond
+
+.SYNOPSIS
+    Calculates the bytes per second (in MB/s) for each Ethernet interface over a 1-second interval.
+#>
 function Get-BytesPerSecond {    
     [CmdletBinding()]
     param()
 
     return (1..2 | ForEach-Object {
-        $firstAdapter = [NetworkInterface]::GetAllNetworkInterfaces() |
-            Where-Object { $_.NetworkInterfaceType -eq 'Ethernet' }
+            $firstAdapter = [NetworkInterface]::GetAllNetworkInterfaces() |
+                Where-Object { $_.NetworkInterfaceType -eq 'Ethernet' }
                 $bytesReceivedFirstSample = $firstAdapter.GetIPStatistics().BytesReceived
                 $bytesSentFirstSample = $firstAdapter.GetIPStatistics().BytesSent
 
@@ -161,20 +254,16 @@ function Get-BytesPerSecond {
 
                 $secondAdapter = [NetworkInterface]::GetAllNetworkInterfaces() |
                     Where-Object { $_.NetworkInterfaceType -eq 'Ethernet' }
-                $bytesReceivedSecondSample = $secondAdapter.GetIPStatistics().BytesReceived
-                $bytesSentSecondSample = $secondAdapter.GetIPStatistics().BytesSent
+                    $bytesReceivedSecondSample = $secondAdapter.GetIPStatistics().BytesReceived
+                    $bytesSentSecondSample = $secondAdapter.GetIPStatistics().BytesSent
 
-                $bytesReceivedPerSecond = $bytesReceivedSecondSample - $bytesReceivedFirstSample
-                $bytesSentPerSecond = $bytesSentSecondSample - $bytesSentFirstSample
+                    $bytesReceivedPerSecond = $bytesReceivedSecondSample - $bytesReceivedFirstSample
+                    $bytesSentPerSecond = $bytesSentSecondSample - $bytesSentFirstSample
 
-                return [PSCustomObject]@{
-                    Interface = $firstAdapter.Name
-                    BytesReceivedPerSecond = $bytesReceivedPerSecond / 1MB
-                    BytesSentPerSecond = $bytesSentPerSecond / 1MB
-                }
-    })
-} 
-
-
-
-
+                    return [PSCustomObject]@{
+                        Interface              = $firstAdapter.Name
+                        BytesReceivedPerSecond = $bytesReceivedPerSecond / 1MB
+                        BytesSentPerSecond     = $bytesSentPerSecond / 1MB
+                    }
+        })
+}
