@@ -46,7 +46,10 @@
 			"\t\\$jasonAsString = $2 | Out-String",
 			"\tWrite-PodeJsonResponse -ContentType 'application/json' -Value $2",
 			"\t}",
-			"\tcatch {"
+			"\tcatch {",
+			"\t\tWrite-Host \\$_",
+			"\t}",
+			"}"
 		]
 	},
 	"PsNx Function": {
