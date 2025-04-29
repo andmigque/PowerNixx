@@ -1,5 +1,38 @@
 $script:LogCronFile = '/var/log/cron.log'
 
+<#
+    .SYNOPSIS
+    Reads and formats the cron log file.
+
+    .DESCRIPTION
+    The function reads the cron log file line by line and applies the patterns below.
+    If a line matches one of the patterns, it is parsed and the information is returned
+    in a custom object.
+
+    The regex patterns are:
+    1. Default format: ^(\S+)\s+(\S+)\s+(\S+)\s+(.*)
+       - This pattern matches the default cron log format, which is:
+         <date> <hostname> <daemon>[<pid>]: <message>
+       - The pattern captures the date, hostname, daemon, and message.
+    2. ISO 8601 format: ^(\d{4}-\d{2}-\d{2}T\S+)\s+(\S+)\s+(\S+)\s+(.*)
+       - This pattern matches the ISO 8601 date format, which is:
+         <date>T<time>Z
+       - The pattern captures the date/time, hostname, daemon, and message.
+
+    .EXAMPLE
+    Read-LogCron
+
+    .INPUTS
+    None. You cannot pipe objects to Read-LogCron.
+
+    .OUTPUTS
+    [PSCustomObject] with the following properties:
+        LogDate
+        ServerName
+        ProcessWithPID
+        ExecutedCommand
+    
+#>
 function Read-LogCron {
     # Define multiple patterns for different formats
     $patterns = @(
@@ -22,10 +55,48 @@ function Read-LogCron {
     }
 }
 
+<#
+    .SYNOPSIS
+    Formats the Read-LogCron output in a table format.
+
+    .DESCRIPTION
+    The function takes the output from Read-LogCron and formats it in a table
+    format for easier reading.
+
+    .EXAMPLE
+    Read-LogCron | Format-Table -AutoSize -RepeatHeader
+
+    .INPUTS
+    The output from Read-LogCron.
+
+    .OUTPUTS
+    Formatted table output.
+#>
 function Format-LogCron {
     Read-LogCron | Format-Table -AutoSize -RepeatHeader
 }
 
+<#
+    .SYNOPSIS
+    Searches the cron log file by command.
+
+    .DESCRIPTION
+    The function takes a command as input and returns all matching lines
+    from the cron log file.
+
+    .EXAMPLE
+    Search-LogCronByCommand -Command 'git pull'
+
+    .INPUTS
+    [string] Command to search for.
+
+    .OUTPUTS
+    [PSCustomObject] with the following properties:
+        LogDate
+        ServerName
+        ProcessWithPID
+        ExecutedCommand
+#>
 function Search-LogCronByCommand {
     param (
         [Parameter(Mandatory = $true)]
@@ -40,6 +111,25 @@ function Search-LogCronByCommand {
     $matchingLogs
 }
 
+<#
+    .SYNOPSIS
+    Gets the top commands from the cron log file.
+
+    .DESCRIPTION
+    The function takes an optional parameter for the number of top commands
+    to retrieve and returns the commands with the count of occurrences.
+
+    .EXAMPLE
+    Get-TopCommandsFromLogCron -Top 10
+
+    .INPUTS
+    [int] Top number of commands to retrieve.
+
+    .OUTPUTS
+    [PSCustomObject] with the following properties:
+        Command
+        Count
+#>
 function Get-TopCommandsFromLogCron {
     param (
         [int]$Top = 10
@@ -56,6 +146,28 @@ function Get-TopCommandsFromLogCron {
     $topCommands
 }
 
+<#
+    .SYNOPSIS
+    Groups the cron log file by date.
+
+    .DESCRIPTION
+    The function takes two parameters for the start and end dates and returns
+    all log entries that fall within the date range.
+
+    .EXAMPLE
+    Group-LogCronByDate -StartDate (Get-Date).AddDays(-1) -EndDate (Get-Date)
+
+    .INPUTS
+    [datetime] Start date.
+    [datetime] End date.
+
+    .OUTPUTS
+    [PSCustomObject] with the following properties:
+        LogDate
+        ServerName
+        ProcessWithPID
+        ExecutedCommand
+#>
 function Group-LogCronByDate {
     param (
         [Parameter(Mandatory = $true)]
@@ -73,6 +185,27 @@ function Group-LogCronByDate {
     $sortedLogs
 }
 
+<#
+    .SYNOPSIS
+    Calculates the log activity from the cron log file.
+
+    .DESCRIPTION
+    The function takes no parameters and returns a summary of the log activity
+    for each server in the cron log file.
+
+    .EXAMPLE
+    Measure-LogCronActivity
+
+    .INPUTS
+    None.
+
+    .OUTPUTS
+    [PSCustomObject] with the following properties:
+        ServerName
+        LogCount
+        OldestLogDate
+        NewestLogDate
+#>
 function Measure-LogCronActivity {
     $logs = Read-LogCron
 
