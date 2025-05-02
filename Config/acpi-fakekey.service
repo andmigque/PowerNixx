@@ -1,0 +1,29 @@
+[Unit]
+Description=ACPI fakekey daemon
+Requires=acpi-fakekey.socket
+Documentation=man:acpi_fakekey(8)
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/acpi_fakekeyd -f
+
+User=nobody
+Group=nogroup
+
+CapabilityBoundingSet=CAP_SYS_ADMIN
+ProtectSystem=full
+ProtectHome=yes
+PrivateNetwork=true
+PrivateDevices=true
+
+LimitNOFILE=64
+
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+Also=acpi-fakekey.socket
+WantedBy=multi-user.target

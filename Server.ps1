@@ -5,7 +5,7 @@ Import-Module Pode
 Import-Module Pode.Web
 
 Start-PodeServer -Threads 2 -EnablePool WebSockets {
-    Add-PodeEndpoint -Address localhost -Port 9090 -Protocol Https -Certificate ./liquid-ai.pem -CertificateKey ./liquid-ai-key.pem
+    Add-PodeEndpoint -Address localhost -Port 10090 -Protocol Https -Certificate ./liquid-ai.pem -CertificateKey ./liquid-ai-key.pem
     Add-PodeStaticRoute -Path /assets -Source ./Public/Assets
     
     Use-PodeWebTemplates -Title 'PowerNixx' -Theme Dark -NoPageFilter -HideSidebar

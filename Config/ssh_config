@@ -1,0 +1,37 @@
+# This is the ssh client system-wide configuration file.
+# It provides defaults for users, and the values can be changed in per-user configuration files
+# or on the command line.
+
+# Configuration data is parsed as follows:
+#  1. command line options
+#  2. user-specific file
+#  3. system-wide file
+# Any configuration value is only changed the first time it is set.
+# Thus, host-specific definitions should be at the beginning of the
+# configuration file, and defaults at the end.
+
+Include /etc/ssh/ssh_config.d/*.conf
+
+# Site-wide default options for SSH client
+Host *
+    ForwardAgent no                        # Disable agent forwarding for security
+    ForwardX11 no                          # Disable X11 forwarding for security
+    PasswordAuthentication no               # Disable password authentication; use keys instead
+    HostbasedAuthentication no              # Disable host-based authentication
+    GSSAPIAuthentication no                # Optional: Enable GSSAPI for enterprise environments
+    GSSAPIDelegateCredentials no           # Do not delegate credentials automatically
+    GSSAPIKeyExchange no                   # Optional: Disable key exchange if not needed
+    GSSAPITrustDNS no                      # Trust DNS for GSSAPI
+    BatchMode yes                          # Disable interactive prompts, useful for scripts
+    CheckHostIP yes                        # Check the IP address of the host when connecting
+    AddressFamily any                      # Default to IPv4, or adjust based on needs
+    ConnectTimeout 10                      # Set a 10-second timeout to connect
+    StrictHostKeyChecking ask               # Prompt for host key verification
+    IdentityFile ~/.ssh/id_rsa             # Specify default private key file
+    Port 22                                # Default SSH port
+    Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com  # Use modern, secure ciphers
+    MACs hmac-sha2-256,hmac-sha2-512       # Use strong MACs
+    PermitLocalCommand no                  # Disable local commands for security
+    VisualHostKey no                       # Disable visual host key feature
+    SendEnv LANG LC_*                      # Send locale-related environment variables
+    HashKnownHosts yes                     # Hash the known hosts for improved security

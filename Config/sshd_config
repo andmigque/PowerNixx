@@ -1,0 +1,73 @@
+# This is the sshd server system-wide configuration file. See
+# sshd_config(5) for more information.
+
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented. Uncommented options override the
+# default value.
+
+Include /etc/ssh/sshd_config.d/*.conf
+
+# Change the default SSH port for added security
+Port 2222  # Change to a custom port if possible
+AddressFamily any
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+# HostKey settings (make sure these files exist)
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Ciphers and keying (set strong ciphers)
+Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com
+RekeyLimit default none
+
+# Logging
+SyslogFacility AUTH
+LogLevel VERBOSE  # Use VERBOSE for detailed logging
+
+# Authentication:
+
+LoginGraceTime 1m                  # Reduced from 2 minutes
+PermitRootLogin no                  # Prevent root login via SSH
+StrictModes yes                     # Ensure permissions on authorized_keys files are correct
+MaxAuthTries 3                      # Reduce the max authentication attempts
+MaxSessions 2                       # Limit the number of concurrent sessions
+
+PubkeyAuthentication yes            # Ensure public key authentication is enabled
+
+# AuthorizedKeysFile for user keys
+AuthorizedKeysFile .ssh/authorized_keys
+
+KbdInteractiveAuthentication no      # Keep as is if not using
+UsePAM yes                          # Enable PAM for authentication
+
+# Allow or disable various types of forwarding
+AllowAgentForwarding no              # Disable agent forwarding
+AllowTcpForwarding no                # Disable TCP forwarding
+X11Forwarding no                     # Disable X11 forwarding; set to yes if needed for GUI
+
+PrintMotd no                        # Disable message of the day
+TCPKeepAlive no                     # Disable TCP keepalive
+ClientAliveInterval 300             # Send keepalive messages every 5 minutes
+ClientAliveCountMax 2               # Disconnect after 2 missed responses
+
+# DNS settings
+UseDNS no                           # Disable DNS for faster connection without relying on DNS resolution
+
+# Subsystem settings
+# Subsystem       sftp    /usr/lib/openssh/sftp-server
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+
+# Banner for SSH login messages; set to a path to enable:
+# Banner /etc/ssh/ssh_banner
+
+# Example of overriding settings on a per-user basis
+# Match User anoncvs
+#       X11Forwarding no
+#       AllowTcpForwarding no
+#       PermitTTY no
+#       ForceCommand cvs server

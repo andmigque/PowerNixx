@@ -130,7 +130,7 @@ function Search-LogCronByCommand {
         Command
         Count
 #>
-function Get-TopCommandsFromLogCron {
+function Get-LogCronTopCommand {
     param (
         [int]$Top = 10
     )
