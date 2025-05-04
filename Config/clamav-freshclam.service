@@ -1,0 +1,34 @@
+[Unit]
+Description=ClamAV virus database updater
+Documentation=man:freshclam(1) man:freshclam.conf(5) https://docs.clamav.net/
+ConditionPathExists=!/etc/cron.d/clamav-freshclam
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/freshclam -d --foreground=true
+
+User=clamav
+Group=clamav
+
+LimitNOFILE=64          
+LimitNPROC=32           
+
+ProtectSystem=full      
+ProtectHome=yes         
+PrivateTmp=yes          
+NoNewPrivileges=true     
+ProtectKernelModules=true 
+ProtectKernelLogs=true   
+PrivateDevices=true       
+ProtectHostname=true      
+PrivateNetwork=true       
+
+TimeoutStartSec=30
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

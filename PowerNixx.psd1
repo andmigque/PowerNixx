@@ -63,15 +63,11 @@
         },
         @{
             ModuleName    = 'Pester'
-            ModuleVersion = '5.5.0'
+            ModuleVersion = '5.7.1'
         },
         @{
             ModuleName    = 'Psake'
             ModuleVersion = '4.9.1'
-        },
-        @{
-            ModuleName    = 'PSScriptAnalyzer'
-            ModuleVersion = '1.23.0'
         }
     )
 

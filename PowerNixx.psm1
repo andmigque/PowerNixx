@@ -1,37 +1,31 @@
 # Import script-level variables first
-$Private = @(Get-ChildItem -Path "$PSScriptRoot/Private/*.ps1" -ErrorAction SilentlyContinue)
-$Public = @(Get-ChildItem -Path "$PSScriptRoot/Public/*.ps1" -Recurse -ErrorAction SilentlyContinue)
-
-Write-Verbose 'PowerNixx Module Loading...'
-Write-Verbose "Found $($Private.Count) private files"
-Write-Verbose "Found $($Public.Count) public files"
-
-# Dot source private files first
-$Private | ForEach-Object {
-    try {
-        . $_.FullName
-        Write-Verbose "Imported private file: $($_.Name)"
-    }
-    catch {
-        Write-Error "Failed to import private function $($_.FullName): $_"
-    }
-}
+$Public = @(Get-ChildItem -Path "$PSScriptRoot/Public/*.ps1" -Recurse)
 
 # Dot source public files
 $Public | ForEach-Object {
     try {
         . $_.FullName
-        Write-Verbose "Imported public file: $($_.Name)"
     }
     catch {
-        Write-Error "Failed to import public function $($_.FullName): $_"
+        Write-Error "Failed to import public function $($_.FullName): $($_.Exception.Message)"
     }
 }
 
-# Export all functions listed in the psd1's FunctionsToExport
+# Validate manifest file
 $manifestPath = Join-Path $PSScriptRoot 'PowerNixx.psd1'
+if (-Not (Test-Path $manifestPath)) {
+    throw "Manifest file not found at $manifestPath"
+}
+
+# Import manifest and validate FunctionsToExport
 $manifest = Import-PowerShellDataFile -Path $manifestPath
-Write-Verbose "Exporting $($manifest.FunctionsToExport.Count) functions"
+if (-Not $manifest.FunctionsToExport) {
+    throw "FunctionsToExport is not defined in the manifest file."
+}
+
+# Export all functions listed in the psd1's FunctionsToExport
 Export-ModuleMember -Function $manifest.FunctionsToExport
-Write-Verbose 'PowerNixx Module Loaded Successfully'
+
+# Set output rendering for PowerShell 7+
+
 $PSStyle.OutputRendering = 'Ansi'

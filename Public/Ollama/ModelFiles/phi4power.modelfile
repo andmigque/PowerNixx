@@ -19,7 +19,7 @@ If you have any questions or need help with anything, feel free to ask!
 """
 
 MESSAGE user """
-*As an experienced developer, I would like to request you adhere to the following guidelines when generating Powershell code*
+# *As an experienced developer, I would like to request you adhere to the following guidelines when generating Powershell code*
 
 1. Use approved verbs for function names, except when the functions purpose is not covered by the approved verbs.
 2. Use Verb-Noun naming convention for functions.
@@ -34,13 +34,31 @@ MESSAGE user """
 13. Prefer generating code that is idempotent. Avoid side effects unless explicitly stated and required.
 15. Avoid hard coded values. Prefer mandatory parameters instead.
 16. Ensure code adheres to security practices and guidelines compliant with CIS benchmarks.
+17. Prefer pipeline over imperative style. Prefer ForEach-Object over foreach.
 
-*Here is an example of the high quality code you should generate*
+### *Here is an example of the high quality code you should generate*
 
-```
-# Opens a TCP stream capable of sending arbitrary data to a listening socket.
-# This is bare minimum code required for a TCP stream writer.
-# Can serve as base for RPC, HTTP, or other server.
+```powershell
+<#
+.SYNOPSIS
+Connects to a TCP server and sends a command.
+
+.DESCRIPTION
+This function creates a TCP client, connects to a specified hostname and port, and sends a command.
+It ensures that the connection is properly closed after the command is sent.
+
+.PARAMETER Hostname
+The hostname or IP address of the TCP server.
+
+.PARAMETER Port
+The port number of the TCP server.
+
+.PARAMETER Command
+The command to send to the TCP server.
+
+.EXAMPLE
+PS> Send-PsNxCommand -Hostname 'localhost' -Port 12080 -Command 'systemctl status'
+#>
 function Send-PsNxCommand {
     [CmdletBinding()]
     param(
@@ -51,31 +69,6 @@ function Send-PsNxCommand {
         [Parameter(Mandatory=$true)]
         [string]$Command
     )
-
-    <#
-    .SYNOPSIS
-    Connects to a TCP server and sends a command.
-
-    .DESCRIPTION
-    This function creates a TCP client, connects to a specified hostname and port, and sends a command.
-    It ensures that the connection is properly closed after the command is sent.
-
-    .PARAMETER Hostname
-    The hostname or IP address of the TCP server.
-
-    .PARAMETER Port
-    The port number of the TCP server.
-
-    .PARAMETER Command
-    The command to send to the TCP server.
-
-    .EXAMPLE
-    PS> Send-PsNxCommand -Hostname 'localhost' -Port 12080 -Command 'systemctl status'
-
-    .NOTES
-    Author: Human Person
-    Date: February 18, 2025
-    #>
 
     try {
         # Create a TCP client
@@ -104,10 +97,9 @@ function Send-PsNxCommand {
         if ($client) { $client.Close() }
     }
 }
-```
-
-*You should explain your code less, and verify with tests more*
-*Here is an example of a corresponding unit tests file you could generate for Send-PsNxCommand* 
+```powershell
+### *You should explain your code less, and verify with tests more*
+### *Here is an example of a corresponding unit tests file you could generate for Send-PsNxCommand* 
 
 ```
 Describe 'Send-PsNxCommand' {
@@ -153,9 +145,5 @@ Describe 'Send-PsNxCommand' {
     }
 }
 ```
-
-*If you have any questions or need clarification on these guidelines, feel free to ask!*
-*I look forward to working with you!*
-
 """
 

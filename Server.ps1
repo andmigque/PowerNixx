@@ -22,6 +22,8 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
     $UserName = [System.Environment]::UserName
     $UserDomainName = [System.Environment]::UserDomainName
 
+
+
     Set-PodeWebHomePage -NoTitle -DisplayName "$($UserName)@$($UserDomainName), $($OsVersion)" -Layouts @(
         New-PodeWebContainer -Content @(
             New-PodeWebChart -Name 'CPU (%)' -Height '10em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
@@ -78,4 +80,24 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
             }
         )
     )
+
+    # Define a shared variable to store negative logs
+    # $script:NegativeLogs = @()
+
+    # # Schedule a job to retrieve negative logs every minute using Pode's helper
+    # $cron = New-PodeCron -Every Minute -Interval 1
+
+    # Add-PodeSchedule -Name 'RetrieveNegativeLogs' -Cron $cron -ScriptBlock {
+    #     # Retrieve negative logs from the user log
+    #     $newNegativeLogs = Read-LogUser | Group-LogByNegative
+
+    #     # Check if there are new negative logs
+    #     if ($newNegativeLogs.Count -gt $script:NegativeLogs.Count) {
+    #         # Notify the user of new negative events using the correct notify-send syntax
+    #         Start-Process -FilePath "/usr/bin/notify-send" -ArgumentList '"Negative Events Detected"','"New negative events have been logged. Check the Pode.Web interface for details."'
+    #     }
+
+    #     # Update the shared variable with the latest logs
+    #     $script:NegativeLogs = $newNegativeLogs
+    # }
 }
