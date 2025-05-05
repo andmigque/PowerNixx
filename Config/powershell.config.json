@@ -3,36 +3,7 @@
         "ScriptBlockLogging": {
             "EnableScriptBlockInvocationLogging": false,
             "EnableScriptBlockLogging": false
-        },
-        "ModuleLogging": {
-            "EnableModuleLogging": true,
-            "Modules": [
-                "*"
-            ]
-        },
-        "Transcription": {
-            "EnableTranscription": true,
-            "OutputDirectory": "/var/log/powershell-transcriptions",
-            "IncludeInvocationHeader": true,
-            "IncludeInvocationFooter": true
-        },
-        "ExecutionPolicy": {
-            "DefaultExecutionPolicy": "RemoteSigned"
         }
     },
-    "LogLevel": "informational",
-    "MaxMemory": {
-        "LimitMB": 2048
-    },
-    "SessionConfiguration": {
-        "EnableRemote": true,
-        "AllowedIPAddresses": [
-            "192.168.1.0/24",
-            "10.0.0.1"
-        ]
-    },
-    "CommandLine": {
-        "MaxCommandHistory": 1000,
-        "HistoryFile": "/var/log/powershell-command-history.json"
-    }
+    "LogLevel": "none"
 }
