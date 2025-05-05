@@ -4,65 +4,6 @@ using namespace System.Collections.Generic
 using namespace System.Management.Automation
 
 #----------------------------------------------------------------------
-# Helper Function: New-LogErrorObject (STANDALONE)
-#----------------------------------------------------------------------
-<#
-.SYNOPSIS
-Creates a standardized PSCustomObject representing an error record.
-.DESCRIPTION
-Takes an ErrorRecord and a boolean indicating if it was terminating,
-and formats it into a consistent PSCustomObject for output streams.
-.PARAMETER ErrorRecord
-The original ErrorRecord object (e.g., from $_ in a catch block, or from -ErrorVariable).
-.PARAMETER IsTerminatingError
-A boolean ($true/$false) indicating if this error stopped the main execution path.
-.OUTPUTS
-[PSCustomObject] Detailed error information.
-#>
-function New-LogErrorObject {
-    [CmdletBinding()] # Good practice for functions
-    param(
-        [Parameter(Mandatory = $true)]
-        [ErrorRecord]$ErrorRecord,
-
-        [Parameter(Mandatory = $true)]
-        [bool]$IsTerminatingError
-    )
-
-    $functionName = $null
-    # Check if InvocationInfo exists before accessing properties
-    if ($ErrorRecord.InvocationInfo) {
-        # Check if MyCommand exists before accessing Name
-        if ($ErrorRecord.InvocationInfo.MyCommand) {
-            $functionName = $ErrorRecord.InvocationInfo.MyCommand.Name
-        }
-        $scriptName = $ErrorRecord.InvocationInfo.ScriptName
-        $scriptLine = $ErrorRecord.InvocationInfo.ScriptLineNumber
-    }
-    else {
-        # Set defaults if InvocationInfo is missing (less common, but possible)
-        $scriptName = 'Unknown'
-        $scriptLine = 0
-    }
-
-
-    # Create the standardized Error object, Type property last
-    return [PSCustomObject]@{
-        IsTerminating = $IsTerminatingError
-        ErrorMessage  = $ErrorRecord.Exception.Message
-        Target        = $ErrorRecord.TargetObject # What the error applied to
-        Category      = $ErrorRecord.CategoryInfo.Category.ToString() # Convert enum to string
-        Script        = $scriptName      # Path to script where error occurred
-        Line          = $scriptLine      # Line number in script
-        Function      = $functionName    # Function where error occurred
-        ExceptionType = $ErrorRecord.Exception.GetType().FullName     # Specific .NET exception type
-        StackTrace    = $ErrorRecord.ScriptStackTrace                 # PowerShell stack trace (often more useful)
-        Type          = 'Error' # Distinguishes from log file objects - NOW LAST
-    }
-}
-
-
-#----------------------------------------------------------------------
 # Function: Get-VarLogs (Now uses the standalone helper)
 #----------------------------------------------------------------------
 <#
@@ -1049,8 +990,22 @@ function Show-AuthErrors {
     param()
 
     # Show the last 500 auth log entries containing 'error', 'warning', 'failed', or 'could not'
-    Read-Log -LogFile auth -Tail 5000 | Group-LogByNegative | Format-Table -AutoSize -RepeatHeader
+    Read-Log -LogFile auth -Tail 100000 | Group-LogByNegative | Format-Table -AutoSize -RepeatHeader
 
+}
+
+function Get-NumberedLog {
+    [CmdletBinding()]
+    param()
+
+    Get-VarLogs | Where-Object -FilterScript { $_.FullName -match '.log.[0-9]' }
+}
+
+function Backup-LogArchives {
+    [CmdletBinding()]
+    param()
+
+    Get-VarLogArchives | ForEach-Object { Invoke-Expression "sudo mv $($_.FullName) /var/backups" }
 }
 
 #----------------------------------------------------------------------
@@ -1074,19 +1029,3 @@ function Show-LogArchivesLarge {
     Get-VarLogArchives | Where-Object { $_.Type -eq 'LogArchive' -and $_.SizeKB -gt 51200 } | Sort-Object SizeKB -Descending
     
 }
-
-# function Get-JournalJson {
-#     [CmdletBinding()]
-#     param()
-
-#     Invoke-Expression 'journalctl --no-pager -a -r -m --output=json' | ConvertFrom-Json
-# }
-
-# function Show-Journal {
-#     [CmdletBinding()]
-#     param()
-
-#     # Call
-#     Get-JournalErrorJson | Format-List
-
-# }

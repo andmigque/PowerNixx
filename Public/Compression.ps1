@@ -1,3 +1,6 @@
+using namespace System.Collections.Concurrent
+using namespace System.IO.Compression
+using namespace System.IO
 Set-StrictMode -Version 3.0
 
 function ConvertTo-GzipParallel {
@@ -8,11 +11,17 @@ function ConvertTo-GzipParallel {
         [Parameter(Mandatory = $true)]
         [string]$DestDir
     )
-    $script:ParallelErrors = @()
-    $source = (Resolve-Path -Path $SrcDir).Path
-    $destination = $DestDir
 
-    # Check if source and destination directories exist
+    # Use a thread-safe ConcurrentDictionary for error collection
+    $ParallelErrors = [ConcurrentDictionary[string, string]]::new()
+    $source = (Resolve-Path -Path $SrcDir).Path
+    $destination = (Resolve-Path -Path $DestDir).Path
+
+    # Debug: Verify paths
+    Write-Information "Source: $source"
+    Write-Information "Destination: $destination"
+
+    # Ensure source and destination directories exist
     if (-not (Test-Path -Path $source)) {
         throw "Source directory '$source' does not exist."
     }
@@ -21,20 +30,23 @@ function ConvertTo-GzipParallel {
         Write-Information "Destination directory '$destination' does not exist. Creating..."
         New-Item -Path $destination -ItemType Directory -Force -Confirm | Out-Null
     }
+
     $startTime = Get-Date
-    $items = Get-ChildItem -Path $source -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object -Parallel {
 
-        $currentTime = (Get-Date)
-        $beginTime = $using:startTime
+    # Debug: Check files found
+    $files = Get-ChildItem -Path $source -Recurse -File -ErrorAction SilentlyContinue
+    Write-Information "Files found: $($files.Count)"
 
-        $differential = ($currentTime - $beginTime)
-        $differential = [string]::Format("{0:hh\:mm\:ss}", $differential)
-        Write-Progress -Activity 'Compressing' -Status "$differential ⛷"
+    # Process files in parallel
+    $files | ForEach-Object -Parallel {
+        $errors = $Using:ParallelErrors
+        $currentTime = Get-Date
+        $elapsedTime = [string]::Format('{0:hh\:mm\:ss}', ($currentTime - $using:startTime))
+        Write-Progress -Activity 'Compressing' -Status "$elapsedTime ⛷"
 
         $filePath = $_.FullName
         $baseName = $_.Name
-        $extension = $_.Extension
-        $gzipFilePath = Join-Path -Path $Using:destination -ChildPath ($baseName + '.gz')
+        $gzipFilePath = Join-Path -Path $using:destination -ChildPath "$baseName.gz"
 
         try {
             # Create a FileStream for reading the original file
@@ -50,7 +62,9 @@ function ConvertTo-GzipParallel {
             $fileStream.CopyTo($gzipWriter)
         }
         catch {
-            $script:ParallelErrors += $_
+            # Add errors to the thread-safe ConcurrentDictionary and log them
+            $errors.TryAdd($filePath, $_.Exception.Message) | Out-Null
+            #Write-Host "Error compressing file: $filePath - $_"
         }
         finally {
             # Close both streams to release resources
@@ -64,11 +78,14 @@ function ConvertTo-GzipParallel {
         }
     }
 
-    
-
-    if($script:ParallelErrors.Count -gt 0) {
-       $parallelErrorsJason = $script:ParallelErrors | ConvertTo-Json -Depth 10
-    } else {
-        Write-Host "Compression complete"
+    # Handle errors
+    if ($ParallelErrors.Count -gt 0) {
+        $ParallelErrors.GetEnumerator() | 
+            ConvertTo-Json -Depth 10 | 
+            Out-File -FilePath "$destination/CompressionErrors.json"
+        Write-Warning "Some files failed to compress. See $($destination)/CompressionErrors.json for details."
+    }
+    else {
+        Write-Host 'Compression complete'
     }
 }
