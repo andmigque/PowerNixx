@@ -687,7 +687,7 @@ function Group-LogByNegative {
         [PSCustomObject]$InputObject, # Renamed for clarity
 
         [Parameter(Mandatory = $false)]
-        [string[]]$Keywords = @('error', 'warning', 'failed', 'could not')
+        [string[]]$Keywords = @('error', 'warning', 'failed', 'could not', 'invalid', 'denied', 'blocked')
     )
 
     process {
@@ -1049,15 +1049,7 @@ function Show-AuthErrors {
     param()
 
     # Show the last 500 auth log entries containing 'error', 'warning', 'failed', or 'could not'
-    Read-Log -LogFile auth -Tail 500 | Group-LogByNegative | Format-Table -AutoSize -RepeatHeader
-
-}
-
-function Show-AuthErrorsByKeyword {
-    [CmdletBinding()]
-    param()
-
-    Read-Log -LogFile auth -Tail 500 | Group-LogByNegative -Keywords 'denied', 'invalid'
+    Read-Log -LogFile auth -Tail 5000 | Group-LogByNegative | Format-Table -AutoSize -RepeatHeader
 
 }
 
@@ -1082,3 +1074,19 @@ function Show-LogArchivesLarge {
     Get-VarLogArchives | Where-Object { $_.Type -eq 'LogArchive' -and $_.SizeKB -gt 51200 } | Sort-Object SizeKB -Descending
     
 }
+
+# function Get-JournalJson {
+#     [CmdletBinding()]
+#     param()
+
+#     Invoke-Expression 'journalctl --no-pager -a -r -m --output=json' | ConvertFrom-Json
+# }
+
+# function Show-Journal {
+#     [CmdletBinding()]
+#     param()
+
+#     # Call
+#     Get-JournalErrorJson | Format-List
+
+# }
