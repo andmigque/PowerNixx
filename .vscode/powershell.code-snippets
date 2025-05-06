@@ -15,40 +15,31 @@
 	"PsNx Pode Web Table": {
 		"prefix": "PsNxSystemWebTable",
 		"body": [
-			"Add-PodeWebPage -Name '$1' -Icon '$2' -Group '$3' -ScriptBlock {",
-			"\tNew-PodeWebCard -Content  @(",
-			"\t\tNew-PodeWebTable -Name '$1' -ScriptBlock {",
-			"\t\t\t[array]$4 = ($5)",
-			"\t\t\tforeach(\\$line in $4) {",
-			"\t\t\t\t[ordered]@{",
-			"\t\t\t\t\t$6 = \\$line",
-			"\t\t\t}",
-			"\t\t\t}",
-			"\t\t}",
-			"\t)",
-			"}",
-		]
-	},
-	"PsNx Pode Text Plain Endpoint": {
-		"prefix": "PsNxPodeText",
-		"body": [
-			"Add-PodeRoute -Method Get -Path '/llm/$0' -ScriptBlock {",
-			"    $1 = (Invoke-Expression '$2') | Out-String",
-			"    Write-PodeTextResponse -ContentType 'text/plain' -Value $1",
+			"Add-PodeWebPage -Name '${1:PageName}' -Icon '${2:MaterialIcon}' -Group '$3' -ScriptBlock {",
+			"    New-PodeWebCard -Content @(",
+			"        New-PodeWebTable -Name '$1' -ScriptBlock {",
+			"            [array]$4 = ($5)",
+			"            foreach ($line in $4) {",
+			"                [ordered]@{",
+			"                    $6 = $line",
+			"                }",
+			"            }",
+			"        }",
+			"    )",
 			"}"
 		]
 	},
 	"PsNx System Json Endpoint": {
 		"prefix": "PsNxPodeJson",
 		"body": [
-			"Add-PodeRoute -Method Get -Path '/system/$1' -ScriptBlock {",
-			"\ttry{",
-			"\t\\$jasonAsString = $2 | Out-String",
-			"\tWrite-PodeJsonResponse -ContentType 'application/json' -Value $2",
-			"\t}",
-			"\tcatch {",
-			"\t\tWrite-Host \\$_",
-			"\t}",
+			"Add-PodeRoute -Method Get -Path '/system/${0:endpoint}' -ScriptBlock {",
+			"    try {",
+			"        \\$jasonAsString = ${2:JsonFunction} | ConvertTo-Json | Out-String",
+			"        Write-PodeJsonResponse -ContentType 'application/json' -Value \\$jasonAsString",
+			"    }",
+			"    catch {",
+			"        return New-PsNxError -Data \\$_",
+			"    }",
 			"}"
 		]
 	},
@@ -56,134 +47,22 @@
 		"prefix": "PsNxFunction",
 		"body": [
 			"function ${0:FunctionName} {",
-			"\t[CmdletBinding()]",
-			"\tparam(${1:type}${2:Variable})",
-			"\ttry {",
-			"\t\t$2 # Code goes here",
-			"\t}catch{",
-			"\t\tWrite-Error \\$_",
-			"\t\treturn @{ ",
-			"\t\t\tError = \\$_",
-			"\t\t}",
-			"\t}",
-			"}"
-		]
-	},
-	"PsNx Assert Mock": {
-		"prefix": "PsNxAssertMock",
-		"body": [
-			"$$assertMockParams = @{",
-			"\t'CommandName' = '${1:Command}'",
-			"\t'Times'       = ${2:1}",
-			"\t'Exactly'     = $$true",
-			"}",
-			"Assert-MockCalled @assertMockParams"
-		],
-		"description": "AssertMock snippet for Pestering"
-	},
-	"Example-Splatting": {
-		"prefix": "PsNxSplat",
-		"description": "Example: PowerShell splatting technique snippet",
-		"body": [
-			"\\$Params = @{",
-			"\tModule = '*'",
-			"\tVerb = 'Get'",
-			"}",
-			"Get-Command @Params"
-		]
-	},
-	"Example-Switch": {
-		"prefix": "PsNxSwitch",
-		"description": "Example: switch statement snippet",
-		"body": [
-			"switch (${variable:\\$x})",
-			"{",
-			"\t'${val:value1}' { $1 }",
-			"\t{\\$_ -in 'A','B','C'} {}",
-			"\t'value3' {}",
-			"\tDefault {}",
-			"}"
-		]
-	},
-	"Throw Terminating Error": {
-		"prefix": "PsNxTerminateError",
-		"body": [
-			"\\$Exception     = New-Object ${1:System.ArgumentException} (\"${2:Invalid argument provided.}\")\r",
-			"\\$ErrorCategory = [System.Management.Automation.ErrorCategory]::${3:InvalidArgument}\r",
-			"# Exception, ErrorId as [string], Category, and TargetObject (e.g. the parameter that was invalid)\r",
-			"\\$ErrorRecord   = New-Object System.Management.Automation.ErrorRecord(\\$Exception, '${4:InvalidArgument}', \\$ErrorCategory, ${5:\\$null})\r",
-			"\\$PSCmdlet.ThrowTerminatingError(\\$ErrorRecord)"
-		],
-		"description": "Throw a full terminating error."
-	},
-	"PesterContext": {
-		"prefix": "PsNxContextPester",
-		"description": "Pester - Context block",
-		"body": [
-			"Context \"${1:ContextName}\" {",
-			"\t${0:$TM_SELECTED_TEXT}",
-			"}"
-		]
-	},
-	"PesterContextIt": {
-		"prefix": "PsNxItContextPester",
-		"description": "Pester - Context block with nested It block",
-		"body": [
-			"Context \"${1:ContextName}\" {",
-			"\tIt \"${2:ItName}\" {",
-			"\t\t${3:${TM_SELECTED_TEXT:Assertion}}",
-			"\t}$0",
-			"}"
-		]
-	},
-	"PesterDescribeBlock": {
-		"prefix": "PsNxDescribePester",
-		"description": "Pester Describe block",
-		"body": [
-			"Describe \"${1:DescribeName}\" {",
-			"\t${0:TM_SELECTED_TEXT}",
-			"}"
-		]
-	},
-	"PesterDescribeContextIt": {
-		"prefix": "PsNxDescribeItPester",
-		"description": "Pester Describe block with nested Context & It blocks",
-		"body": [
-			"Describe \"${1:DescribeName}\" {",
-			"\tContext \"${2:ContextName}\" {",
-			"\t\tIt \"${3:ItName}\" {",
-			"\t\t\t${4:${TM_SELECTED_TEXT:Assertion}}",
-			"\t\t}$0",
-			"\t}",
-			"}"
-		]
-	},
-	"PesterIt": {
-		"prefix": "PsNxItPester",
-		"description": "Pester - It block",
-		"body": [
-			"It \"${1:ItName}\" {",
-			"\t${2:${TM_SELECTED_TEXT:Assertion}}",
-			"}$0"
-		]
-	},
-	"Pester for Parameter": {
-		"prefix": "PsNxParamPester",
-		"body": [
-			"It \"${1:FunctionName} Should have a parameter ${2:ParameterName}\" {",
-			"\t(Get-Command ${1:FunctionName}).Parameters['${2:ParameterName}'].Count | Should -Be 1",
+			"    [CmdletBinding()]",
+			"    param (",
+			"        [${1:Type}]\\$${2:Variable}",
+			"    )",
+			"",
+			"    try {",
+			"        # Your code logic here",
+			"        \\$data = ${3:PipelineOutput}",
+			"        return New-PsNxOutput -Data \\$data",
+			"    }",
+			"    catch {",
+			"        return New-PsNxError -Data \\$_",
+			"    }",
 			"}"
 		],
-		"description": "Pester Test for Parameter"
-	},
-	"Pester for Mandatory Parameter": {
-		"prefix": "PsNxMandatoryPester",
-		"body": [
-			"It \"${1:FunctionName} Should have a mandatory parameter ${2:ParameterName}\" {",
-			"\t(Get-Command ${1:FunctionName}).Parameters['${2:ParameterName}'].Attributes.Mandatory | Should -BeTrue",
-			"}"
-		],
-		"description": "Pester Test for Parameter"
+		"description": "Scaffolds a PowerShell function with structured output using New-PsNxOutput and New-PsNxError."
 	},
 	"PsNx SystemD Wrapper Pipe": {
 		"prefix": "PsNxSystemDWrapperPipe",
