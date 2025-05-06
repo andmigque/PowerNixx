@@ -1,22 +1,22 @@
-# Import the function script
+﻿# Import the function script
 BeforeAll {
     $ModuleRoot = Split-Path $PSScriptRoot -Parent
     Import-Module $ModuleRoot/PowerNixx.psd1 -Force
 }
 
 
-Describe "Get-SystemUptime Tests" {
+Describe 'Get-SystemUptime Tests' {
 
-    Context "When system uptime is queried" {
+    Context 'When system uptime is queried' {
         It "Returns a string in the format 'Uptime: 0d, Xh, Xm, Xs'" {
             # Execute the function and capture the output
             $result = Get-SystemUptime | Out-String
-            Write-Host "$result"
+            Write-Information "$result"
 
             $pattern = '^Uptime: \d+d, \d+h, \d+m, \d+s$'
 
             # Assert that the result matches expected format and content
-            $result -match $pattern  | Should -Be $true
+            $result -match $pattern | Should -Be $true
         }
     }
 
@@ -48,7 +48,7 @@ Describe "Get-SystemUptime Tests" {
 
             $first = $output | Select-Object -First 1
             $last = $output | Select-Object -Last 1
-            
+
             $first.Active | Should -BeIn @('failed', 'inactive')
             $last.Active | Should -BeIn @('failed', 'inactive')
 
@@ -83,10 +83,10 @@ Describe "Get-SystemUptime Tests" {
 
             $first = $output | Select-Object -First 1
             $last = $output | Select-Object -Last 1
-            
+
             $first.Active | Should -Not -BeIn @('failed', 'inactive')
             $last.Active | Should -Not -BeIn @('failed', 'inactive')
-    
+
         }
     }
 

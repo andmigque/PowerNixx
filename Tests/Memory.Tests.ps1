@@ -21,8 +21,8 @@ Describe 'Get-Memory Tests' {
     It 'should handle errors gracefully' {
         # Arrange
         $mockError = [System.Management.Automation.ErrorRecord]::new(
-            [System.Exception]::new("Test error"),
-            "Get-Memory",
+            [System.Exception]::new('Test error'),
+            'Get-Memory',
             [System.Management.Automation.ErrorCategory]::NotSpecified,
             $null
         )
@@ -34,7 +34,7 @@ Describe 'Get-Memory Tests' {
         $result = Get-Memory
 
         # Assert
-        Write-Host "Result: $($result)"
+        Write-Information "Result: $($result)"
         #$result.Error | Should -Be "Test error"
     }
 }

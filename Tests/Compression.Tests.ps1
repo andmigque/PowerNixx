@@ -1,4 +1,4 @@
-# Import the module containing the function
+﻿# Import the module containing the function
 # Import the function script
 BeforeAll {
     $ModuleRoot = Split-Path $PSScriptRoot -Parent
@@ -10,13 +10,13 @@ Describe 'ConvertTo-GzipParallel' {
     # Define the source and destination directories
     $script:srcDirPath = '/tmp/testsrcdir'
     $script:destDirPath = '/tmp/testdestdir'
-    
+
 
     # Create the source and destination directories, and test files, before each test
     BeforeEach {
         # Create the source and destination directories
         $srcDir = New-Item -Path $srcDirPath -ItemType Directory -Force
-        $destDir = New-Item -Path $destDirPath -ItemType Directory -Force
+        New-Item -Path $destDirPath -ItemType Directory -Force
 
         # Create some test files in the source directory
         $testFiles = @()

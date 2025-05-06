@@ -14,10 +14,10 @@ Task Test -Depends Compile, Clean {
 
 }
 Task Compile -Depends Clean {
-    # Import-Module -Name ./PowerNixx.psd1 -Force
-    # Get-ChildItem -Path './' | ForEach-Object { 
-    #     Invoke-ScriptAnalyzer -IncludeDefaultRules -Path "$($_.FullName)" 
-    # }
+    #Import-Module -Name ./PowerNixx.psd1 -Force
+    Get-ChildItem -Path './Tests' | ForEach-Object { 
+        Invoke-ScriptAnalyzer -IncludeDefaultRules -Path "$($_.FullName)" -Fix -ReportSummary
+    }
 }
 
 Task Clean {

@@ -1,4 +1,4 @@
-# Import the function script
+﻿# Import the function script
 BeforeAll {
     $ModuleRoot = Split-Path $PSScriptRoot -Parent
     Import-Module $ModuleRoot/PowerNixx.psd1 -Force
@@ -40,7 +40,7 @@ Describe 'Get-CpuArchitecture Tests' {
     It 'should return 64-bit on a 64-bit Windows' -Skip:$IsLinux {
         # Arrange: Mock WMI object
         Mock Get-WmiObject { return @{ MaxClockSpeed = 3200; DeviceID = "CPU0"; SocketDesignation = "Socket 1" } }
-        
+
         # Act
         $result = Get-CpuArchitecture
 
@@ -50,9 +50,9 @@ Describe 'Get-CpuArchitecture Tests' {
 
     It 'should return 32-bit on a 32-bit Windows' -Skip:$IsLinux {
         Mock Get-WmiObject { return @{ MaxClockSpeed = 3200; DeviceID = "CPU0"; SocketDesignation = "Socket 1" } }
-        
+
         $result = Get-CpuArchitecture
-        
+
         $result | Should -BeExactly '32-bit'
     }
 }
