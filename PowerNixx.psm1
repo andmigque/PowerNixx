@@ -28,6 +28,7 @@ Export-ModuleMember -Function $manifest.FunctionsToExport
 
 . ./Public/PsNxEnums.ps1
 . ./Public/PsNxResult.ps1
+. ./Public/ByteMapper.ps1
 # Set output rendering for PowerShell 7+
 
 $PSStyle.OutputRendering = 'Ansi'

@@ -7,19 +7,19 @@ function Get-Memory {
 		$meminfo = Invoke-Expression 'jc /proc/meminfo' | ConvertFrom-Json
 
 		# Convert KB values to bytes for consistent handling
-		$total = ConvertFrom-Bytes -bytes ($meminfo.MemTotal * 1024)
-		$available = ConvertFrom-Bytes -bytes ($meminfo.MemAvailable * 1024)
-		$buffers = ConvertFrom-Bytes -bytes ($meminfo.Buffers * 1024)
-		$cached = ConvertFrom-Bytes -bytes ($meminfo.Cached * 1024)
+		$total = [ByteMapper]::ConvertFromBytes($meminfo.MemTotal * 1024)
+		$available = [ByteMapper]::ConvertFromBytes($meminfo.MemAvailable * 1024)
+		$buffers = [ByteMapper]::ConvertFromBytes($meminfo.Buffers * 1024)
+		$cached = [ByteMapper]::ConvertFromBytes($meminfo.Cached * 1024)
 
 		# Calculate used memory (converting KB to bytes)
-		$used = ConvertFrom-Bytes -bytes (($meminfo.MemTotal - $meminfo.MemFree - $meminfo.Buffers - $meminfo.Cached) * 1024)
+		$used = [ByteMapper]::ConvertFromBytes(($meminfo.MemTotal - $meminfo.MemFree - $meminfo.Buffers - $meminfo.Cached) * 1024)
 
 		# Calculate percentages
-		$usedPercent = ConvertTo-Percent -numerator $used.OriginalBytes -denominator $total.OriginalBytes
-		$availablePercent = ConvertTo-Percent -numerator $available.OriginalBytes -denominator $total.OriginalBytes
-		$buffersPercent = ConvertTo-Percent -numerator $buffers.OriginalBytes -denominator $total.OriginalBytes
-		$cachedPercent = ConvertTo-Percent -numerator $cached.OriginalBytes -denominator $total.OriginalBytes
+		$usedPercent = [ByteMapper]::ConvertToPercent($used.OriginalBytes, $total.OriginalBytes, 2) # Add decimalPlaces argument
+		$availablePercent = [ByteMapper]::ConvertToPercent($available.OriginalBytes, $total.OriginalBytes, 2) # Add decimalPlaces argument
+		$buffersPercent = [ByteMapper]::ConvertToPercent($buffers.OriginalBytes, $total.OriginalBytes, 2) # Add decimalPlaces argument
+		$cachedPercent = [ByteMapper]::ConvertToPercent($cached.OriginalBytes, $total.OriginalBytes, 2) # Add decimalPlaces argument
 
 		# Return memory statistics object
 		[PSCustomObject]@{

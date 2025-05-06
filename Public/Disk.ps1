@@ -16,9 +16,9 @@ function Get-DiskUsage {
             $diskUsageObject = [PSCustomObject]@{
                 Source         = $columns[0]
                 FileSystemType = $columns[1]
-                Size           = ConvertFrom-Bytes -bytes ([long]$columns[2] * 1024)
-                Used           = ConvertFrom-Bytes -bytes ([long]$columns[3] * 1024)
-                Available      = ConvertFrom-Bytes -bytes ([long]$columns[4] * 1024)
+                Size           = [ByteMapper]::ConvertFromBytes([long]$columns[2] * 1024)
+                Used           = [ByteMapper]::ConvertFromBytes([long]$columns[3] * 1024)
+                Available      = [ByteMapper]::ConvertFromBytes([long]$columns[4] * 1024)
                 Percent        = $columns[5]
             }
             
@@ -94,13 +94,13 @@ function Get-DiskIO {
             
             return [PSCustomObject]@{
                 Device                = $device
-                TransactionsPerSecond = $transactionsPerSecond
-                BytesReadPerSec       = ConvertFrom-Bytes -Bytes $bytesReadPerSec
-                BytesWrittenPerSec    = ConvertFrom-Bytes -Bytes $bytesWrittenPerSec
-                BytesDiscardedPerSec  = ConvertFrom-Bytes -Bytes $bytesDiscardedPerSec
-                BytesRead             = ConvertFrom-Bytes -Bytes $bytesRead
-                BytesWritten          = ConvertFrom-Bytes -Bytes $bytesWritten
-                BytesDiscarded        = ConvertFrom-Bytes -Bytes $bytesDiscarded
+                TransactionsPerSecond = $transactionsPerSecond # Assuming TPS is just a number, not bytes
+                BytesReadPerSec       = [ByteMapper]::ConvertFromBytes($bytesReadPerSec)
+                BytesWrittenPerSec    = [ByteMapper]::ConvertFromBytes($bytesWrittenPerSec)
+                BytesDiscardedPerSec  = [ByteMapper]::ConvertFromBytes($bytesDiscardedPerSec)
+                BytesRead             = [ByteMapper]::ConvertFromBytes($bytesRead)
+                BytesWritten          = [ByteMapper]::ConvertFromBytes($bytesWritten)
+                BytesDiscarded        = [ByteMapper]::ConvertFromBytes($bytesDiscarded)
             }
         }
     }
