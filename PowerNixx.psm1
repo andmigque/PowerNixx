@@ -20,12 +20,14 @@ if (-Not (Test-Path $manifestPath)) {
 # Import manifest and validate FunctionsToExport
 $manifest = Import-PowerShellDataFile -Path $manifestPath
 if (-Not $manifest.FunctionsToExport) {
-    throw "FunctionsToExport is not defined in the manifest file."
+    throw 'FunctionsToExport is not defined in the manifest file.'
 }
 
 # Export all functions listed in the psd1's FunctionsToExport
 Export-ModuleMember -Function $manifest.FunctionsToExport
 
+. ./Public/PsNxEnums.ps1
+. ./Public/PsNxResult.ps1
 # Set output rendering for PowerShell 7+
 
 $PSStyle.OutputRendering = 'Ansi'
