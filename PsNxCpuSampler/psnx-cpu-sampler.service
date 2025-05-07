@@ -1,0 +1,15 @@
+[Unit]
+Description=PowerShell CPU Sampler Service
+After=network.target
+
+[Service]
+Type=simple
+User=canute
+ExecStart=/usr/bin/pwsh -Command "& /home/canute/Develop/PowerNixx/Public/PsNxCpuSampler/Start-CpuSampler.ps1"
+WorkingDirectory=/home/canute/Develop/PowerNixx
+Restart=always
+RestartSec=10
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+
+[Install]
+WantedBy=multi-user.target

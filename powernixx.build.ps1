@@ -20,6 +20,10 @@ Task Compile -Depends Clean {
     }
 }
 
+Task Init {
+    # & ./Public/PsNxCpuSampler/Initialize-PsNxCpuSampler.ps1
+}
+
 Task Clean {
     if (Test-Path './Out') {
         Remove-Item './Out' -Recurse -Force

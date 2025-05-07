@@ -1,11 +1,12 @@
-/var/log/cpusampler.log {
+/var/log/psnx-cpu-sampler.json {
     daily
     rotate 7
     compress
+    delaycompress
     missingok
     notifempty
     create 664 canute canute
     postrotate
-        systemctl kill -s HUP Start-CpuSampler
+        systemctl kill -s HUP psnx-cpu-sampler
     endscript
 }
