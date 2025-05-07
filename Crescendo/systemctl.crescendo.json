@@ -1,0 +1,77 @@
+{
+    "$schema": "https://aka.ms/PowerShell/Crescendo/Schemas/2021-11",
+    "Commands": [
+        {
+            "Verb": "Get",
+            "Noun": "System",
+            "OriginalName": "/usr/bin/systemctl",
+            "OriginalCommandElements": [
+                "--no-pager",
+                "--output=json"
+            ],
+            "Description": "Wrapper for systemctl --no-pager --output=json",
+            "Parameters": [
+                {
+                    "Name": "ListUnits",
+                    "OriginalName": "list-units",
+                    "ParameterType": "switch",
+                    "Description": "List active systemctl units"
+                },
+                {
+                    "Name": "ListAutoMounts",
+                    "OriginalName": "list-automounts",
+                    "ParameterType": "switch",
+                    "Description": "List automount units currently in memory"
+                },
+                {
+                    "Name": "ListSockets",
+                    "OriginalName": "list-sockets",
+                    "ParameterType": "switch",
+                    "Description": "List socket units currently in memory"
+                },
+                {
+                    "Name": "ListTimers",
+                    "OriginalName": "list-timers",
+                    "ParameterType": "switch",
+                    "Description": "List timer units currently in memory"
+                },
+                {
+                    "Name": "Show",
+                    "OriginalName": "show",
+                    "ParameterType": "switch",
+                    "Description": "Show properties of the system"
+                },
+                {
+                    "Name": "Status",
+                    "OriginalName": "status",
+                    "ParameterType": "switch",
+                    "Description": "The overall status or the status of the unit"
+                },
+                {
+                    "Name": "All",
+                    "OriginalName": "--all",
+                    "ParameterType": "switch",
+                    "Description": "Give all output"
+                },
+                {
+                    "Name": "Help",
+                    "OriginalName": "--help",
+                    "ParameterType": "switch",
+                    "Description": "Show help"
+                },
+                {
+                    "Name": "Now",
+                    "OriginalName": "--now",
+                    "ParameterType": "switch",
+                    "Description": "Do the action now, dont wait for reload"
+                },
+                {
+                    "Name": "Failed",
+                    "OriginalName": "--failed",
+                    "ParameterType": "switch",
+                    "Description": "Any failed units"
+                }
+            ]
+        }
+    ]
+}
