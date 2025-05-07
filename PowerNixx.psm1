@@ -1,7 +1,5 @@
-# Import script-level variables first
 $Public = @(Get-ChildItem -Path "$PSScriptRoot/Public/*.ps1" -Recurse)
 
-# Dot source public files
 $Public | ForEach-Object {
     try {
         . $_.FullName
@@ -11,24 +9,19 @@ $Public | ForEach-Object {
     }
 }
 
-# Validate manifest file
 $manifestPath = Join-Path $PSScriptRoot 'PowerNixx.psd1'
 if (-Not (Test-Path $manifestPath)) {
     throw "Manifest file not found at $manifestPath"
 }
 
-# Import manifest and validate FunctionsToExport
 $manifest = Import-PowerShellDataFile -Path $manifestPath
 if (-Not $manifest.FunctionsToExport) {
     throw 'FunctionsToExport is not defined in the manifest file.'
 }
 
-# Export all functions listed in the psd1's FunctionsToExport
 Export-ModuleMember -Function $manifest.FunctionsToExport
-
-. ./Public/PsNxEnums.ps1
-. ./Public/PsNxResult.ps1
-. ./Public/ByteMapper.ps1
-# Set output rendering for PowerShell 7+
+. (Join-Path -Path $PSScriptRoot -ChildPath 'Public/PsNxEnums.ps1')
+. (Join-Path -Path $PSScriptRoot -ChildPath 'Public/PsNxResult.ps1')
+. (Join-Path -Path $PSScriptRoot -ChildPath 'Public/ByteMapper.ps1')
 
 $PSStyle.OutputRendering = 'Ansi'

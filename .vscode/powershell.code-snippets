@@ -12,6 +12,18 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+	"CrescendoParameterObject": {
+		"prefix": "crescendoParam",
+		"body": [
+			"{",
+			"    \"Name\": \"${1}\",",
+			"    \"OriginalName\": \"${2:}\",",
+			"    \"ParameterType\": \"${5:switch}\",",
+			"    \"Description\": \"${6}\"",
+			"}"
+		],
+		"description": "Crescendo parameter object template"
+	},
 	"PsNx Pode Web Table": {
 		"prefix": "PsNxSystemWebTable",
 		"body": [

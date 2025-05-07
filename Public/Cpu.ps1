@@ -82,10 +82,45 @@ function Get-CpuPercentage {
     return $numeric_value / (100 * 1000)
 }
 
+#----------------------------------------------------------------------
+# Function: Get-CpuFromProc
+#----------------------------------------------------------------------
+<#
+.SYNOPSIS
+Calculates detailed CPU usage statistics by sampling /proc/stat.
+.DESCRIPTION
+This function monitors CPU usage by reading the /proc/stat file at specified intervals.
+It calculates detailed usage statistics including total CPU usage, user mode, system mode,
+idle time, I/O wait, and interrupt time. The function returns a PSCustomObject with
+comprehensive CPU statistics and timestamps.
+.PARAMETER SampleInterval
+The interval in seconds between CPU usage samples. Defaults to 1 second.
+.OUTPUTS
+[PSCustomObject] containing:
+- TotalUsage: Overall CPU usage percentage (0-100)
+- UserPct: Percentage of time spent in user mode
+- NicePct: Percentage of time spent in nice (low priority) user mode
+- SystemPct: Percentage of time spent in system mode
+- IdlePct: Percentage of time spent idle
+- IOWaitPct: Percentage of time spent waiting for I/O operations
+- IRQPct: Percentage of time spent handling hardware interrupts
+- SoftIRQPct: Percentage of time spent handling software interrupts
+- Timestamp: When the sample was taken
+.EXAMPLE
+Get-CpuFromProc -SampleInterval 2
+# Returns detailed CPU statistics sampled every 2 seconds
+.EXAMPLE
+Get-CpuFromProc | Select-Object TotalUsage, UserPct, SystemPct
+# Returns just the most commonly used metrics
+.EXAMPLE
+Get-CpuFromProc | Format-Table -AutoSize
+# Returns all statistics in a formatted table
+#>
 function Get-CpuFromProc {
     [CmdletBinding()]
     param(
         [Parameter()]
+        [ValidateRange(1, 60)] # Restrict interval to reasonable range
         [int]$SampleInterval = 1
     )
 

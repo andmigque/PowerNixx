@@ -26,7 +26,7 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
 
     Set-PodeWebHomePage -NoTitle -DisplayName "$($UserName)@$($UserDomainName), $($OsVersion)" -Layouts @(
         New-PodeWebContainer -Content @(
-            New-PodeWebChart -Name 'CPU (%)' -Height '10em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
+            New-PodeWebChart -Name 'CPU (%)' -Height '20em' -Type Bar -AutoRefresh -RefreshInterval 3 -AsCard -ScriptBlock {
                 $stats = Get-CpuStats
                 $coreStats = $stats | Where-Object { $_.Core -ne 'cpu' } # Exclude total CPU line
         
@@ -41,7 +41,7 @@ Start-PodeServer -Threads 2 -EnablePool WebSockets {
                 } | ConvertTo-PodeWebChartData -LabelProperty Core -DatasetProperty @('Usage', 'System', 'User', 'IO')
             }
 
-            New-PodeWebChart -Name 'Net (MB/S) ' -Type Line -AutoRefresh -Append -TimeLabels -MaxItems 30 -RefreshInterval 3 -Height '10em' -MaxY 100 -AsCard -ScriptBlock {
+            New-PodeWebChart -Name 'Net (MB/S) ' -Type Line -AutoRefresh -Append -TimeLabels -MaxItems 30 -RefreshInterval 3 -Height '20em' -MaxY 100 -AsCard -ScriptBlock {
                 Get-BytesPerSecond | ConvertTo-PodeWebChartData -LabelProperty 'Interface' -DatasetProperty @('BytesReceivedPerSecond', 'BytesSentPerSecond')
             }
 
