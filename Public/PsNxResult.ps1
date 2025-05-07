@@ -1,6 +1,6 @@
 using namespace System
 Set-StrictMode -Version 3.0
-
+. (Join-Path -Path $PSScriptRoot -Resolve './PsNxEnums.ps1')
 #----------------------------------------------------------------------
 # Base Result Class
 #----------------------------------------------------------------------
