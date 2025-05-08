@@ -7,7 +7,7 @@
     "build": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1'",
     "test": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -c 'Invoke-Pester $PowerNixx/Tests -CI'",
     "start": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -c '& ./Server.ps1'",
-    "install": "pwsh -c 'Import-Module -Global $PowerNixx/PowerNixx.psd1 -Force';pwsh -f $PowerNixx/Config.ps1"
+    "install": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Init'"
   },
   "main": "pode start",
   "name": "powernixx"

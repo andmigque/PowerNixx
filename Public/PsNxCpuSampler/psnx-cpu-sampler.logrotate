@@ -1,4 +1,4 @@
-/var/log/psnx-cpu-sampler.json {
+/var/log/psnx-cpu-sampler.log {
     daily
     rotate 7
     compress

@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=canute
-ExecStart=/usr/bin/pwsh -Command "& /home/canute/Develop/PowerNixx/Public/PsNxCpuSampler/Start-CpuSampler.ps1"
+ExecStart=/usr/bin/pwsh -Command "Import-Module /home/canute/Develop/PowerNixx/PowerNixx.psd1; Write-CpuSamples"
 WorkingDirectory=/home/canute/Develop/PowerNixx
 Restart=always
 RestartSec=10

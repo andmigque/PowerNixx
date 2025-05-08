@@ -3,24 +3,30 @@ using namespace System.IO
 using namespace System.Collections.Generic
 using namespace System.Management.Automation
 
-#----------------------------------------------------------------------
-# Function: Get-JournalJson
-#----------------------------------------------------------------------
 <#
 .SYNOPSIS
+
 Retrieves systemd journal entries and converts the JSON output into PowerShell objects.
+
 .DESCRIPTION
+
 Executes 'journalctl --output=json' with common options (--no-pager, -a, -r, -m)
 and pipes the entire JSON output stream directly to ConvertFrom-Json.
 Handles errors during the execution of journalctl or the final JSON conversion.
+
 .PARAMETER JournalCtlPath
+
 The path to the journalctl executable. Defaults to '/usr/bin/journalctl'.
+
 .OUTPUTS
+
 [PSCustomObject[]] An array of objects representing journal entries if successful.
 [PSCustomObject] with Type='Error' if journalctl fails or the final JSON conversion fails.
+
 .EXAMPLE
+
 Get-JournalJson | Where-Object { $_.PRIORITY -eq '3' }
-# Gets all journal entries and filters for priority 3 (Error).
+
 #>
 function Read-JournalJson {
     [CmdletBinding()]
@@ -43,23 +49,30 @@ function Read-JournalJson {
     }
 }
 
-#----------------------------------------------------------------------
-# Function: Read-JournalBoot
-#----------------------------------------------------------------------
 <#
+
 .SYNOPSIS
+
 Retrieves systemd journal boot list information as PowerShell objects.
+
 .DESCRIPTION
+
 Executes 'journalctl --no-pager --list-boots --output=json' and converts the
 JSON output into PowerShell objects. Handles errors during execution or JSON conversion.
+
 .PARAMETER JournalCtlPath
+
 The path to the journalctl executable. Defaults to '/usr/bin/journalctl'. (Note: Not currently used in the Invoke-Expression string).
+
 .OUTPUTS
+
 [PSCustomObject[]] An array of objects representing boot entries if successful.
 [PSCustomObject] with Type='Error' if journalctl fails or JSON conversion fails.
+
 .EXAMPLE
+
 Read-JournalBoot | Sort-Object -Property bootTime | Select-Object -Last 1
-# Gets the most recent boot entry.
+
 #>
 function Read-JournalBoot {
     [CmdletBinding()]
@@ -74,23 +87,30 @@ function Read-JournalBoot {
     }
 }
 
-#----------------------------------------------------------------------
-# Function: Read-JournalDiskUsage
-#----------------------------------------------------------------------
 <#
+
 .SYNOPSIS
+
 Retrieves the disk usage reported by systemd journal (plain text).
+
 .DESCRIPTION
+
 Executes 'journalctl --no-pager --disk-usage'. Note that this command does not
 support JSON output, so the raw string output is returned. Handles errors during execution.
+
 .PARAMETER JournalCtlPath
+
 The path to the journalctl executable. Defaults to '/usr/bin/journalctl'. (Note: Not currently used in the Invoke-Expression string).
+
 .OUTPUTS
+
 [string] The raw output string from 'journalctl --disk-usage' if successful.
 [PSCustomObject] with Type='Error' if journalctl fails.
+
 .EXAMPLE
+
 Read-JournalDiskUsage
-# Returns a string like: "Archived and active journals take up 4.0G on disk."
+
 #>
 function Read-JournalDiskUsage {
     [CmdletBinding()]
@@ -105,28 +125,35 @@ function Read-JournalDiskUsage {
     }
 }
 
-#----------------------------------------------------------------------
-# Function: Start-JournalRotate
-#----------------------------------------------------------------------
-<#
-.SYNOPSIS
-Requests immediate rotation of the systemd journal files. Requires elevated privileges.
-.DESCRIPTION
-Executes 'journalctl --no-pager --rotate'. This performs an action and does not output JSON.
-The user running this command must have appropriate permissions to rotate journal files (e.g., root or systemd-journal group membership).
-Handles errors during execution.
-.PARAMETER JournalCtlPath
-The path to the journalctl executable. Defaults to '/usr/bin/journalctl'.
-.OUTPUTS
-None on success.
-[PSCustomObject] with Type='Error' if journalctl fails (e.g., due to insufficient permissions).
-.EXAMPLE
-Start-JournalRotate
-# Attempts to rotate the journal files. Ensure you run this with sudo or as root.
-.NOTES
-This command requires elevated privileges. Ensure the script is run with sufficient permissions (e.g., using 'sudo pwsh').
-#>
+
 function Start-JournalRotate {
+    <#
+        # Start-JournalRotate
+
+        ## SYNOPSIS
+        Requests immediate rotation of the systemd journal files. Requires elevated privileges.
+
+        ## DESCRIPTION
+        Executes 'journalctl --no-pager --rotate'. This performs an action and does not output JSON.
+        The user running this command must have appropriate permissions to rotate journal files (e.g., root or systemd-journal group membership).
+        Handles errors during execution.
+
+        ## PARAMETER JournalCtlPath
+        The path to the journalctl executable. Defaults to '/usr/bin/journalctl'.
+
+        ## OUTPUTS
+        None on success.
+        [PSCustomObject] with Type='Error' if journalctl fails (e.g., due to insufficient permissions).
+
+        ## EXAMPLE
+        Start-JournalRotate
+
+        Attempts to rotate the journal files. Ensure you run this with sudo or as root.
+
+        ## NOTES
+
+        This command requires elevated privileges. Ensure the script is run with sufficient permissions (e.g., using 'sudo pwsh').
+    #>
     [CmdletBinding()]
     param()
 

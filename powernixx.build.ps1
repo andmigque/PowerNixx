@@ -21,7 +21,8 @@ Task Compile -Depends Clean {
 }
 
 Task Init {
-    # & ./Public/PsNxCpuSampler/Initialize-PsNxCpuSampler.ps1
+    Import-Module -Name ./PowerNixx.psd1
+    Initialize-PsNxCpuSammpler
 }
 
 Task Clean {
