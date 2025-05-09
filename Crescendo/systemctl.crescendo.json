@@ -70,6 +70,72 @@
                     "OriginalName": "--failed",
                     "ParameterType": "switch",
                     "Description": "Any failed units"
+                },
+                {
+                    "Name": "Start",
+                    "OriginalName": "start",
+                    "ParameterType": "string",
+                    "Description": "Start the specified unit"
+                },
+                {
+                    "Name": "Stop",
+                    "OriginalName": "stop",
+                    "ParameterType": "string",
+                    "Description": "Stop the specified unit"
+                },
+                {
+                    "Name": "Restart",
+                    "OriginalName": "restart",
+                    "ParameterType": "string",
+                    "Description": "Restart the specified unit"
+                },
+                {
+                    "Name": "Reload",
+                    "OriginalName": "reload",
+                    "ParameterType": "string",
+                    "Description": "Reload the configuration of the specified unit"
+                },
+                {
+                    "Name": "Enable",
+                    "OriginalName": "enable",
+                    "ParameterType": "string",
+                    "Description": "Enable the specified unit to start at boot"
+                },
+                {
+                    "Name": "Disable",
+                    "OriginalName": "disable",
+                    "ParameterType": "string",
+                    "Description": "Disable the specified unit from starting at boot"
+                },
+                {
+                    "Name": "Mask",
+                    "OriginalName": "mask",
+                    "ParameterType": "string",
+                    "Description": "Mask the specified unit to prevent it from being started"
+                },
+                {
+                    "Name": "Unmask",
+                    "OriginalName": "unmask",
+                    "ParameterType": "string",
+                    "Description": "Unmask the specified unit to allow it to be started"
+                },
+                {
+                    "Name": "DaemonReload",
+                    "OriginalName": "daemon-reload",
+                    "ParameterType": "switch",
+                    "Description": "Reload systemd manager configuration"
+                },
+                {
+                    "Name": "IsActive",
+                    "OriginalName": "is-active",
+                    "ParameterType": "string",
+                    "Description": "Check if the specified unit is active"
+                },
+                {
+                    "Name": "IsEnabled",
+                    "OriginalName": "is-enabled",
+                    "ParameterType": "string",
+                    "Description": "Check if the specified unit is enabled"
                 }
             ]
         }

@@ -8,6 +8,17 @@ function Initialize-PsNxCpuSammpler {
     $psnxUser = 'psnx'
     $psnxGroup = 'psnx'
 
+    # Ensure psnx group exists
+    $groupExists = (Start-Process -FilePath 'getent' -ArgumentList "group $psnxGroup" -NoNewWindow -Wait -PassThru).ExitCode -eq 0
+    if (-not $groupExists) {
+        Start-Process -FilePath 'sudo' -ArgumentList "groupadd --system $psnxGroup" -Wait
+    }
+    # Ensure psnx user exists
+    $userExists = (Start-Process -FilePath 'getent' -ArgumentList "passwd $psnxUser" -NoNewWindow -Wait -PassThru).ExitCode -eq 0
+    if (-not $userExists) {
+        Start-Process -FilePath 'sudo' -ArgumentList "useradd --system --gid $psnxGroup --shell /usr/sbin/nologin $psnxUser" -Wait
+    }
+
     # Check if service file exists and stop existing service if running
     Write-Information 'Initializing...'
     if (Test-Path $serviceFile) {
@@ -17,7 +28,10 @@ function Initialize-PsNxCpuSammpler {
     # Clean up old log files and create new one
     if (Test-Path $logFile) {
         Write-Information 'Compressing and cleaning up old JSON log file...'
-        Start-Process -FilePath 'sudo' -ArgumentList "gzip -k $logFile" -Wait
+        $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+        $gzFile = "$logFile.$timestamp.gz"
+        $cmd = "gzip -c $logFile > $gzFile"
+        Start-Process -FilePath 'sudo' -ArgumentList 'bash', '-c', $cmd -Wait
         Start-Process -FilePath 'sudo' -ArgumentList "rm $logFile" -Wait
     }
 

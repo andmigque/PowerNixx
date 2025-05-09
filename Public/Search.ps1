@@ -18,8 +18,8 @@ function Search-KeywordInFile {
         throw "Error: SearchString parameter for directory '$Directory' cannot be null or empty."
     }
 
-    $script:Directory = Resolve-Path -Path $Directory
-    $script:SearchString = $SearchString.Trim()
+    $Directory = Resolve-Path -Path $Directory
+    $SearchString = $SearchString.Trim()
 
     
     [ArrayList]$mutexFound = [ArrayList]::Synchronized(@())
@@ -30,19 +30,19 @@ function Search-KeywordInFile {
     $script:startTime = Get-Date
 
     Write-Progress -Activity '<--- File content search --> ' -Status '!! Running !!'
-    $allItems = (Get-ChildItem -Path $Directory -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
+    $allItems = (Get-ChildItem -Path $Directory -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object -Parallel {
             $currentTime = Get-Date
-            $differential = ($currentTime - $script:startTime)
+            $differential = ($currentTime - $using:startTime)
             Write-Progress -Activity 'Searching' -Status "$differential ⛷"
-
-            if ($script:SearchString.ToLower().Trim() -eq $($_).FullName.ToLower().Trim()) {
+            $localSearchString = $using:SearchString
+            if ($localSearchString -eq $($_).FullName.ToLower().Trim()) {
                 $mutexFilenameFound += "$($_.FullName)"
                 $mutexFound += 1
             }
             
             if (Test-Path -Path $_.FullName -PathType Leaf -ErrorAction SilentlyContinue) {
-                if (Select-String -Path $_.FullName -Pattern $script:SearchString -Encoding utf8 -Quiet -ErrorAction SilentlyContinue) {
-                    $message = "Found $script:SearchString in $($_.FullName)"
+                if (Select-String -Path $_.FullName -Pattern $using:SearchString -Encoding utf8 -Quiet -ErrorAction SilentlyContinue) {
+                    $message = "Found $using:SearchString in $($_.FullName)"
                     Write-Verbose $message
                     $mutexFilesFound += "$($_.FullName)"
                     $mutexFound += 1
@@ -52,7 +52,7 @@ function Search-KeywordInFile {
                     }
                 }
                 else {
-                    $message = "$script:SearchString was not found in $($_.FullName)"
+                    $message = "$using:SearchString was not found in $($_.FullName)"
                     $mutexNotFound += 1
                     return @{
                         Item  = $message

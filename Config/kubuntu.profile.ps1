@@ -21,18 +21,13 @@ if (Get-Module -Name PSReadLine -ListAvailable) {
 if ($IsLinux) {
     # Initialize PATH environment variable
     $env:PATH = ''
-    $env:PATH = '/opt/microsoft/powershell/7'
+    $env:PATH = '/snap/bin'
     
     # Add common binary paths
     $env:PATH = "$($env:PATH):/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"
     # Add Homebrew paths if brew is installed
     if (Test-Path '/home/linuxbrew/.linuxbrew/bin/brew') {
         $env:PATH = "$($env:PATH):/home/linuxbrew/.linuxbrew/sbin:/home/linuxbrew/.linuxbrew/bin"
-    }
-
-    # If Llama Cpp
-    if (Test-Path "$($env:HOME)/Develop/llama.cpp/build/bin") {
-        $env:PATH = "$($env:PATH):$env:HOME/Develop/llama.cpp/build/bin"
     }
 
     if ((Test-Path "$($env:HOME)/.lmstudio/bin")) {

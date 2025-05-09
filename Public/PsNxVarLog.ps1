@@ -51,7 +51,8 @@ function Get-VarLog {
     catch {
         # Use the STANDALONE helper function
         $errorDetail = New-LogErrorObject -ErrorRecord $_ -IsTerminatingError $true
-        $OutputObjects.Add($errorDetail)
+        # Immediately return JSON on terminating error
+        return $errorDetail | ConvertTo-Json -Depth 3 -Compress
     }
 
     if ($ShowErrors.IsPresent -and $VarLogsErrors.Count -gt 0) {
@@ -62,43 +63,10 @@ function Get-VarLog {
         }
     }
 
-    # Output ALL collected objects
-    $OutputObjects
+    # Always output JSON
+    $OutputObjects | ConvertTo-Json -Depth 3 -Compress
 }
 
-#----------------------------------------------------------------------
-# Function: Get-VarLogArchives (Refactored)
-#----------------------------------------------------------------------
-<#
-    .SYNOPSIS
-    Lists all archived log files in /var/log, optionally including error details as objects.
-
-    .DESCRIPTION
-    Retrieves archived log files (*.gz, *.xz, *.bz2, *.zip) in /var/log and subdirectories.
-    Outputs PSCustomObjects for each file found. Uses -ErrorAction SilentlyContinue and
-    -ErrorVariable to capture access errors. If -ShowErrors is specified, PSCustomObjects
-    representing non-terminating errors are also output to the success stream. Terminating
-    errors also result in an Error-type PSCustomObject being output. All output objects have
-    a 'Type' property ('LogArchive' or 'Error') for filtering.
-
-    .PARAMETER ShowErrors
-    If specified, detailed PSCustomObjects for any non-terminating errors encountered
-    during the scan will be included in the output stream.
-
-    .OUTPUTS
-    [PSCustomObject] with properties based on 'Type':
-        - Type: 'LogArchive' | 'Error'
-        - If Type='LogArchive': Name, FullName, SizeKB
-        - If Type='Error': (Same properties as defined by New-LogErrorObject)
-
-    .EXAMPLE
-    Get-VarLogArchives | Where-Object { $_.Type -eq 'LogArchive' }
-    # Gets only the log archive file objects, silently ignores errors.
-
-    .EXAMPLE
-    Get-VarLogArchives -ShowErrors
-    # Outputs a stream containing BOTH log archive objects and error objects.
-#>
 function Get-VarLogArchive {
     [CmdletBinding()]
     param(
@@ -128,7 +96,7 @@ function Get-VarLogArchive {
     catch {
         # Handle TERMINATING errors
         $errorDetail = New-LogErrorObject -ErrorRecord $_ -IsTerminatingError $true
-        $OutputObjects.Add($errorDetail)
+        return $errorDetail | ConvertTo-Json -Depth 3 -Compress
     }
 
     # Process and add NON-TERMINATING errors if requested
@@ -139,46 +107,15 @@ function Get-VarLogArchive {
         }
     }
 
-    # Output ALL collected objects
-    $OutputObjects
+    # Always output JSON
+    $OutputObjects | ConvertTo-Json -Depth 3 -Compress
 }
 
 
 #----------------------------------------------------------------------
 # Function: Read-LogAlternatives (Refactored with Status Object)
 #----------------------------------------------------------------------
-<#
-.SYNOPSIS
-Reads and formats the alternatives log file, optionally including error/status details as objects.
 
-.DESCRIPTION
-Reads the specified alternatives log file line by line, parsing entries into structured objects.
-Handles file access and parsing errors. Outputs detailed error objects if requested or
-if terminating errors occur. If the file is processed successfully but is empty, outputs
-a Status object.
-
-.PARAMETER Path
-The full path to the alternatives log file. Defaults to '/var/log/alternatives.log'.
-
-.PARAMETER ShowErrors
-If specified, detailed PSCustomObjects for any non-terminating parsing errors
-encountered will be included in the output stream.
-
-.OUTPUTS
-[PSCustomObject] with properties based on 'Type':
-    - Type: 'LogAlternativeEntry' | 'Error' | 'Status'
-    - If Type='LogAlternativeEntry': Timestamp, Source, Details
-    - If Type='Error': (Same properties as defined by New-LogErrorObject)
-    - If Type='Status': Message, Path
-
-.EXAMPLE
-Read-LogAlternatives # (If file is empty)
-# Outputs: [PSCustomObject]@{Message='File processed successfully but was empty.'; Path='/var/log/alternatives.log'; Type='Status'}
-
-.EXAMPLE
-Read-LogAlternatives -ShowErrors # (If file has content and errors)
-# Outputs a stream containing LogAlternativeEntry objects and Error objects.
-#>
 function Read-LogAlternative {
     [CmdletBinding(SupportsShouldProcess = $false)] # Added Binding, ShouldProcess usually not needed for read-only
     param(
@@ -201,8 +138,7 @@ function Read-LogAlternative {
         $exception = [FileNotFoundException]::new("Alternatives log file not found at path: $Path", $Path)
         $errorRecord = [ErrorRecord]::new($exception, 'FileNotFound', [ErrorCategory]::ObjectNotFound, $Path)
         $errorDetail = New-LogErrorObject -ErrorRecord $errorRecord -IsTerminatingError $true
-        $errorDetail # Output ONLY the error object and exit
-        return
+        return $errorDetail | ConvertTo-Json -Depth 3 -Compress
     }
 
     # --- Read and Parse File ---
@@ -244,14 +180,14 @@ function Read-LogAlternative {
                         $OutputObjects.Add($errorDetail)
                     }
                 }
-            } # End ForEach-Object
+            }
         }
     }
     catch {
         # --- Handle GET-CONTENT errors ---
         $terminatingReadErrorOccurred = $true # Set flag
         $errorDetail = New-LogErrorObject -ErrorRecord $_ -IsTerminatingError $true
-        $OutputObjects.Add($errorDetail)
+        return $errorDetail | ConvertTo-Json -Depth 3 -Compress
     }
 
     # --- Final Check for Status Object ---
@@ -268,13 +204,9 @@ function Read-LogAlternative {
                     Type    = 'Status'
                 })
         }
-        # If the count is 0 but the file wasn't empty, it means parsing failed
-        # silently (because -ShowErrors wasn't specified). We output nothing in this case,
-        # respecting the user's choice not to see non-terminating parse errors.
     }
 
-    # Output ALL collected objects (LogEntries, Errors, or Status)
-    $OutputObjects
+    $OutputObjects | ConvertTo-Json -Depth 3 -Compress
 }
 #----------------------------------------------------------------------
 # Function: Read-Log (Refactored - Generic Regex Approach)
@@ -370,13 +302,9 @@ function Read-Log {
     $patterns = @{
         # User's original generic patterns
         cron   = '^(\S+)\s+(\S+)\s+(\S+)\s+(.*)'
-        user   = '^(\d{4}-\d{2}-\d{2}T\S+)\s+(\S+)\s+(\S+)\s+(.*)' # Note: This IS specific to ISO format
-        auth   = '^(\d{4}-\d{2}-\d{2}T\S+)\s+(\S+)\s+(\S+)\s+(.*)' # Note: This IS specific to ISO format
-        syslog = '^(\d{4}-\d{2}-\d{2}T\S+)\s+(\S+)\s+(\S+)\s+(.*)' # Note: This IS specific to ISO format
-        # >>> IMPORTANT <<<: The original patterns for user/auth/syslog WERE already specific
-        # to ISO 8601 format. If your actual logs use MMM dd hh:mm:ss, these patterns
-        # WILL NOT MATCH those lines, and we won't even get to the parsing step.
-        # We are keeping them as provided per your instruction.
+        user   = '^(\d{4}-\d{2}-\d{2}T\S+)\s+(\S+)\s+(\S+)\s+(.*)' 
+        auth   = '^(\d{4}-\d{2}-\d{2}T\S+)\s+(\S+)\s+(\S+)\s+(.*)' 
+        syslog = '^(\d{4}-\d{2}-\d{2}T\S+)\s+(\S+)\s+(\S+)\s+(.*)' 
     }
     if (-Not $patterns.ContainsKey($LogFile)) { throw "No regex pattern defined for: $LogFile" }
     $pattern = $patterns[$LogFile]
@@ -454,7 +382,7 @@ function Read-Log {
         # --- Handle GET-CONTENT errors ---
         $terminatingReadErrorOccurred = $true # Set flag
         $errorDetail = New-LogErrorObject -ErrorRecord $_ -IsTerminatingError $true
-        $OutputObjects.Add($errorDetail)
+        return $errorDetail | ConvertTo-Json -Depth 3 -Compress
     }
 
     # --- Final Check for Status Object ---
@@ -476,8 +404,8 @@ function Read-Log {
         }
     }
 
-    # Output ALL collected objects
-    $OutputObjects
+    # Always output JSON
+    $OutputObjects | ConvertTo-Json -Depth 3 -Compress
 }
 
 # (Keep existing using statements and New-LogErrorObject)
@@ -718,7 +646,6 @@ Read-Log -LogFile syslog -Tail 1000 | Measure-LogActivity | Sort-Object -Propert
 Read-LogAlternatives -ShowErrors | Measure-LogActivity
 # Analyzes alternatives log entries. Outputs LogActivitySummary objects AND passes through any Error objects from Read-LogAlternatives.
 # Note: Alternatives log may not have a 'ServerName' - behavior depends on the object structure from Read-LogAlternatives.
-# (Update: Read-LogAlternatives *doesn't* output ServerName, so grouping won't work well there as-is.
 # This example highlights the generic nature, but practical use depends on input having ServerName)
 
 .NOTES
