@@ -1,33 +1,42 @@
 {
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true,
+    "editor.formatOnSave": false,
+    "editor.formatOnType": false,
     "editor.minimap.enabled": false,
     "editor.insertSpaces": true,
-    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+
     "powershell.codeFormatting.alignPropertyValuePairs": true,
     "powershell.codeFormatting.autoCorrectAliases": true,
     "powershell.codeFormatting.avoidSemicolonsAsLineTerminators": true,
     "powershell.codeFormatting.ignoreOneLineBlock": true,
     "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
-    "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+
     "powershell.codeFormatting.useConstantStrings": true,
+    "powershell.codeFormatting.useCorrectCasing": true,
+
+    "powershell.codeFormatting.openBraceOnSameLine": true,
+
+    "powershell.codeFormatting.newLineAfterOpenBrace": true,
+    "powershell.codeFormatting.newLineAfterCloseBrace": true,
+
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceAroundOperator": true,
     "powershell.codeFormatting.whitespaceAfterSeparator": true,
-    "powershell.codeFormatting.useCorrectCasing": true,
-    "powershell.codeFormatting.openBraceOnSameLine": true,
-    "powershell.codeFormatting.newLineAfterOpenBrace": true,
-    "powershell.codeFormatting.newLineAfterCloseBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
     "powershell.codeFormatting.whitespaceBetweenParameters": true,
     "powershell.codeFormatting.whitespaceInsideBrace": true,
+
+    "powershell.buttons.showRunButtons": true,
+    "powershell.analyzeOpenDocumentsOnly": false,
+
     "powershell.scriptAnalysis.settingsPath": "PSScriptAnalyzerSettings.psd1",
     "powershell.scriptAnalysis.enable": true,
+
     "powershell.pester.useLegacyCodeLens": false,
     "powershell.pester.codeLens": true,
-    "powershell.buttons.showRunButtons": true,
+
     "powershell.codeFolding.showLastLine": true,
-    "powershell.analyzeOpenDocumentsOnly": false,
+
     "powershell.startAsLoginShell.linux": false,
     "powershell.integratedConsole.startInBackground": true,
     "powershell.startAutomatically": true
