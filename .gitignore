@@ -1,9 +1,5 @@
 PowerNixx.code-workspace
-Artifacts/*
 .idea/*
-Scratch/*
-InvokeJcUsb/*
-training/*
 webssh2/*
 Out/*
 Prompts/*
