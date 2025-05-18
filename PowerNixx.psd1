@@ -53,6 +53,10 @@
     # Modules that must be imported into the global environment prior to importing this module
     RequiredModules      = @(
         @{
+            ModuleName    = 'Microsoft.Powershell.Crescendo'
+            ModuleVersion = '1.1.0'            
+        },
+        @{
             ModuleName    = 'Pode'
             ModuleVersion = '2.12.0'
             Guid          = 'e3ea217c-fc3d-406b-95d5-4304ab06c6af'
@@ -84,7 +88,10 @@
     # FormatsToProcess = @()
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    # NestedModules = @()
+    NestedModules        = @(
+        'Public/PsNxSystem/PsNxSystem.psm1',
+        'Public/PsNxTar/PsNxTar.psm1'
+    )
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = @(
