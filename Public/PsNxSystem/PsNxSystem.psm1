@@ -1,7 +1,7 @@
 # Module created by Microsoft.PowerShell.Crescendo
 # Version: 1.1.0
 # Schema: https://aka.ms/PowerShell/Crescendo/Schemas/2021-11
-# Generated at: 05/18/2025 16:07:17
+# Generated at: 05/18/2025 19:45:47
 class PowerShellCustomFunctionAttribute : System.Attribute {
     [bool]$RequiresElevation
     [string]$Source
