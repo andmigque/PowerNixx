@@ -16,6 +16,7 @@ Task Test -Depends Compile, Clean {
 Task Compile -Depends Clean {
     Export-CrescendoModule -ConfigurationFile ./Crescendo/systemctl.crescendo.json -ModuleName Public/PsNxSystem/PsNxSystem.psm1 -Force
     Export-CrescendoModule -ConfigurationFile ./Crescendo/tar.crescendo.json -ModuleName Public/PsNxTar/PsNxTar.psm1 -Force
+    New-MarkdownHelp -Command ConvertTo-GzipParallel -OutputFolder ./Documentation/ -Force -UseFullTypeName -OnlineVersionUrl 'https://github.com/andmigque/powernixx'
     Get-ChildItem -Path './Tests' | ForEach-Object { 
         Invoke-ScriptAnalyzer -IncludeDefaultRules -Path "$($_.FullName)" -Fix -ReportSummary
     }

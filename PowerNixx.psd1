@@ -72,6 +72,10 @@
         @{
             ModuleName    = 'Psake'
             ModuleVersion = '4.9.1'
+        },
+        @{
+            ModuleName    = 'platyPS'
+            ModuleVersion = '0.14.2'
         }
     )
 
