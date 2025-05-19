@@ -11,6 +11,8 @@ function ConvertTo-GzipParallel {
     ConvertTo-GzipParallel compresses files from a source directory to a destination directory using parallel processing. 
     It utilizes GZip compression with the smallest size level and provides progress tracking during compression. 
     The function handles errors gracefully by storing them in a JSON file and can process files recursively.
+    
+    The function uses parallel processing for improved performance and provides real-time progress updates with elapsed time and a ski emoji (⛷) indicator.
 
     .PARAMETER SrcDir
     The source directory containing files to compress. Must be an existing directory path.
@@ -38,8 +40,21 @@ function ConvertTo-GzipParallel {
     .NOTES
     - Uses parallel processing for improved performance
     - Creates a CompressionErrors.json file in the destination directory if any files fail to compress
-    - Maintains original file structure in destination directory
+    - Maintains original file structure in destination directory # TODO: This isn't true
     - Uses GZip compression with smallest size level
+    - Progress is tracked and displayed with elapsed time and a ski emoji (⛷) indicator
+    - Implements proper resource cleanup using try/catch/finally blocks
+    - Uses thread-safe ConcurrentDictionary for error collection
+
+    .LINK
+    https://github.com/PowerShell/platyPS
+
+    .LINK
+    https://github.com/andmigque/powernixx
+
+    .LINK    
+    https://learn.microsoft.com/en-us/dotnet/api/system.io.compression.gzipstream?view=net-9.0
+    
     #>
     param(
         [Parameter(Mandatory = $true)]
