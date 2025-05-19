@@ -4,6 +4,43 @@ using namespace System.IO
 Set-StrictMode -Version 3.0
 
 function ConvertTo-GzipParallel {
+    <# .SYNOPSIS
+    Parallel compression of files using .NET native GZip streams
+
+    .DESCRIPTION
+    ConvertTo-GzipParallel compresses files from a source directory to a destination directory using parallel processing. 
+    It utilizes GZip compression with the smallest size level and provides progress tracking during compression. 
+    The function handles errors gracefully by storing them in a JSON file and can process files recursively.
+
+    .PARAMETER SrcDir
+    The source directory containing files to compress. Must be an existing directory path.
+
+    .PARAMETER DestDir
+    The destination directory where compressed files will be saved. If it doesn't exist, it will be created.
+
+    .INPUTS
+    System.String
+    Accepts two string parameters: SrcDir and DestDir
+
+    .OUTPUTS
+    None
+    The function does not return any output but may create a CompressionErrors.json file
+    in the destination directory if errors occur.
+
+    .EXAMPLE
+    ConvertTo-GzipParallel -SrcDir "C:\Data\Input" -DestDir "C:\Data\Output"
+    Compresses all files from the input directory to the output directory using parallel processing.
+
+    .EXAMPLE
+    ConvertTo-GzipParallel -SrcDir "C:\LargeDataset" -DestDir "C:\CompressedData"
+    Compresses files from a large dataset directory using parallel processing.
+
+    .NOTES
+    - Uses parallel processing for improved performance
+    - Creates a CompressionErrors.json file in the destination directory if any files fail to compress
+    - Maintains original file structure in destination directory
+    - Uses GZip compression with smallest size level
+    #>
     param(
         [Parameter(Mandatory = $true)]
         [string]$SrcDir,
@@ -12,16 +49,13 @@ function ConvertTo-GzipParallel {
         [string]$DestDir
     )
 
-    # Use a thread-safe ConcurrentDictionary for error collection
     $ParallelErrors = [ConcurrentDictionary[string, string]]::new()
     $source = (Resolve-Path -Path $SrcDir).Path
     $destination = (Resolve-Path -Path $DestDir).Path
 
-    # Debug: Verify paths
     Write-Information "Source: $source"
     Write-Information "Destination: $destination"
 
-    # Ensure source and destination directories exist
     if (-not (Test-Path -Path $source)) {
         throw "Source directory '$source' does not exist."
     }
@@ -33,11 +67,9 @@ function ConvertTo-GzipParallel {
 
     $startTime = Get-Date
 
-    # Debug: Check files found
     $files = Get-ChildItem -Path $source -Recurse -File -ErrorAction SilentlyContinue
     Write-Information "Files found: $($files.Count)"
 
-    # Process files in parallel
     $files | ForEach-Object -Parallel {
         $errors = $Using:ParallelErrors
         $currentTime = Get-Date
@@ -49,25 +81,15 @@ function ConvertTo-GzipParallel {
         $gzipFilePath = Join-Path -Path $using:destination -ChildPath "$baseName.gz"
 
         try {
-            # Create a FileStream for reading the original file
             $fileStream = [System.IO.File]::OpenRead($filePath)
-
-            # Create a FileStream for writing the compressed file
             $gzipStream = [System.IO.File]::Create($gzipFilePath)
-
-            # Create a GZipStream for compression, writing to the gzip file
             $gzipWriter = [System.IO.Compression.GZipStream]::new($gzipStream, [System.IO.Compression.CompressionLevel]::SmallestSize, $false)
-
-            # Copy data from the file stream to the gzip stream
             $fileStream.CopyTo($gzipWriter)
         }
         catch {
-            # Add errors to the thread-safe ConcurrentDictionary and log them
             $errors.TryAdd($filePath, $_.Exception.Message) | Out-Null
-            #Write-Host "Error compressing file: $filePath - $_"
         }
         finally {
-            # Close both streams to release resources
             if ($null -ne $gzipWriter) {
                 $gzipWriter.Close()
             }
@@ -78,7 +100,6 @@ function ConvertTo-GzipParallel {
         }
     }
 
-    # Handle errors
     if ($ParallelErrors.Count -gt 0) {
         $ParallelErrors.GetEnumerator() | 
             ConvertTo-Json -Depth 10 | 
