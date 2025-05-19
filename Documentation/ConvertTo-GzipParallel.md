@@ -22,20 +22,19 @@ ConvertTo-GzipParallel compresses files from a source directory to a destination
 It utilizes GZip compression with the smallest size level and provides progress tracking during compression. 
 The function handles errors gracefully by storing them in a JSON file and can process files recursively.
 
-The function uses parallel processing for improved performance and provides real-time progress updates with elapsed time and a ski emoji (⛷) indicator.
+The function uses parallel processing for improved performance.
+It provides real-time progress updates with elapsed time and a ski emoji (⛷) indicator.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 ```
 ConvertTo-GzipParallel -SrcDir "C:\Data\Input" -DestDir "C:\Data\Output"
-Compresses all files from the input directory to the output directory using parallel processing.
 ```
 
 ### EXAMPLE 2
 ```
 ConvertTo-GzipParallel -SrcDir "C:\LargeDataset" -DestDir "C:\CompressedData"
-Compresses files from a large dataset directory using parallel processing.
 ```
 
 ## PARAMETERS
@@ -102,10 +101,17 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 - Uses parallel processing for improved performance
 - Creates a CompressionErrors.json file in the destination directory if any files fail to compress
-- Maintains original file structure in destination directory
+- Maintains original file structure in destination directory # TODO: This isn't true
 - Uses GZip compression with smallest size level
 - Progress is tracked and displayed with elapsed time and a ski emoji (⛷) indicator
 - Implements proper resource cleanup using try/catch/finally blocks
 - Uses thread-safe ConcurrentDictionary for error collection
 
 ## RELATED LINKS
+
+[https://github.com/PowerShell/platyPS](https://github.com/PowerShell/platyPS)
+
+[https://github.com/andmigque/powernixx](https://github.com/andmigque/powernixx)
+
+[https://learn.microsoft.com/en-us/dotnet/api/system.io.compression.gzipstream?view=net-9.0](https://learn.microsoft.com/en-us/dotnet/api/system.io.compression.gzipstream?view=net-9.0)
+

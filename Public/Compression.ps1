@@ -12,7 +12,8 @@ function ConvertTo-GzipParallel {
     It utilizes GZip compression with the smallest size level and provides progress tracking during compression. 
     The function handles errors gracefully by storing them in a JSON file and can process files recursively.
     
-    The function uses parallel processing for improved performance and provides real-time progress updates with elapsed time and a ski emoji (⛷) indicator.
+    The function uses parallel processing for improved performance.
+    It provides real-time progress updates with elapsed time and a ski emoji (⛷) indicator.
 
     .PARAMETER SrcDir
     The source directory containing files to compress. Must be an existing directory path.
@@ -31,11 +32,9 @@ function ConvertTo-GzipParallel {
 
     .EXAMPLE
     ConvertTo-GzipParallel -SrcDir "C:\Data\Input" -DestDir "C:\Data\Output"
-    Compresses all files from the input directory to the output directory using parallel processing.
 
     .EXAMPLE
     ConvertTo-GzipParallel -SrcDir "C:\LargeDataset" -DestDir "C:\CompressedData"
-    Compresses files from a large dataset directory using parallel processing.
 
     .NOTES
     - Uses parallel processing for improved performance
