@@ -123,6 +123,6 @@ function ConvertTo-GzipParallel {
         Write-Warning "Some files failed to compress. See $DestinationDirectory/CompressionErrors.json for details."
     }
     else {
-        Write-Host 'Compression complete'
+        Write-Information 'Compression complete'
     }
 }
