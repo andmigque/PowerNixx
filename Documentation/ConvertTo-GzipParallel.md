@@ -29,12 +29,12 @@ It provides real-time progress updates with elapsed time and a ski emoji (⛷) i
 
 ### EXAMPLE 1
 ```
-ConvertTo-GzipParallel -SourceDirectory "C:\Data\Input" -DestDir "C:\Data\Output"
+ConvertTo-GzipParallel -SourceDirectory "/var/log" -DestinationDirectory "/backup/logs"
 ```
 
 ### EXAMPLE 2
 ```
-ConvertTo-GzipParallel -SourceDirectory "C:\LargeDataset" -DestDir "C:\CompressedData"
+ConvertTo-GzipParallel -SourceDirectory "/home/user/documents" -DestinationDirectory "./compressed/docs"
 ```
 
 ## PARAMETERS
@@ -56,7 +56,8 @@ Accept wildcard characters: False
 ```
 
 ### -DestinationDirectory
-{{ Fill DestinationDirectory Description }}
+The destination directory where compressed files will be saved.
+If it doesn't exist, it will be created.
 
 ```yaml
 Type: System.String
@@ -91,12 +92,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-### Accepts two string parameters: SourceDirectory and DestDir
+### Accepts two string parameters: SourceDirectory and DestinationDirectory
 ## OUTPUTS
 
 ### None
 ### The function does not return any output but may create a CompressionErrors.json file
-### in the destination directory if errors occur.
+### in the destination directory if any files fail to compress
 ## NOTES
 - Uses parallel processing for improved performance
 - Creates a CompressionErrors.json file in the destination directory if any files fail to compress
