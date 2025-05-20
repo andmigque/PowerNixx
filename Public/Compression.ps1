@@ -18,23 +18,23 @@ function ConvertTo-GzipParallel {
     .PARAMETER SourceDirectory
     The source directory containing files to compress. Must be an existing directory path.
 
-    .PARAMETER DestDir
+    .PARAMETER DestinationDirectory
     The destination directory where compressed files will be saved. If it doesn't exist, it will be created.
 
     .INPUTS
     System.String
-    Accepts two string parameters: SourceDirectory and DestDir
+    Accepts two string parameters: SourceDirectory and DestinationDirectory
 
     .OUTPUTS
     None
     The function does not return any output but may create a CompressionErrors.json file
-    in the destination directory if errors occur.
+    in the destination directory if any files fail to compress
 
     .EXAMPLE
-    ConvertTo-GzipParallel -SourceDirectory "C:\Data\Input" -DestDir "C:\Data\Output"
+    ConvertTo-GzipParallel -SourceDirectory "/var/log" -DestinationDirectory "/backup/logs"
 
     .EXAMPLE
-    ConvertTo-GzipParallel -SourceDirectory "C:\LargeDataset" -DestDir "C:\CompressedData"
+    ConvertTo-GzipParallel -SourceDirectory "/home/user/documents" -DestinationDirectory "./compressed/docs"
 
     .NOTES
     - Uses parallel processing for improved performance
