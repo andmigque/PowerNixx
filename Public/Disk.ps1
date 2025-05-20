@@ -82,7 +82,7 @@ function Format-Df {
 # Define a function to execute iostat and parse the output
 function Get-DiskIO {
     try {
-        return ((iostat -d --human -o JSON) | ConvertFrom-Json).sysstat.hosts.statistics.disk | ForEach-Object {
+        return (Get-IOStat -Device -HumanReadable | ConvertFrom-Json).sysstat.hosts.statistics.disk | ForEach-Object {
             $device = $_.disk_device
             $transactionsPerSecond = $_.tps
             $bytesReadPerSec = ($_.'kB_read/s') * 1024

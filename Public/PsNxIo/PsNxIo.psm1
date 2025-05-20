@@ -1,7 +1,7 @@
 # Module created by Microsoft.PowerShell.Crescendo
 # Version: 1.1.0
 # Schema: https://aka.ms/PowerShell/Crescendo/Schemas/2021-11
-# Generated at: 05/19/2025 23:31:19
+# Generated at: 05/19/2025 23:31:20
 class PowerShellCustomFunctionAttribute : System.Attribute {
     [bool]$RequiresElevation
     [string]$Source
@@ -37,40 +37,60 @@ filter Push-CrescendoNativeError {
     }
 }
 
-function Get-System
+function Get-IOStat
 {
 [PowerShellCustomFunctionAttribute(RequiresElevation=$False)]
 [CmdletBinding()]
 
 param(
 [Parameter()]
-[switch]$ListUnits,
+[switch]$CPU,
 [Parameter()]
-[switch]$ListAutoMounts,
+[switch]$Device,
 [Parameter()]
-[switch]$ListSockets,
+[switch]$HumanReadable,
 [Parameter()]
-[switch]$ListTimers,
+[switch]$KibiBytes,
 [Parameter()]
-[switch]$Show,
+[switch]$MebiBytes,
 [Parameter()]
-[switch]$Status,
+[switch]$Short,
 [Parameter()]
-[switch]$All,
+[switch]$Time,
 [Parameter()]
-[switch]$Help,
+[switch]$Extended,
 [Parameter()]
-[switch]$Now,
+[switch]$OmitFirst,
 [Parameter()]
-[switch]$Failed
+[switch]$OmitInactive,
+[Parameter()]
+[switch]$Compact,
+[Parameter()]
+[string]$DecimalPlaces,
+[Parameter()]
+[string]$PersistentNameType,
+[Parameter()]
+[string]$Group,
+[Parameter()]
+[switch]$GroupOnly,
+[Parameter()]
+[switch]$Pretty,
+[Parameter()]
+[string]$Partition,
+[Parameter(Position=0)]
+[int]$Interval,
+[Parameter(Position=1)]
+[int]$Count,
+[Parameter(Position=2)]
+[string]$DeviceList
     )
 
 BEGIN {
     $PSNativeCommandUseErrorActionPreference = $false
     $__CrescendoNativeErrorQueue = [System.Collections.Queue]::new()
     $__PARAMETERMAP = @{
-         ListUnits = @{
-               OriginalName = 'list-units'
+         CPU = @{
+               OriginalName = '-c'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -79,8 +99,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         ListAutoMounts = @{
-               OriginalName = 'list-automounts'
+         Device = @{
+               OriginalName = '-d'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -89,8 +109,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         ListSockets = @{
-               OriginalName = 'list-sockets'
+         HumanReadable = @{
+               OriginalName = '-h'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -99,8 +119,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         ListTimers = @{
-               OriginalName = 'list-timers'
+         KibiBytes = @{
+               OriginalName = '-k'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -109,8 +129,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         Show = @{
-               OriginalName = 'show'
+         MebiBytes = @{
+               OriginalName = '-m'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -119,8 +139,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         Status = @{
-               OriginalName = 'status'
+         Short = @{
+               OriginalName = '-s'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -129,8 +149,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         All = @{
-               OriginalName = '--all'
+         Time = @{
+               OriginalName = '-t'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -139,8 +159,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         Help = @{
-               OriginalName = '--help'
+         Extended = @{
+               OriginalName = '-x'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -149,8 +169,8 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         Now = @{
-               OriginalName = '--now'
+         OmitFirst = @{
+               OriginalName = '-y'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
@@ -159,11 +179,111 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         Failed = @{
-               OriginalName = '--failed'
+         OmitInactive = @{
+               OriginalName = '-z'
                OriginalPosition = '0'
                Position = '2147483647'
                ParameterType = 'switch'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         Compact = @{
+               OriginalName = '--compact'
+               OriginalPosition = '0'
+               Position = '2147483647'
+               ParameterType = 'switch'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         DecimalPlaces = @{
+               OriginalName = '--dec='
+               OriginalPosition = '0'
+               Position = '2147483647'
+               ParameterType = 'string'
+               ApplyToExecutable = $False
+               NoGap = $True
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         PersistentNameType = @{
+               OriginalName = '-j'
+               OriginalPosition = '0'
+               Position = '2147483647'
+               ParameterType = 'string'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         Group = @{
+               OriginalName = '-g'
+               OriginalPosition = '0'
+               Position = '2147483647'
+               ParameterType = 'string'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         GroupOnly = @{
+               OriginalName = '-H'
+               OriginalPosition = '0'
+               Position = '2147483647'
+               ParameterType = 'switch'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         Pretty = @{
+               OriginalName = '--pretty'
+               OriginalPosition = '0'
+               Position = '2147483647'
+               ParameterType = 'switch'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         Partition = @{
+               OriginalName = '-p'
+               OriginalPosition = '0'
+               Position = '2147483647'
+               ParameterType = 'string'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         Interval = @{
+               OriginalName = ''
+               OriginalPosition = '0'
+               Position = '0'
+               ParameterType = 'int'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         Count = @{
+               OriginalName = ''
+               OriginalPosition = '0'
+               Position = '1'
+               ParameterType = 'int'
+               ApplyToExecutable = $False
+               NoGap = $False
+               ArgumentTransform = '$args'
+               ArgumentTransformType = 'inline'
+               }
+         DeviceList = @{
+               OriginalName = ''
+               OriginalPosition = '0'
+               Position = '2'
+               ParameterType = 'string'
                ApplyToExecutable = $False
                NoGap = $False
                ArgumentTransform = '$args'
@@ -181,8 +301,8 @@ PROCESS {
     $__commandArgs = @()
     $MyInvocation.MyCommand.Parameters.Values.Where({$_.SwitchParameter -and $_.Name -notmatch "Debug|Whatif|Confirm|Verbose" -and ! $__boundParameters[$_.Name]}).ForEach({$__boundParameters[$_.Name] = [switch]::new($false)})
     if ($__boundParameters["Debug"]){wait-debugger}
-    $__commandArgs += '--no-pager'
-    $__commandArgs += '--output=json'
+    $__commandArgs += '-o'
+    $__commandArgs += 'JSON'
     foreach ($paramName in $__boundParameters.Keys|
             Where-Object {!$__PARAMETERMAP[$_].ApplyToExecutable}|
             Where-Object {!$__PARAMETERMAP[$_].ExcludeAsArgument}|
@@ -227,7 +347,7 @@ PROCESS {
     $__commandArgs = $__commandArgs | Where-Object {$_ -ne $null}
     if ($__boundParameters["Debug"]){wait-debugger}
     if ( $__boundParameters["Verbose"]) {
-         Write-Verbose -Verbose -Message "/usr/bin/systemctl"
+         Write-Verbose -Verbose -Message "/usr/bin/iostat"
          $__commandArgs | Write-Verbose -Verbose
     }
     $__handlerInfo = $__outputHandlers[$PSCmdlet.ParameterSetName]
@@ -235,21 +355,21 @@ PROCESS {
         $__handlerInfo = $__outputHandlers["Default"] # Guaranteed to be present
     }
     $__handler = $__handlerInfo.Handler
-    if ( $PSCmdlet.ShouldProcess("/usr/bin/systemctl $__commandArgs")) {
+    if ( $PSCmdlet.ShouldProcess("/usr/bin/iostat $__commandArgs")) {
     # check for the application and throw if it cannot be found
-        if ( -not (Get-Command -ErrorAction Ignore "/usr/bin/systemctl")) {
-          throw "Cannot find executable '/usr/bin/systemctl'"
+        if ( -not (Get-Command -ErrorAction Ignore "/usr/bin/iostat")) {
+          throw "Cannot find executable '/usr/bin/iostat'"
         }
         if ( $__handlerInfo.StreamOutput ) {
             if ( $null -eq $__handler ) {
-                & "/usr/bin/systemctl" $__commandArgs
+                & "/usr/bin/iostat" $__commandArgs
             }
             else {
-                & "/usr/bin/systemctl" $__commandArgs 2>&1| Push-CrescendoNativeError | & $__handler
+                & "/usr/bin/iostat" $__commandArgs 2>&1| Push-CrescendoNativeError | & $__handler
             }
         }
         else {
-            $result = & "/usr/bin/systemctl" $__commandArgs 2>&1| Push-CrescendoNativeError
+            $result = & "/usr/bin/iostat" $__commandArgs 2>&1| Push-CrescendoNativeError
             & $__handler $result
         }
     }
@@ -261,46 +381,86 @@ PROCESS {
 
 
 .DESCRIPTION
-Wrapper for systemctl --no-pager --output=json
+Wrapper for iostat with JSON output
 
-.PARAMETER ListUnits
-List active systemctl units
-
-
-.PARAMETER ListAutoMounts
-List automount units currently in memory
+.PARAMETER CPU
+Display the CPU utilization report
 
 
-.PARAMETER ListSockets
-List socket units currently in memory
+.PARAMETER Device
+Display the device utilization report
 
 
-.PARAMETER ListTimers
-List timer units currently in memory
+.PARAMETER HumanReadable
+Human readable format (implies --human --pretty)
 
 
-.PARAMETER Show
-Show properties of the system
+.PARAMETER KibiBytes
+Display statistics in kibibytes per second
 
 
-.PARAMETER Status
-The overall status or the status of the unit
+.PARAMETER MebiBytes
+Display statistics in mebibytes per second
 
 
-.PARAMETER All
-Give all output
+.PARAMETER Short
+Display a short (narrow) version of the report
 
 
-.PARAMETER Help
-Show help
+.PARAMETER Time
+Print the time for each report displayed
 
 
-.PARAMETER Now
-Do the action now, dont wait for reload
+.PARAMETER Extended
+Display extended statistics
 
 
-.PARAMETER Failed
-Any failed units
+.PARAMETER OmitFirst
+Omit first report with statistics since system boot
+
+
+.PARAMETER OmitInactive
+Omit output for devices with no activity
+
+
+.PARAMETER Compact
+Display all metrics on a single line
+
+
+.PARAMETER DecimalPlaces
+Specify the number of decimal places (0-2)
+
+
+.PARAMETER PersistentNameType
+Display persistent device names (ID, LABEL, PATH, UUID, etc.)
+
+
+.PARAMETER Group
+Display statistics for a group of devices
+
+
+.PARAMETER GroupOnly
+Only global statistics for the group (use with -g)
+
+
+.PARAMETER Pretty
+Make the Device Utilization Report easier to read by a human
+
+
+.PARAMETER Partition
+Display statistics for block devices and all their partitions (device[,device] or ALL)
+
+
+.PARAMETER Interval
+Interval in seconds between each report
+
+
+.PARAMETER Count
+Number of reports to generate
+
+
+.PARAMETER DeviceList
+List of devices to report on (space separated)
 
 
 
