@@ -76,6 +76,14 @@
         @{
             ModuleName    = 'platyPS'
             ModuleVersion = '0.14.2'
+        },
+        @{
+            ModuleName    = 'Graphical'
+            ModuleVersion = '1.0.2'
+        },
+        @{
+            ModuleName    = 'PSScriptAnalyzer'
+            ModuleVersion = '1.23.0'
         }
     )
 
