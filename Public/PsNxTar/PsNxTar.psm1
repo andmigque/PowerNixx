@@ -1,7 +1,7 @@
 # Module created by Microsoft.PowerShell.Crescendo
 # Version: 1.1.0
 # Schema: https://aka.ms/PowerShell/Crescendo/Schemas/2021-11
-# Generated at: 05/19/2025 23:31:19
+# Generated at: 05/20/2025 01:21:17
 class PowerShellCustomFunctionAttribute : System.Attribute {
     [bool]$RequiresElevation
     [string]$Source
@@ -209,39 +209,60 @@ PROCESS {
 
 <#
 .SYNOPSIS
-tar wrapper
+tar wrapper for creating, extracting, and listing tar archives.
 
 .DESCRIPTION
-Just look at the man page
+A PowerShell wrapper for the tar utility. Use to create, extract, or list the contents of tar archives. Supports common tar operations with clear PowerShell semantics.
 
 .PARAMETER Show
-
+Show the progress and file names as tar operates (verbose mode).
 
 
 .PARAMETER Archive
-
+The archive file to create, extract, or list. Required for most operations.
 
 
 .PARAMETER List
-List the contents of an archive
+List the contents of an archive without extracting.
 
 
 .PARAMETER Extract
-
+Extract files from the specified archive.
 
 
 .PARAMETER New
-
+Create a new archive. Use with -Archive and -Files.
 
 
 .PARAMETER Files
+The files to include in the new archive. Accepts an array of file paths.
 
 
+
+.EXAMPLE
+PS> Invoke-Tar -List -Archive 'archive.tar'
+
+Lists the contents of 'archive.tar'.
+Original Command: tar -tf archive.tar
+
+
+.EXAMPLE
+PS> Invoke-Tar -Extract -Archive 'archive.tar'
+
+Extracts all files from 'archive.tar' into the current directory.
+Original Command: tar -xf archive.tar
+
+
+.EXAMPLE
+PS> Invoke-Tar -New -Archive 'archive.tar' -Files @('file1.txt','file2.txt')
+
+Creates a new archive 'archive.tar' containing file1.txt and file2.txt.
+Original Command: tar -cf archive.tar file1.txt file2.txt
 
 
 .LINK
-link1
-link2
+https://man7.org/linux/man-pages/man1/tar.1.html
+https://www.gnu.org/software/tar/manual/tar.html
 
 #>
 }

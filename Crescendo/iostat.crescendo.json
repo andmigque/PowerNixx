@@ -1,0 +1,164 @@
+{
+  "$schema": "https://aka.ms/PowerShell/Crescendo/Schemas/2021-11",
+  "Commands": [
+    {
+      "Verb": "Get",
+      "Noun": "IOStat",
+      "OriginalName": "/usr/bin/iostat",
+      "OriginalCommandElements": [
+        "-o",
+        "JSON"
+      ],
+      "Description": "A PowerShell wrapper for the iostat utility.\n\nUse this command to monitor CPU usage and device input/output activity over time, identify performance bottlenecks, and analyze trends in system resource utilization. Output is always in JSON format for easy integration with other tools and scripts.",
+      "Usage": {
+        "Synopsis": "Retrieves system I/O and CPU statistics in JSON format for performance monitoring and analysis."
+      },
+      "HelpLinks": [
+        "https://man7.org/linux/man-pages/man1/iostat.1.html"
+      ],
+      "Examples": [
+        {
+          "Command": "Get-IOStat -CPU",
+          "OriginalCommand": "iostat -c -o JSON",
+          "Description": "Shows CPU utilization statistics in JSON format."
+        },
+        {
+          "Command": "Get-IOStat -Device -HumanReadable",
+          "OriginalCommand": "iostat -d --human -o JSON",
+          "Description": "Shows device I/O stats in human-readable JSON format."
+        },
+        {
+          "Command": "Get-IOStat -Device -Interval 2 -Count 3",
+          "OriginalCommand": "iostat -d -o JSON 2 3",
+          "Description": "Shows device I/O stats every 2 seconds, 3 times."
+        }
+      ],
+      "Parameters": [
+        {
+          "Name": "CPU",
+          "OriginalName": "-c",
+          "ParameterType": "switch",
+          "Description": "Display the CPU utilization report."
+        },
+        {
+          "Name": "Device",
+          "OriginalName": "-d",
+          "ParameterType": "switch",
+          "Description": "Display the device utilization report."
+        },
+        {
+          "Name": "HumanReadable",
+          "OriginalName": "-h",
+          "ParameterType": "switch",
+          "Description": "Display sizes in a human-readable format (e.g., 1.0k, 1.2M)."
+        },
+        {
+          "Name": "Kilobytes",
+          "OriginalName": "-k",
+          "ParameterType": "switch",
+          "Description": "Display statistics in kilobytes per second."
+        },
+        {
+          "Name": "Megabytes",
+          "OriginalName": "-m",
+          "ParameterType": "switch",
+          "Description": "Display statistics in megabytes per second."
+        },
+        {
+          "Name": "Short",
+          "OriginalName": "-s",
+          "ParameterType": "switch",
+          "Description": "Display a short (narrow) version of the report."
+        },
+        {
+          "Name": "Time",
+          "OriginalName": "-t",
+          "ParameterType": "switch",
+          "Description": "Print the time for each report displayed."
+        },
+        {
+          "Name": "Extended",
+          "OriginalName": "-x",
+          "ParameterType": "switch",
+          "Description": "Display extended statistics."
+        },
+        {
+          "Name": "OmitFirst",
+          "OriginalName": "-y",
+          "ParameterType": "switch",
+          "Description": "Omit first report with statistics since system boot."
+        },
+        {
+          "Name": "OmitInactive",
+          "OriginalName": "-z",
+          "ParameterType": "switch",
+          "Description": "Omit output for devices with no activity."
+        },
+        {
+          "Name": "Compact",
+          "OriginalName": "--compact",
+          "ParameterType": "switch",
+          "Description": "Display all metrics on a single line."
+        },
+        {
+          "Name": "DecimalPlaces",
+          "OriginalName": "--dec=",
+          "ParameterType": "string",
+          "NoGap": true,
+          "Description": "Specify the number of decimal places (0-2)."
+        },
+        {
+          "Name": "PersistentNameType",
+          "OriginalName": "-j",
+          "ParameterType": "string",
+          "Description": "Display persistent device names (ID, LABEL, PATH, UUID, etc.)."
+        },
+        {
+          "Name": "Group",
+          "OriginalName": "-g",
+          "ParameterType": "string",
+          "Description": "Display statistics for a group of devices."
+        },
+        {
+          "Name": "GroupOnly",
+          "OriginalName": "-H",
+          "ParameterType": "switch",
+          "Description": "Only global statistics for the group (use with -g)."
+        },
+        {
+          "Name": "Pretty",
+          "OriginalName": "--pretty",
+          "ParameterType": "switch",
+          "Description": "Make the Device Utilization Report easier to read by a human."
+        },
+        {
+          "Name": "Partition",
+          "OriginalName": "-p",
+          "ParameterType": "string",
+          "Description": "Display statistics for block devices and all their partitions (device[,device] or ALL)."
+        },
+        {
+          "Name": "Interval",
+          "OriginalName": "",
+          "ParameterType": "int",
+          "Position": 0,
+          "Description": "Interval in seconds between each report."
+        },
+        {
+          "Name": "Count",
+          "OriginalName": "",
+          "ParameterType": "int",
+          "Position": 1,
+          "Description": "Number of reports to generate."
+        },
+        {
+          "Name": "DeviceList",
+          "OriginalName": "",
+          "ParameterType": "string",
+          "Position": 2,
+          "Description": "List of devices to report on (space separated)."
+        }
+      ]
+    }
+  ]
+}

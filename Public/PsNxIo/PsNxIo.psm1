@@ -1,7 +1,7 @@
 # Module created by Microsoft.PowerShell.Crescendo
 # Version: 1.1.0
 # Schema: https://aka.ms/PowerShell/Crescendo/Schemas/2021-11
-# Generated at: 05/19/2025 23:31:20
+# Generated at: 05/20/2025 01:21:17
 class PowerShellCustomFunctionAttribute : System.Attribute {
     [bool]$RequiresElevation
     [string]$Source
@@ -50,9 +50,9 @@ param(
 [Parameter()]
 [switch]$HumanReadable,
 [Parameter()]
-[switch]$KibiBytes,
+[switch]$Kilobytes,
 [Parameter()]
-[switch]$MebiBytes,
+[switch]$Megabytes,
 [Parameter()]
 [switch]$Short,
 [Parameter()]
@@ -119,7 +119,7 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         KibiBytes = @{
+         Kilobytes = @{
                OriginalName = '-k'
                OriginalPosition = '0'
                Position = '2147483647'
@@ -129,7 +129,7 @@ BEGIN {
                ArgumentTransform = '$args'
                ArgumentTransformType = 'inline'
                }
-         MebiBytes = @{
+         Megabytes = @{
                OriginalName = '-m'
                OriginalPosition = '0'
                Position = '2147483647'
@@ -378,91 +378,118 @@ PROCESS {
   } # end PROCESS
 
 <#
-
+.SYNOPSIS
+Retrieves system I/O and CPU statistics in JSON format for performance monitoring and analysis.
 
 .DESCRIPTION
-Wrapper for iostat with JSON output
+A PowerShell wrapper for the iostat utility.
+
+Use this command to monitor CPU usage and device input/output activity over time, identify performance bottlenecks, and analyze trends in system resource utilization. Output is always in JSON format for easy integration with other tools and scripts.
 
 .PARAMETER CPU
-Display the CPU utilization report
+Display the CPU utilization report.
 
 
 .PARAMETER Device
-Display the device utilization report
+Display the device utilization report.
 
 
 .PARAMETER HumanReadable
-Human readable format (implies --human --pretty)
+Display sizes in a human-readable format (e.g., 1.0k, 1.2M).
 
 
-.PARAMETER KibiBytes
-Display statistics in kibibytes per second
+.PARAMETER Kilobytes
+Display statistics in kilobytes per second.
 
 
-.PARAMETER MebiBytes
-Display statistics in mebibytes per second
+.PARAMETER Megabytes
+Display statistics in megabytes per second.
 
 
 .PARAMETER Short
-Display a short (narrow) version of the report
+Display a short (narrow) version of the report.
 
 
 .PARAMETER Time
-Print the time for each report displayed
+Print the time for each report displayed.
 
 
 .PARAMETER Extended
-Display extended statistics
+Display extended statistics.
 
 
 .PARAMETER OmitFirst
-Omit first report with statistics since system boot
+Omit first report with statistics since system boot.
 
 
 .PARAMETER OmitInactive
-Omit output for devices with no activity
+Omit output for devices with no activity.
 
 
 .PARAMETER Compact
-Display all metrics on a single line
+Display all metrics on a single line.
 
 
 .PARAMETER DecimalPlaces
-Specify the number of decimal places (0-2)
+Specify the number of decimal places (0-2).
 
 
 .PARAMETER PersistentNameType
-Display persistent device names (ID, LABEL, PATH, UUID, etc.)
+Display persistent device names (ID, LABEL, PATH, UUID, etc.).
 
 
 .PARAMETER Group
-Display statistics for a group of devices
+Display statistics for a group of devices.
 
 
 .PARAMETER GroupOnly
-Only global statistics for the group (use with -g)
+Only global statistics for the group (use with -g).
 
 
 .PARAMETER Pretty
-Make the Device Utilization Report easier to read by a human
+Make the Device Utilization Report easier to read by a human.
 
 
 .PARAMETER Partition
-Display statistics for block devices and all their partitions (device[,device] or ALL)
+Display statistics for block devices and all their partitions (device[,device] or ALL).
 
 
 .PARAMETER Interval
-Interval in seconds between each report
+Interval in seconds between each report.
 
 
 .PARAMETER Count
-Number of reports to generate
+Number of reports to generate.
 
 
 .PARAMETER DeviceList
-List of devices to report on (space separated)
+List of devices to report on (space separated).
 
 
+
+.EXAMPLE
+PS> Get-IOStat -CPU
+
+Shows CPU utilization statistics in JSON format.
+Original Command: iostat -c -o JSON
+
+
+.EXAMPLE
+PS> Get-IOStat -Device -HumanReadable
+
+Shows device I/O stats in human-readable JSON format.
+Original Command: iostat -d --human -o JSON
+
+
+.EXAMPLE
+PS> Get-IOStat -Device -Interval 2 -Count 3
+
+Shows device I/O stats every 2 seconds, 3 times.
+Original Command: iostat -d -o JSON 2 3
+
+
+.LINK
+https://man7.org/linux/man-pages/man1/iostat.1.html
 
 #>
 }

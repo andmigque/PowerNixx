@@ -1,7 +1,7 @@
 # Module created by Microsoft.PowerShell.Crescendo
 # Version: 1.1.0
 # Schema: https://aka.ms/PowerShell/Crescendo/Schemas/2021-11
-# Generated at: 05/19/2025 23:31:19
+# Generated at: 05/20/2025 01:21:17
 class PowerShellCustomFunctionAttribute : System.Attribute {
     [bool]$RequiresElevation
     [string]$Source
@@ -258,51 +258,77 @@ PROCESS {
   } # end PROCESS
 
 <#
-
+.SYNOPSIS
+Get-System -ListUnits | Get-System -Status | Get-System -Show
 
 .DESCRIPTION
-Wrapper for systemctl --no-pager --output=json
+A PowerShell wrapper for systemctl. Use to retrieve systemd unit, socket, timer, and automount information in JSON format. Supports listing, status, and property queries for systemd-managed resources.
 
 .PARAMETER ListUnits
-List active systemctl units
+List active systemctl units.
 
 
 .PARAMETER ListAutoMounts
-List automount units currently in memory
+List automount units currently in memory.
 
 
 .PARAMETER ListSockets
-List socket units currently in memory
+List socket units currently in memory.
 
 
 .PARAMETER ListTimers
-List timer units currently in memory
+List timer units currently in memory.
 
 
 .PARAMETER Show
-Show properties of the system
+Show properties of the system or a specific unit.
 
 
 .PARAMETER Status
-The overall status or the status of the unit
+Show the overall status or the status of a specific unit.
 
 
 .PARAMETER All
-Give all output
+Show all available output.
 
 
 .PARAMETER Help
-Show help
+Show help for systemctl.
 
 
 .PARAMETER Now
-Do the action now, dont wait for reload
+Do the action now, don't wait for reload.
 
 
 .PARAMETER Failed
-Any failed units
+Show any failed units.
 
 
+
+.EXAMPLE
+PS> Get-System -ListUnits
+
+Lists all active systemd units in JSON format.
+Original Command: systemctl list-units --no-pager --output=json
+
+
+.EXAMPLE
+PS> Get-System -Status
+
+Shows the overall status of the system or a specific unit.
+Original Command: systemctl status --no-pager --output=json
+
+
+.EXAMPLE
+PS> Get-System -Show
+
+Displays properties of the system or a specific unit.
+Original Command: systemctl show --no-pager --output=json
+
+
+.LINK
+https://man7.org/linux/man-pages/man1/systemctl.1.html
+https://www.freedesktop.org/software/systemd/man/systemctl.html
 
 #>
 }
