@@ -13,8 +13,8 @@ Parallel compression of files using .NET native GZip streams
 ## SYNTAX
 
 ```
-ConvertTo-GzipParallel [-SrcDir] <String> [-DestDir] <String> [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ConvertTo-GzipParallel [-SourceDirectory] <String> [-DestinationDirectory] <String>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,17 +29,17 @@ It provides real-time progress updates with elapsed time and a ski emoji (⛷) i
 
 ### EXAMPLE 1
 ```
-ConvertTo-GzipParallel -SrcDir "C:\Data\Input" -DestDir "C:\Data\Output"
+ConvertTo-GzipParallel -SourceDirectory "C:\Data\Input" -DestDir "C:\Data\Output"
 ```
 
 ### EXAMPLE 2
 ```
-ConvertTo-GzipParallel -SrcDir "C:\LargeDataset" -DestDir "C:\CompressedData"
+ConvertTo-GzipParallel -SourceDirectory "C:\LargeDataset" -DestDir "C:\CompressedData"
 ```
 
 ## PARAMETERS
 
-### -SrcDir
+### -SourceDirectory
 The source directory containing files to compress.
 Must be an existing directory path.
 
@@ -55,9 +55,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DestDir
-The destination directory where compressed files will be saved.
-If it doesn't exist, it will be created.
+### -DestinationDirectory
+{{ Fill DestinationDirectory Description }}
 
 ```yaml
 Type: System.String
@@ -92,7 +91,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-### Accepts two string parameters: SrcDir and DestDir
+### Accepts two string parameters: SourceDirectory and DestDir
 ## OUTPUTS
 
 ### None
@@ -101,7 +100,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 - Uses parallel processing for improved performance
 - Creates a CompressionErrors.json file in the destination directory if any files fail to compress
-- Maintains original file structure in destination directory # TODO: This isn't true
+- Maintains original directory structure in destination directory
 - Uses GZip compression with smallest size level
 - Progress is tracked and displayed with elapsed time and a ski emoji (⛷) indicator
 - Implements proper resource cleanup using try/catch/finally blocks

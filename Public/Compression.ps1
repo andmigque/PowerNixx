@@ -15,7 +15,7 @@ function ConvertTo-GzipParallel {
     The function uses parallel processing for improved performance.
     It provides real-time progress updates with elapsed time and a ski emoji (⛷) indicator.
 
-    .PARAMETER SrcDir
+    .PARAMETER SourceDirectory
     The source directory containing files to compress. Must be an existing directory path.
 
     .PARAMETER DestDir
@@ -23,7 +23,7 @@ function ConvertTo-GzipParallel {
 
     .INPUTS
     System.String
-    Accepts two string parameters: SrcDir and DestDir
+    Accepts two string parameters: SourceDirectory and DestDir
 
     .OUTPUTS
     None
@@ -31,15 +31,15 @@ function ConvertTo-GzipParallel {
     in the destination directory if errors occur.
 
     .EXAMPLE
-    ConvertTo-GzipParallel -SrcDir "C:\Data\Input" -DestDir "C:\Data\Output"
+    ConvertTo-GzipParallel -SourceDirectory "C:\Data\Input" -DestDir "C:\Data\Output"
 
     .EXAMPLE
-    ConvertTo-GzipParallel -SrcDir "C:\LargeDataset" -DestDir "C:\CompressedData"
+    ConvertTo-GzipParallel -SourceDirectory "C:\LargeDataset" -DestDir "C:\CompressedData"
 
     .NOTES
     - Uses parallel processing for improved performance
     - Creates a CompressionErrors.json file in the destination directory if any files fail to compress
-    - Maintains original file structure in destination directory # TODO: This isn't true
+    - Maintains original directory structure in destination directory
     - Uses GZip compression with smallest size level
     - Progress is tracked and displayed with elapsed time and a ski emoji (⛷) indicator
     - Implements proper resource cleanup using try/catch/finally blocks
@@ -55,44 +55,46 @@ function ConvertTo-GzipParallel {
     https://learn.microsoft.com/en-us/dotnet/api/system.io.compression.gzipstream?view=net-9.0
     
     #>
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
-        [string]$SrcDir,
+        [string]$SourceDirectory,
 
         [Parameter(Mandatory = $true)]
-        [string]$DestDir
+        [string]$DestinationDirectory
     )
 
+    if (-not (Test-Path -Path $SourceDirectory -PathType Container)) {
+        throw "Source directory '$SourceDirectory' does not exist."
+    }
+
+    if (-not (Test-Path -Path $DestinationDirectory)) {
+        Write-Information "Destination directory '$DestinationDirectory' does not exist. Creating..."
+        New-Item -Path $DestinationDirectory -ItemType Directory -Force | Out-Null
+    }
+
     $ParallelErrors = [ConcurrentDictionary[string, string]]::new()
-    $source = (Resolve-Path -Path $SrcDir).Path
-    $destination = (Resolve-Path -Path $DestDir).Path
-
-    Write-Information "Source: $source"
-    Write-Information "Destination: $destination"
-
-    if (-not (Test-Path -Path $source)) {
-        throw "Source directory '$source' does not exist."
-    }
-
-    if (-not (Test-Path -Path $destination)) {
-        Write-Information "Destination directory '$destination' does not exist. Creating..."
-        New-Item -Path $destination -ItemType Directory -Force -Confirm | Out-Null
-    }
 
     $startTime = Get-Date
 
-    $files = Get-ChildItem -Path $source -Recurse -File -ErrorAction SilentlyContinue
+    $files = Get-ChildItem -Path $SourceDirectory -Recurse -File -ErrorAction SilentlyContinue
     Write-Information "Files found: $($files.Count)"
 
     $files | ForEach-Object -Parallel {
-        $errors = $Using:ParallelErrors
+        $errors = $using:ParallelErrors
         $currentTime = Get-Date
         $elapsedTime = [string]::Format('{0:hh\:mm\:ss}', ($currentTime - $using:startTime))
         Write-Progress -Activity 'Compressing' -Status "$elapsedTime ⛷"
 
         $filePath = $_.FullName
-        $baseName = $_.Name
-        $gzipFilePath = Join-Path -Path $using:destination -ChildPath "$baseName.gz"
+        $relativePath = $_.FullName.Substring($using:SourceDirectory.Length).TrimStart('\', '/')
+        $destPath = Join-Path -Path $using:DestinationDirectory -ChildPath $relativePath
+        $destDir = [System.IO.Path]::GetDirectoryName($destPath)
+
+        if (-not (Test-Path -Path $destDir)) {
+            New-Item -Path $destDir -ItemType Directory -Force | Out-Null
+        }
+        $gzipFilePath = "$destPath.gz"
 
         try {
             $fileStream = [System.IO.File]::OpenRead($filePath)
@@ -117,8 +119,8 @@ function ConvertTo-GzipParallel {
     if ($ParallelErrors.Count -gt 0) {
         $ParallelErrors.GetEnumerator() | 
             ConvertTo-Json -Depth 10 | 
-            Out-File -FilePath "$destination/CompressionErrors.json"
-        Write-Warning "Some files failed to compress. See $($destination)/CompressionErrors.json for details."
+            Out-File -FilePath "$DestinationDirectory/CompressionErrors.json"
+        Write-Warning "Some files failed to compress. See $DestinationDirectory/CompressionErrors.json for details."
     }
     else {
         Write-Host 'Compression complete'
