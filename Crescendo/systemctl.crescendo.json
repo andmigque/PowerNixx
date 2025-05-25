@@ -9,67 +9,91 @@
                 "--no-pager",
                 "--output=json"
             ],
-            "Description": "Wrapper for systemctl --no-pager --output=json",
+            "Description": "A PowerShell wrapper for systemctl. Use to retrieve systemd unit, socket, timer, and automount information in JSON format. Supports listing, status, and property queries for systemd-managed resources.",
+            "Usage": {
+                "Synopsis": "Get-System -ListUnits | Get-System -Status | Get-System -Show"
+            },
+            "HelpLinks": [
+                "https://man7.org/linux/man-pages/man1/systemctl.1.html",
+                "https://www.freedesktop.org/software/systemd/man/systemctl.html"
+            ],
+            "Examples": [
+                {
+                    "Command": "Get-System -ListUnits",
+                    "OriginalCommand": "systemctl list-units --no-pager --output=json",
+                    "Description": "Lists all active systemd units in JSON format."
+                },
+                {
+                    "Command": "Get-System -Status",
+                    "OriginalCommand": "systemctl status --no-pager --output=json",
+                    "Description": "Shows the overall status of the system or a specific unit."
+                },
+                {
+                    "Command": "Get-System -Show",
+                    "OriginalCommand": "systemctl show --no-pager --output=json",
+                    "Description": "Displays properties of the system or a specific unit."
+                }
+            ],
             "Parameters": [
                 {
                     "Name": "ListUnits",
                     "OriginalName": "list-units",
                     "ParameterType": "switch",
-                    "Description": "List active systemctl units"
+                    "Description": "List active systemctl units."
                 },
                 {
                     "Name": "ListAutoMounts",
                     "OriginalName": "list-automounts",
                     "ParameterType": "switch",
-                    "Description": "List automount units currently in memory"
+                    "Description": "List automount units currently in memory."
                 },
                 {
                     "Name": "ListSockets",
                     "OriginalName": "list-sockets",
                     "ParameterType": "switch",
-                    "Description": "List socket units currently in memory"
+                    "Description": "List socket units currently in memory."
                 },
                 {
                     "Name": "ListTimers",
                     "OriginalName": "list-timers",
                     "ParameterType": "switch",
-                    "Description": "List timer units currently in memory"
+                    "Description": "List timer units currently in memory."
                 },
                 {
                     "Name": "Show",
                     "OriginalName": "show",
                     "ParameterType": "switch",
-                    "Description": "Show properties of the system"
+                    "Description": "Show properties of the system or a specific unit."
                 },
                 {
                     "Name": "Status",
                     "OriginalName": "status",
                     "ParameterType": "switch",
-                    "Description": "The overall status or the status of the unit"
+                    "Description": "Show the overall status or the status of a specific unit."
                 },
                 {
                     "Name": "All",
                     "OriginalName": "--all",
                     "ParameterType": "switch",
-                    "Description": "Give all output"
+                    "Description": "Show all available output."
                 },
                 {
                     "Name": "Help",
                     "OriginalName": "--help",
                     "ParameterType": "switch",
-                    "Description": "Show help"
+                    "Description": "Show help for systemctl."
                 },
                 {
                     "Name": "Now",
                     "OriginalName": "--now",
                     "ParameterType": "switch",
-                    "Description": "Do the action now, dont wait for reload"
+                    "Description": "Do the action now, don't wait for reload."
                 },
                 {
                     "Name": "Failed",
                     "OriginalName": "--failed",
                     "ParameterType": "switch",
-                    "Description": "Any failed units"
+                    "Description": "Show any failed units."
                 }
             ]
         }
