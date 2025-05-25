@@ -13,7 +13,7 @@ PowerNixx is built on Pode.Web and currently provides the following features
 ## Web Dashboard
 1. Metrics
 
-![PowerNixx Dashboard](./Docs/Images/PowerNixxDashboard.png "PowerNixx Dashboard")
+![PowerNixx Dashboard](./Documentation/Images/PowerNixxDashboard.png "PowerNixx Dashboard")
 
 
 
