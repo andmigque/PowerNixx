@@ -1,22 +1,19 @@
+Set-StrictMode -Version 3.0
+
 class ByteMapper {
     static [double]$KiloBytes = [double]1024
     static [double]$MegaBytes = 1024 * 1024
     static [double]$GigaBytes = 1024 * 1024 * 1024
     static [double]$TeraBytes = 1024 * 1024 * 1024 * 1024
-    static [double]$PetaBytes = 1024 * 1024 * 1024 * 1024 * 1024
-
-    # Removed constructor as methods are now static
-    # Removed instance properties as methods return objects directly
+    static [double]$PetaBytes = 1024 * 1024 * 1024 * 1024 * 1024    
 
     static [PsCustomObject]ConvertFromBytes([double]$bytes) {
-        # Validate input
         if ($bytes -lt 0) {
             return [PSCustomObject]@{
                 Error = "Bytes cannot be negative: $bytes"
             }
         }
 
-        # Create new mapper instance
         $byteMapper = [PSCustomObject]@{
             HumanBytes    = 0
             Unit          = 'B'
@@ -25,7 +22,6 @@ class ByteMapper {
         $byteMapper.OriginalBytes = $bytes
 
         try {
-            # Order from largest to smallest for correct conversion
             if ($bytes -ge [ByteMapper]::PetaBytes) {
                 $byteMapper.HumanBytes = ($bytes / [ByteMapper]::PetaBytes)
                 $byteMapper.Unit = 'PB'
@@ -62,30 +58,32 @@ class ByteMapper {
     }
 
     static [PsCustomObject]ConvertToPercent([double]$numerator, [double]$denominator, [int]$decimalPlaces = 2) {
-
-        # Create new mapper instance
+        if ($decimalPlaces -lt 0) {
+            throw 'Decimal places cannot be negative'
+        }
+        if ($decimalPlaces -gt 10) {
+            throw 'Decimal places cannot be greater than 10'
+        }
+        if ($numerator -lt 0) {
+            throw 'Numerator cannot be negative'
+        }
+        if ($denominator -lt 0) {
+            throw 'Denominator cannot be negative'
+        }
+        if ($denominator -eq 0) {
+            throw 'Denominator cannot be zero'
+        }
         $percentMapper = [PSCustomObject]@{
-            NumeratorBytes   = $null # Will be populated by ConvertFromBytes
-            DenominatorBytes = $null # Will be populated by ConvertFromBytes
+            NumeratorBytes   = $null
+            DenominatorBytes = $null
             Percent          = 0.0
         }
 
         try {
-            # Check for division by zero
-            if ($denominator -eq 0) {
-                throw 'Cannot calculate percentage: Denominator cannot be zero'
-            }
 
-            # Handle negative values
-            if ($numerator -lt 0 -or $denominator -lt 0) {
-                throw 'Cannot calculate percentage: Values cannot be negative'
-            }
-
-            # Convert both values to bytes and store the conversions
             $percentMapper.NumeratorBytes = [ByteMapper]::ConvertFromBytes($numerator)
             $percentMapper.DenominatorBytes = [ByteMapper]::ConvertFromBytes($denominator)
 
-            # Calculate percentage using original values to maintain precision
             $percentMapper.Percent = [math]::Round(($numerator / $denominator) * 100, $decimalPlaces)
 
             return $percentMapper

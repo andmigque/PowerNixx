@@ -1,33 +1,38 @@
 using namespace System.Security.Cryptography
 using namespace System.IO
+Set-StrictMode -Version 3.0
 
-#----------------------------------------------------------------------
-# Function: Protect-FileWithEncryption
-#----------------------------------------------------------------------
+function Protect-FileWithEncryption {
 <#
+
 .SYNOPSIS
 Encrypts a file using AES encryption with a password-derived key.
+
 .DESCRIPTION
 This function encrypts a file using AES encryption. It generates a random salt 
 and IV (Initialization Vector), derives a key from the provided password and salt 
 using PBKDF2 (Password-Based Key Derivation Function 2), and writes the encrypted 
+Set-StrictMode -Version 3.0
 data to a new file with the `.enc` extension. The salt and IV are stored at the 
 beginning of the encrypted file for decryption purposes.
+
 .PARAMETER FilePath
 The path to the file to be encrypted.
+
 .PARAMETER FilePassword
 A secure string representing the password used to derive the encryption key.
+
 .OUTPUTS
 None. Writes the encrypted file to the same directory as the original file with 
 the `.enc` extension.
+
 .EXAMPLE
 Protect-FileWithEncryption -FilePath ./AboutOperators.txt -FilePassword (Read-Host -Prompt "Enter encryption password" -AsSecureString)               
-# Encrypts the file `file.txt` and creates `file.txt.enc` in the same directory.
+
 .NOTES
 - The password must be securely stored or remembered, as it is required for decryption.
 - The function uses AES encryption with a 256-bit key.
 #>
-function Protect-FileWithEncryption {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
@@ -99,31 +104,35 @@ function Protect-FileWithEncryption {
     }
 }
 
-#----------------------------------------------------------------------
-# Function: Unprotect-EncryptedFile
-#----------------------------------------------------------------------
+function Unprotect-EncryptedFile {
 <#
 .SYNOPSIS
 Decrypts a file encrypted with Protect-FileWithEncryption.
+
 .DESCRIPTION
-This function decrypts a file that was encrypted using the `Protect-FileWithEncryption` 
+This function decrypts a file that was encrypted using the `Protect-FileWithEncryption`
 function. It reads the salt and IV from the encrypted file, derives the decryption 
 key using the provided password and salt, and writes the decrypted data to a new file.
+
 .PARAMETER EncryptedFilePath
 The path to the encrypted file to be decrypted.
+
 .PARAMETER FilePassword
 A secure string representing the password used to derive the decryption key.
+
 .PARAMETER OutputFilePath
 The path where the decrypted file will be written.
+
 .OUTPUTS
 None. Writes the decrypted file to the specified output path.
+
 .EXAMPLE
 Unprotect-EncryptedFile -EncryptedFilePath AboutOperators.txt.enc -FilePassword (Read-Host -Prompt "Enter Password" -AsSecureString) -OutputFilePath AboutOperatorsDecrypted.txt
+
 .NOTES
 - The password must match the one used during encryption.
 - If the password is incorrect or the file is corrupted, decryption will fail.
 #>
-function Unprotect-EncryptedFile {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]

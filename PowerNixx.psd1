@@ -24,7 +24,7 @@
     Author               = 'Andres Quesada'
 
     # Company or vendor of this module
-    CompanyName          = 'Unknown'
+    CompanyName          = 'PowerNixx'
 
     # Copyright statement for this module
     Copyright            = '(c) Andres Quesada. All rights reserved.'

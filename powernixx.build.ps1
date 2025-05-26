@@ -26,8 +26,15 @@ Task Compile -Depends Clean {
     }
 }
 
-Task Init {
-    Import-Module -Name ./PowerNixx.psd1
+Task Install {
+    Install-Module -Name 'Microsoft.PowerShell.Crescendo' -RequiredVersion '1.1.0' -Force
+    Install-Module -Name 'Pode' -RequiredVersion '2.12.0' -Force
+    Install-Module -Name 'Pode.Web' -RequiredVersion '0.8.3' -Force
+    Install-Module -Name 'Pester' -RequiredVersion '5.7.1' -Force
+    Install-Module -Name 'Psake' -RequiredVersion '4.9.1' -Force
+    Install-Module -Name 'platyPS' -RequiredVersion '0.14.2' -Force
+    Install-Module -Name 'Graphical' -RequiredVersion '1.0.2' -Force
+    Install-Module -Name 'PSScriptAnalyzer' -RequiredVersion '1.23.0' -Force
 }
 
 Task Clean {

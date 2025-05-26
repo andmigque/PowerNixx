@@ -1,3 +1,5 @@
+Set-StrictMode -Version 3.0
+
 function Get-SystemInfo {
     [CmdletBinding()]
     param()
@@ -47,16 +49,13 @@ function Get-SystemUptime {
     [CmdletBinding()]
     param()
     try {
-        # Check if running on a Linux-based system
         if (-not $IsLinux) { 
             throw 'This function is only supported on Linux-based systems.'
         }
 
-        # Read the uptime from /proc/uptime
         $uptimeContent = Get-Content -Path '/proc/uptime'
         $uptimeSeconds = [double]$uptimeContent.Split(' ')[0]
 
-        # Convert seconds to days, hours, minutes, and seconds
         $days = [math]::Floor($uptimeSeconds / (24 * 3600))
         $hours = [math]::Floor(($uptimeSeconds % (24 * 3600)) / 3600)
         $minutes = [math]::Floor(($uptimeSeconds % 3600) / 60)
@@ -81,7 +80,6 @@ function Get-FailedUnits {
     param()
 
     try {
-        # Run systemctl to get all unit statuses in JSON format
         $FailedUnits = Invoke-Expression 'systemctl list-units --output=json' | `
                 ConvertFrom-Json | Where-Object -FilterScript { `
                     $_.active -ne 'active' `

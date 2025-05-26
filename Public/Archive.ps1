@@ -1,15 +1,16 @@
 using namespace System.Formats.Tar
+Set-StrictMode -Version 3.0
 
 function ConvertFrom-DirToTar {
-    param([string]$SrcDir, $TarFilePath)
+    param([string]$SourceDirectory, $TarFilePath)
 
-    # Create the tar archive
-    $source = (Resolve-Path -Path $SrcDir).Path
-    #$filePath = Resolve-Path -Path $TarFilePath
 
+    if (-not (Test-Path -Path $SourceDirectory)) {
+        throw "Source directory does not exist: $SourceDirectory"
+    }
     try {
         $ErrorActionPreference = 'Stop'
-        [TarFile]::CreateFromDirectory($source, $TarFilePath, $true)
+        [TarFile]::CreateFromDirectory($SourceDirectory, $TarFilePath, $true)
         Write-Host "Tar file created successfully at: $TarFilePath"
     }
     catch {

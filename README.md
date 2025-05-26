@@ -1,11 +1,11 @@
 # PowerNixx
 
-PowerNixx helps you monitor your Linux systems with Powershell and .NET
+PowerNixx helps you monitor your Linux systems with Powershell and .NET 
 
 ## Purpose
 
 PowerNixx is built on Pode.Web and currently provides the following features
-- Structured data access to logs, in particular ```journalctl``` and ```syslog```
+- JSON APIs providing structured data access to the system under monitor
 - A default dashboard with the 4 most common system monitoring metrics: CPU, Memory, Disk, and Network
 - Tools for hashing, encryption, archiving, and compressing data
 - Powershell wrappers for local LLM frameworks like **Ollama** and **llama.cpp**

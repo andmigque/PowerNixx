@@ -1,3 +1,5 @@
+Set-StrictMode -Version 3.0
+
 function Set-CronPermissions {
     [CmdletBinding()]
     param()
@@ -6,9 +8,7 @@ function Set-CronPermissions {
   
     foreach ($Directory in $CronDirectories) {
         try {
-            # Check if the directory exists
             if (Test-Path -Path $Directory -PathType Container) {
-                # Set permissions to 700 (rwx------)
                 Invoke-Expression "sudo chmod -R 700 $($Directory)"
                 Write-Host "Successfully set permissions to 700 for: $Directory"
             }

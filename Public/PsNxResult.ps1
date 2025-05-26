@@ -1,9 +1,8 @@
 using namespace System
 Set-StrictMode -Version 3.0
+
 . (Join-Path -Path $PSScriptRoot -Resolve './PsNxEnums.ps1')
-#----------------------------------------------------------------------
-# Base Result Class
-#----------------------------------------------------------------------
+
 class PsNxResultBase {
     [DateTime]$Timestamp
     [String]$Generator
@@ -17,27 +16,33 @@ class PsNxResultBase {
     }
 }
 
-#----------------------------------------------------------------------
-# Helper Function: New-PsNxResult
-#----------------------------------------------------------------------
+
+function New-PsNxResult {
 <#
+
 .SYNOPSIS
 Creates a standardized PSCustomObject representing a generic result.
+
 .DESCRIPTION
 Takes a status, optional data, and optional error information, and formats them into a consistent
 PSCustomObject for output streams.  Can represent success, info, or error conditions.
+
 .PARAMETER Status
 The status of the operation ('Success', 'Info', or 'Error').
+
 .PARAMETER Data
 The data or result of the operation (optional).  Can be any PowerShell object.
+
 .PARAMETER Error
 An error object (e.g., from a catch block) or a string error message.  If provided, Status will be automatically set to 'Error'.
+
 .PARAMETER Generator
 The Generator of the result (e.g., cmdlet name, script name).
+
 .OUTPUTS
 [PSCustomObject] Detailed result information with Resultant='PsNxResult'.
+
 #>
-function New-PsNxResult {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
@@ -76,9 +81,6 @@ function New-PsNxResult {
     return $result
 }
 
-#----------------------------------------------------------------------
-# Encryption Result Class (Extends Base)
-#----------------------------------------------------------------------
 class EncryptionResult : PsNxResultBase {
     [string]$OriginalFile
     [string]$EncryptedFile
@@ -92,9 +94,6 @@ class EncryptionResult : PsNxResultBase {
     }
 }
 
-#----------------------------------------------------------------------
-# Helper Function: New-EncryptionResultObject (Uses the class)
-#----------------------------------------------------------------------
 function New-EncryptionResultObject {
     [CmdletBinding()]
     param(
@@ -121,23 +120,27 @@ function New-EncryptionResultObject {
     return $result
 }
 
-#----------------------------------------------------------------------
-# Helper Function: New-LogErrorObject (Remains largely unchanged)
-#----------------------------------------------------------------------
+
+function New-LogErrorObject {
 <#
+
 .SYNOPSIS
 Creates a standardized PSCustomObject representing an error record.
+
 .DESCRIPTION
 Takes an ErrorRecord and a boolean indicating if it was terminating,
 and formats it into a consistent PSCustomObject for output streams.
+
 .PARAMETER ErrorRecord
 The original ErrorRecord object (e.g., from $_ in a catch block, or from -ErrorVariable).
+
 .PARAMETER IsTerminatingError
 A boolean ($true/$false) indicating if this error stopped the main execution path.
+
 .OUTPUTS
 [PSCustomObject] Detailed error information with Resultant='Error'.
+
 #>
-function New-LogErrorObject {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -169,6 +172,6 @@ function New-LogErrorObject {
         Function      = $functionName
         ExceptionType = $ErrorRecord.Exception.GetType().FullName
         StackTrace    = $ErrorRecord.ScriptStackTrace
-        Resultant     = 'Error' # Consistent Resultant property
+        Resultant     = 'Error'
     }
 }

@@ -1,4 +1,6 @@
 using namespace System.Collections.Generic
+Set-StrictMode -Version 3.0
+
 class LogFileManager {
     # Static property to hold the list of log files
     static [List[string]] $LogFiles

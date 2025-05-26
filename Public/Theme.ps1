@@ -1,3 +1,5 @@
+Set-StrictMode -Version 3.0
+
 function Invoke-PoshThemes {
     # Define the URL for downloading oh-my-posh themes
     $url = 'https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip'

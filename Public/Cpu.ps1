@@ -1,3 +1,5 @@
+Set-StrictMode -Version 3.0
+
 function Get-CpuArchitecture {
     if ("$env:PROCESSOR_ARCHITECTURE" -ne '') { return "$env:PROCESSOR_ARCHITECTURE" }
     if ($IsLinux) {

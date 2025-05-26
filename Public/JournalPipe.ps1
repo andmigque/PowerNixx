@@ -2,7 +2,10 @@ using namespace System
 using namespace System.IO
 using namespace System.Collections.Generic
 using namespace System.Management.Automation
+Set-StrictMode -Version 3.0
 
+
+function Read-JournalJson {
 <#
 .SYNOPSIS
 
@@ -28,7 +31,6 @@ The path to the journalctl executable. Defaults to '/usr/bin/journalctl'.
 Get-JournalJson | Where-Object { $_.PRIORITY -eq '3' }
 
 #>
-function Read-JournalJson {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]

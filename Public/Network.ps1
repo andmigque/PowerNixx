@@ -1,24 +1,8 @@
-<#
-.SYNOPSIS
-    Network.ps1 - A PowerShell module for gathering network statistics.
-
-.DESCRIPTION
-    This module provides a series of functions to retrieve and display detailed
-    network interface information and statistics on a system.
-
-.EXAMPLE
-    Get-Network -Interface 'eth0'
-    Retrieves raw network statistics for the 'eth0' interface.
-
-    Get-NetworkStats -Interface 'eth0' -SampleInterval 5
-    Calculates and displays network statistics for 'eth0', measuring byte and packet rates
-    every 5 seconds.
-#>
-
 using namespace System
 using namespace System.Diagnostics
 using namespace System.Net.NetworkInformation
 using namespace System.Collections.Generic
+Set-StrictMode -Version 3.0
 
 <#
 .FUNCTION

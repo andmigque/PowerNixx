@@ -10,7 +10,6 @@ function Search-KeywordInFile {
         [string] $SearchString
     )
 
-    # Check for mandatory parameters
     if ([string]::IsNullOrEmpty($Directory)) {
         throw 'Error: Directory parameter cannot be null or empty.'
     }
