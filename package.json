@@ -7,7 +7,7 @@
     "build": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Compile'",
     "test": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Test'",
     "start": "pwsh -c '& ./Server.ps1'",
-    "install": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Init'"
+    "install": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Install'"
   },
   "main": "pode start",
   "name": "powernixx"

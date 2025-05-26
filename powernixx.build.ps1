@@ -17,6 +17,8 @@ Task Compile -Depends Clean {
     Export-CrescendoModule -ConfigurationFile ./Crescendo/systemctl.crescendo.json -ModuleName Public/PsNxSystem/PsNxSystem.psm1 -Force
     Export-CrescendoModule -ConfigurationFile ./Crescendo/tar.crescendo.json -ModuleName Public/PsNxTar/PsNxTar.psm1 -Force
     Export-CrescendoModule -ConfigurationFile ./Crescendo/iostat.crescendo.json -ModuleName Public/PsNxIo/PsNxIo.psm1 -Force
+
+    New-MarkdownHelp -Module "PowerNixx" -OutputFolder ./Documentation/ -Force
     New-MarkdownHelp -Command Get-System -OutputFolder ./Documentation/ -Force -UseFullTypeName -OnlineVersionUrl 'https://github.com/andmigque/powernixx'
     New-MarkdownHelp -Command Invoke-Tar -OutputFolder ./Documentation/ -Force -UseFullTypeName -OnlineVersionUrl 'https://github.com/andmigque/powernixx'
     New-MarkdownHelp -Command Get-IOStat -OutputFolder ./Documentation/ -Force -UseFullTypeName -OnlineVersionUrl 'https://github.com/andmigque/powernixx'
@@ -35,6 +37,7 @@ Task Install {
     Install-Module -Name 'platyPS' -RequiredVersion '0.14.2' -Force
     Install-Module -Name 'Graphical' -RequiredVersion '1.0.2' -Force
     Install-Module -Name 'PSScriptAnalyzer' -RequiredVersion '1.23.0' -Force
+    Import-Module ./PowerNixx.psd1 -Force
 }
 
 Task Clean {

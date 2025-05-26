@@ -5,9 +5,6 @@ using namespace System.Collections.Generic
 Set-StrictMode -Version 3.0
 
 <#
-.FUNCTION
-    Get-Network
-
 .SYNOPSIS
     Retrieves raw network statistics for a specified interface.
 
@@ -63,9 +60,6 @@ function Get-Network {
 }
 
 <#
-.FUNCTION
-    Get-Hostnamectl
-
 .SYNOPSIS
     Returns hostname and machine ID using the hostnamectl command, formatted as JSON.
 #>
@@ -76,8 +70,6 @@ function Get-Hostnamectl {
 }
 
 <#
-.FUNCTION
-    Get-NetStat
 
 .SYNOPSIS
     Executes the netstat -a -n -o -4 -6 -l -e command and returns the result.
@@ -87,8 +79,6 @@ function Get-NetStat {
 }
 
 <#
-.FUNCTION
-    Get-NetworkStats
 
 .SYNOPSIS
     Calculates network statistics for a specified interface, measuring the rate of bytes and packets over a sample interval.
@@ -113,33 +103,26 @@ function Get-NetworkStats {
         [string]$Interface = 'eth0',
 
         [Parameter()]
-        [int]$SampleInterval = 1  # Seconds between measurements
+        [int]$SampleInterval = 1
     )
-
-    # Take first measurement
     $firstMeasurement = Get-Network -Interface $Interface
 
-    # Wait for the sample interval
     Start-Sleep -Seconds $SampleInterval
 
     # Take second measurement
     $secondMeasurement = Get-Network -Interface $Interface
 
-    # Calculate rates (bytes per second)
     $rxBytesPerSec = ($secondMeasurement.RxBytes - $firstMeasurement.RxBytes) / $SampleInterval
     $txBytesPerSec = ($secondMeasurement.TxBytes - $firstMeasurement.TxBytes) / $SampleInterval
 
-    # Calculate packet rates
     $rxPacketsPerSec = ($secondMeasurement.RxPackets - $firstMeasurement.RxPackets) / $SampleInterval
     $txPacketsPerSec = ($secondMeasurement.TxPackets - $firstMeasurement.TxPackets) / $SampleInterval
 
-    # Convert bytes to more readable formats (KB/s, MB/s)
     $rxKBps = $rxBytesPerSec / 1KB
     $txKBps = $txBytesPerSec / 1KB
     $rxMBps = $rxBytesPerSec / 1MB
     $txMBps = $txBytesPerSec / 1MB
 
-    # Return stats object with both raw and human-readable values
     [PSCustomObject]@{
         Interface        = $Interface
         # Current totals
@@ -161,9 +144,6 @@ function Get-NetworkStats {
 }
 
 <#
-.FUNCTION
-    Get-NetworkInterfaces
-
 .SYNOPSIS
     Retrieves a list of available network interfaces.
 #>
@@ -175,9 +155,6 @@ function Get-NetworkInterfaces {
 }
 
 <#
-.FUNCTION
-    Get-EthernetAdaptersSpeed
-
 .SYNOPSIS
     Retrieves and displays the maximum speed of all Ethernet network adapters.
 #>
@@ -193,9 +170,6 @@ function Get-EthernetAdaptersSpeed {
 }
 
 <#
-.FUNCTION
-    Get-NetworkSentReceived
-
 .SYNOPSIS
     Retrieves the bytes received and sent for each network interface.
 #>
@@ -218,9 +192,6 @@ function Get-NetworkSentReceived {
 }
 
 <#
-.FUNCTION
-    Get-BytesPerSecond
-
 .SYNOPSIS
     Calculates the bytes per second (in MB/s) for each Ethernet interface over a 1-second interval.
 #>
