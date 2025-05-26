@@ -1,8 +1,7 @@
 ---
 external help file: PowerNixx-help.xml
 Module Name: PowerNixx
-online version: https://man7.org/linux/man-pages/man1/systemctl.1.html
-https://www.freedesktop.org/software/systemd/man/systemctl.html
+online version: https://github.com/andmigque/powernixx
 schema: 2.0.0
 ---
 
@@ -55,7 +54,7 @@ Original Command: systemctl show --no-pager --output=json
 List active systemctl units.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -70,7 +69,7 @@ Accept wildcard characters: False
 List automount units currently in memory.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -85,7 +84,7 @@ Accept wildcard characters: False
 List socket units currently in memory.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -100,7 +99,7 @@ Accept wildcard characters: False
 List timer units currently in memory.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -115,7 +114,7 @@ Accept wildcard characters: False
 Show properties of the system or a specific unit.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -130,7 +129,7 @@ Accept wildcard characters: False
 Show the overall status or the status of a specific unit.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -145,7 +144,7 @@ Accept wildcard characters: False
 Show all available output.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -160,7 +159,7 @@ Accept wildcard characters: False
 Show help for systemctl.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -175,7 +174,7 @@ Accept wildcard characters: False
 Do the action now, don't wait for reload.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -190,7 +189,7 @@ Accept wildcard characters: False
 Show any failed units.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -205,7 +204,7 @@ Accept wildcard characters: False
 {{ Fill ProgressAction Description }}
 
 ```yaml
-Type: ActionPreference
+Type: System.Management.Automation.ActionPreference
 Parameter Sets: (All)
 Aliases: proga
 

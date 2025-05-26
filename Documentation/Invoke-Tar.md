@@ -1,8 +1,7 @@
 ---
 external help file: PowerNixx-help.xml
 Module Name: PowerNixx
-online version: https://man7.org/linux/man-pages/man1/tar.1.html
-https://www.gnu.org/software/tar/manual/tar.html
+online version: https://github.com/andmigque/powernixx
 schema: 2.0.0
 ---
 
@@ -68,7 +67,7 @@ Original Command: tar -cf archive.tar file1.txt file2.txt
 Show the progress and file names as tar operates (verbose mode).
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -84,7 +83,7 @@ The archive file to create, extract, or list.
 Required for most operations.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -99,7 +98,7 @@ Accept wildcard characters: False
 List the contents of an archive without extracting.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: list
 Aliases:
 
@@ -114,7 +113,7 @@ Accept wildcard characters: False
 Extract files from the specified archive.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: extract
 Aliases:
 
@@ -130,7 +129,7 @@ Create a new archive.
 Use with -Archive and -Files.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: Create
 Aliases:
 
@@ -146,7 +145,7 @@ The files to include in the new archive.
 Accepts an array of file paths.
 
 ```yaml
-Type: String[]
+Type: System.String[]
 Parameter Sets: Create
 Aliases:
 
@@ -162,7 +161,7 @@ Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases: wi
 
@@ -177,7 +176,7 @@ Accept wildcard characters: False
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: SwitchParameter
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
 
@@ -192,7 +191,7 @@ Accept wildcard characters: False
 {{ Fill ProgressAction Description }}
 
 ```yaml
-Type: ActionPreference
+Type: System.Management.Automation.ActionPreference
 Parameter Sets: (All)
 Aliases: proga
 

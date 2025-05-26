@@ -4,7 +4,7 @@
   "description": "Monitor you Linux System with Powershell",
   "license": "MIT",
   "scripts": {
-    "build": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Compile'",
+    "build": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Clean,Compile'",
     "test": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Test'",
     "start": "pwsh -c '& ./Server.ps1'",
     "install": "pwsh -c 'Invoke-psake -buildFile $PowerNixx/powernixx.build.ps1 -taskList Install'"

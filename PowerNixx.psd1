@@ -173,7 +173,6 @@
         'Measure-LogActivity',
         'Measure-PipelinePerformance',
         'New-EncryptionResultObject',
-        'New-LogErrorObject',
         'New-PsNxResult',
         'Pop-CrescendoNativeError',
         'Protect-FileWithEncryption',

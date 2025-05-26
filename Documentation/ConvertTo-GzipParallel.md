@@ -1,7 +1,7 @@
 ---
 external help file: PowerNixx-help.xml
 Module Name: PowerNixx
-online version: https://github.com/PowerShell/platyPS
+online version: https://github.com/andmigque/powernixx
 schema: 2.0.0
 ---
 
@@ -44,7 +44,7 @@ The source directory containing files to compress.
 Must be an existing directory path.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -60,7 +60,7 @@ The destination directory where compressed files will be saved.
 If it doesn't exist, it will be created.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -75,7 +75,7 @@ Accept wildcard characters: False
 {{ Fill ProgressAction Description }}
 
 ```yaml
-Type: ActionPreference
+Type: System.Management.Automation.ActionPreference
 Parameter Sets: (All)
 Aliases: proga
 
