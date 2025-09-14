@@ -3,10 +3,11 @@ Set-StrictMode -Version 3.0
 $ScriptPath = (Split-Path -Parent -Path $MyInvocation.MyCommand.Path)
 $configPath = $ScriptPath
 
-#$AUAH = ($PROFILE).AllUsersAllHosts
-#$AUCH = ($PROFILE).AllUsersCurrentHost
-#$CUAH = ($PROFILE).CurrentUserAllHosts
-#$CUCH = ($PROFILE).CurrentUserCurrentHost
+$AllProfiles = @(($PROFILE).AllUsersAllHosts, ($PROFILE).AllUsersCurrentHost, ($PROFILE).CurrentUserAllHosts, ($PROFILE).CurrentUserCurrentHost)
+
+$AllProfiles | ForEach-Object {
+    Write-Host "Profile Path: $_"
+}
 
 $LocalCUCH = "$($configPath)/Config/ohmyposh.profile.ps1"
 $LocalCUAH = "$($configPath)/Config/profile.ps1"
