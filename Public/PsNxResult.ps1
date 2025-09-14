@@ -46,10 +46,6 @@ The Generator of the result (e.g., cmdlet name, script name).
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [ValidateSet('Success', 'Info', 'Error')]
-        [string]$Status = 'Success',
-
-        [Parameter(Mandatory = $false)]
         $Data,
 
         [Parameter(Mandatory = $false)]
@@ -59,8 +55,7 @@ The Generator of the result (e.g., cmdlet name, script name).
         [string]$Generator = 'Unknown'
     )
 
-    $result = [PsNxResultBase]::new()
-    $result.Status = $Status
+    $result = [PsNxResultBase]::new((Get-Date), [Resultant]::PsNxNeutral)
     $result.Generator = $Generator
 
     if ($Error) {
