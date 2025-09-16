@@ -5,8 +5,12 @@ Set-Variable -Name PSModuleAutoLoadingPreference -Value 'All'
 # Disable PowerShell telemetry
 Set-Variable -Name 'POWERSHELL_TELEMETRY_OPTOUT' -Value 'true'	
 Set-Variable -Name 'ShowFastFetch' -Value 'false'
-Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
 
+if($IsLinux) {
+    Set-Variable -Name 'PowerNixx' -Value "$env:HOME/Develop/PowerNixx"
+}elseif ($IsWindows) {
+    Set-Variable -Name 'PowerNixx' -Value "$env:USERPROFILE\source\PowerNixx"
+}
 Import-Module $PowerNixx/PowerNixx.psd1
 
 if (Get-Module -Name PSReadLine -ListAvailable) {
