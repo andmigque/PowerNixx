@@ -3,75 +3,49 @@ Set-StrictMode -Version 3.0
 
 . (Join-Path -Path $PSScriptRoot -Resolve './PsNxEnums.ps1')
 
-class PsNxResultBase {
-    [DateTime]$Timestamp
-    [String]$Generator
+class PsNxResult {
     [Resultant]$Resultant
+    [PsCustomObject]$Data
+    [string]$Generator
+    [DateTime]$Timestamp
 
-    # Constructor
-    PsNxResultBase([DateTime]$Timestamp, [Resultant]$Resultant) {
-        $this.Timestamp = $Timestamp
+    PsNxResult([Resultant]$Resultant,[PsCustomObject]$Data,[string]$Generator,[object]$Timestamp) {
         $this.Resultant = $Resultant
-        $this.Generator = 'Unknown'
+        $this.Data      = $Data 
+        $this.Generator = $Generator
+        $this.Timestamp = $Timestamp
     }
 }
 
 
 function New-PsNxResult {
 <#
-
 .SYNOPSIS
-Creates a standardized PSCustomObject representing a generic result.
-
+    Factory function for PsNxResult
 .DESCRIPTION
-Takes a status, optional data, and optional error information, and formats them into a consistent
-PSCustomObject for output streams.  Can represent success, info, or error conditions.
-
-.PARAMETER Status
-The status of the operation ('Success', 'Info', or 'Error').
-
-.PARAMETER Data
-The data or result of the operation (optional).  Can be any PowerShell object.
-
-.PARAMETER Error
-An error object (e.g., from a catch block) or a string error message.  If provided, Status will be automatically set to 'Error'.
-
-.PARAMETER Generator
-The Generator of the result (e.g., cmdlet name, script name).
-
+    Returns a base psnxresult object
 .OUTPUTS
-[PSCustomObject] Detailed result information with Resultant='PsNxResult'.
-
+    [PsNxResult]
 #>
     [CmdletBinding()]
+    [OutputType([PsNxResult])]
     param(
         [Parameter(Mandatory = $false)]
-        $Data,
+        [ValidateNotNullOrEmpty()]
+        [Resultant]$Resultant = [Resultant]::PsNxNeutral,
 
         [Parameter(Mandatory = $false)]
-        [object]$Error, # Allow ErrorRecord or string
+        [ValidateNotNullOrEmpty()]
+        [PsCustomObject]$Data = @{},
 
         [Parameter(Mandatory = $false)]
-        [string]$Generator = 'Unknown'
+        [ValidateNotNullOrEmpty()]
+        [string]$Generator = 'Unknown',
+
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [DateTime]$Timestamp = (Get-Date)
     )
 
-    $result = [PsNxResultBase]::new((Get-Date), [Resultant]::PsNxNeutral)
-    $result.Generator = $Generator
-
-    if ($Error) {
-        $result.Status = 'Error'
-
-        if ($Error -is [ErrorRecord]) {
-            $result.Error = New-LogErrorObject -ErrorRecord $Error -IsTerminatingError $false #Don't know if terminating
-        }
-        else {
-            $result.ErrorMessage = $Error.ToString() #Handle string errors
-        }
-    }
-
-    if ($Data) {
-        $result.Data = $Data
-    }
-
-    return $result
+    [PsNxResult]::new($Resultant, $Data, $Generator, $Timestamp)
 }
