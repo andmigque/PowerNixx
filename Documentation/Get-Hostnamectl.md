@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-Hostnamectl
 
 ## SYNOPSIS
-Returns hostname and machine ID using the hostnamectl command, formatted as JSON.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
@@ -32,8 +32,11 @@ PS C:\> {{ Add example code here }}
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-NetworkSentReceived
 
 ## SYNOPSIS
-Retrieves the bytes received and sent for each network interface.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
@@ -50,8 +50,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

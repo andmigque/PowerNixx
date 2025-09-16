@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-EthernetAdaptersSpeed
 
 ## SYNOPSIS
-Retrieves and displays the maximum speed of all Ethernet network adapters.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
@@ -32,8 +32,11 @@ PS C:\> {{ Add example code here }}
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-Network
 
 ## SYNOPSIS
-Retrieves raw network statistics for a specified interface.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
@@ -17,8 +17,7 @@ Get-Network [[-Interface] <String>] [-ProgressAction <ActionPreference>] [<Commo
 ```
 
 ## DESCRIPTION
-This function reads /proc/net/dev and parses the specified interface's statistics.
-If the interface is not found, it returns a custom object with all values set to 0.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
@@ -32,8 +31,7 @@ PS C:\> {{ Add example code here }}
 ## PARAMETERS
 
 ### -Interface
-The network interface to retrieve statistics for.
-Default is 'eth0'.
+{{ Fill Interface Description }}
 
 ```yaml
 Type: String
@@ -41,8 +39,8 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
-Default value: Eth0
+Position: 0
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -67,9 +65,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
-### [PSCustomObject]
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

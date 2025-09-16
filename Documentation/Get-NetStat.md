@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-NetStat
 
 ## SYNOPSIS
-Executes the netstat -a -n -o -4 -6 -l -e command and returns the result.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
@@ -32,8 +32,11 @@ PS C:\> {{ Add example code here }}
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

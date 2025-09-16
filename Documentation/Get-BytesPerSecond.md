@@ -8,12 +8,12 @@ schema: 2.0.0
 # Get-BytesPerSecond
 
 ## SYNOPSIS
-Calculates the bytes per second (in MB/s) for each Ethernet interface over a 1-second interval.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
 ```
-Get-BytesPerSecond [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-BytesPerSecond [[-SampleInterval] <Int32>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,6 +29,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -SampleInterval
+{{ Fill SampleInterval Description }}
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 {{ Fill ProgressAction Description }}
@@ -50,8 +65,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
+### None
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

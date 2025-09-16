@@ -34,6 +34,7 @@ PS C:\> {{ Add example code here }}
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
