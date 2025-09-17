@@ -15,7 +15,7 @@ Describe 'CodexRule Class' {
     Context 'When instantiating a new CodexRule object' {
         It 'should create an object with the correct default properties' {
             # Act
-            [CodexRule]::UniversalAndNovel()
+            [CodexRule]::UniversalTruthNovelExpression()
         }
     }
 }
