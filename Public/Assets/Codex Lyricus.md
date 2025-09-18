@@ -271,7 +271,7 @@ __Conclusion__
 
 
 
-## 1️⃣5️⃣ Character Voice Must Stay Intact 🗣️🎭
+## Character Voice Must Stay Intact 🗣️🎭
 
 Voice must remain consistent unless broken by design.
 
@@ -279,7 +279,7 @@ Voice must remain consistent unless broken by design.
 if(voice).not(previous).throw("who are you? impostor!")
 ```
 
-## 1️⃣6️⃣ Every Word Must Earn Its Place ✂️🏆
+## Every Word Must Earn Its Place ✂️🏆
 
 No filler, no lazy syllables.
 
@@ -305,7 +305,7 @@ __Enforce__
 section.has(line).count(4:32)
 ```
 
-### 2️⃣1️⃣ The Sensory Anchor ⚓️🖐️
+### The Sensory Anchor ⚓️🖐️
 
 Abstract emotions must tie to concrete senses.
 
@@ -344,7 +344,7 @@ IF(WRITER).NEVER_USED(ENJAMBMENT)
   .THEN(TRY_IT).WITH(INTENT).FOR(EFFECT[TENSION | BREATH | FLOW])
 ```
 
-## 2️⃣6️⃣ Alliteration Is Flavor, Not a Formula 🔁🗣️
+## Alliteration Is Flavor, Not a Formula 🔁🗣️
 
 Alliteration must serve tone, image, or flow.
 
@@ -354,7 +354,7 @@ IF(SECTION).USES(ALLITERATION)
   .ELSE(THROW("ALLITERATION WITHOUT PURPOSE IS VERBAL GLITTER GLUE"))
 ```
 
-## 2️⃣7️⃣ Emotional Hedging is Cowardice ⛔💔
+## Emotional Hedging is Cowardice ⛔💔
 
 If a line qualifies its own emotion (“maybe,” “kinda,” “I guess”), it dies.
 
@@ -362,7 +362,7 @@ If a line qualifies its own emotion (“maybe,” “kinda,” “I guess”), i
 ASSERT(LINE).NOT_CONTAIN(["maybe", "sort of", "kinda", "just", "I guess"])
 ```
 
-## 2️⃣8️⃣ Every Section Needs a Centerpiece Line 💣🔊
+## Every Section Needs a Centerpiece Line 💣🔊
 
 One line per section must punch through—quotable and unforgettable.
 
