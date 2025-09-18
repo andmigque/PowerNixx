@@ -197,7 +197,7 @@ if(section).introduces(concept)
 
 ### The Resonatrix  🧩🎶
 
-The Resonatrix, or "Resonance Matrix" is a fundamental rhyme structure that lays the foundation for dense emotional resonance.
+_The Resonatrix, or "Resonance Matrix" is a fundamental rhyme structure that lays the foundation for dense emotional resonance._
 
 - The Resonatrix is a 2x2 array
 
@@ -271,7 +271,7 @@ __Conclusion__
 
 
 
-## Character Voice Must Stay Intact 🗣️🎭
+### Character Voice Must Stay Intact 🗣️🎭
 
 Voice must remain consistent unless broken by design.
 
@@ -279,12 +279,13 @@ Voice must remain consistent unless broken by design.
 if(voice).not(previous).throw("who are you? impostor!")
 ```
 
-## Every Word Must Earn Its Place ✂️🏆
+### Every Word Must Earn Its Place ✂️🏆
 
-No filler, no lazy syllables.
+_No filler, no lazy syllables._
 
+__Assert__
 ```javascript
-ASSERT(WORD).EARNED()
+foreach(word).must().lexixcally(cohere).inContext()
 ```
 
 ### Double Reality Check 🔍🪞
@@ -344,25 +345,24 @@ IF(WRITER).NEVER_USED(ENJAMBMENT)
   .THEN(TRY_IT).WITH(INTENT).FOR(EFFECT[TENSION | BREATH | FLOW])
 ```
 
-## Alliteration Is Flavor, Not a Formula 🔁🗣️
+### Alliteration Is Flavor, Not a Formula 🔁🗣️
 
-Alliteration must serve tone, image, or flow.
+_Alliteration must serve tone, image, or flow._
 
+_Enforce_
 ```javascript
-IF(SECTION).USES(ALLITERATION)
-  .THEN(SOUND_REPETITION).MUST(SUPPORT(TONE || IMAGE || FLOW))
-  .ELSE(THROW("ALLITERATION WITHOUT PURPOSE IS VERBAL GLITTER GLUE"))
+alliteration().serves(TONE && GENRE && VOCALIS)
 ```
 
-## Emotional Hedging is Cowardice ⛔💔
+### Emotional Hedging is Cowardice ⛔💔
 
-If a line qualifies its own emotion (“maybe,” “kinda,” “I guess”), it dies.
+_If a line qualifies its own emotion (“maybe,” “kinda,” “I guess”), it dies._
 
 ```javascript
 ASSERT(LINE).NOT_CONTAIN(["maybe", "sort of", "kinda", "just", "I guess"])
 ```
 
-## Every Section Needs a Centerpiece Line 💣🔊
+### Every Section Needs a Centerpiece Line 💣🔊
 
 One line per section must punch through—quotable and unforgettable.
 
